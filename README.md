@@ -19,6 +19,8 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ![Block diagram](http://ethernetfmc.com/wp-content/uploads/2014/10/qgige_all_axi_ethernet.png "Zynq Quad Gig Ethernet All AXI Ethernet")
 
+> Note: Zynq PS block is replaced by MicroBlaze processor for the Artix, Kintex and Virtex boards.
+
 ### Requirements
 
 * Vivado 2014.4 (see Library modifications below)
