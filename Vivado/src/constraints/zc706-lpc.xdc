@@ -128,3 +128,5 @@ set_property PACKAGE_PIN AB30 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN Y26 [get_ports mdio_io_port_3_io]
 set_property PACKAGE_PIN Y27 [get_ports reset_port_3]
 
+create_clock -period 8.000 -name ref_clk_p -waveform {0.000 4.000} [get_ports ref_clk_p]
+
