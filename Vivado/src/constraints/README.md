@@ -24,6 +24,12 @@ appropriate for the connector you want to use.
   * LPC connector (use zc706-lpc.xdc)
   * HPC connector (use zc706-hpc.xdc)
 
+### Virtex-7 VC707 & VC709 Board Warning
+
+Please be aware that the VC707 and VC709 boards can only support the 1.8V version Ethernet FMC. The devices
+on these boards have only HP (high-performance) I/Os which do not support the 2.5V levels required by the standard
+Ethernet FMC.
+
 ### Using two Ethernet FMCs on a single board
 
 If you want to use two Ethernet FMCs on the same board, you must combine the two constraint files for the board you are using.
