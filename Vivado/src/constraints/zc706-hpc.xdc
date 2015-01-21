@@ -1,3 +1,8 @@
+# WARNING: These constraints are provided for reference only. The ZC706 HPC pins
+# LA17_CC and LA18_CC are routed to non-clock-capable pins and thus cannot properly
+# receive the RGMII receive clock for ports 2 and 3 of the Ethernet FMC.
+# These constraints as they are will not pass the Xilinx tools.
+
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_0_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[2]}]

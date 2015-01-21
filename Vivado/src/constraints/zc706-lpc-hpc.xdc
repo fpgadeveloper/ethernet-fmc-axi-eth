@@ -3,6 +3,11 @@
 # two Ethernet FMCs - one connected to each FMC connector
 ################################################################
 
+# WARNING: These constraints are provided for reference only. The ZC706 HPC pins
+# LA17_CC and LA18_CC are routed to non-clock-capable pins and thus cannot properly
+# receive the RGMII receive clock for ports 2 and 3 of the Ethernet FMC.
+# These constraints as they are will not pass the Xilinx tools.
+
 # Constraints for first Ethernet FMC plugged onto the LPC connector
 # Ports are numbered 0 to 3
 
