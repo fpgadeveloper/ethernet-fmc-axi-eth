@@ -6,11 +6,27 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 ### Supported boards
 
 * Artix-7 [AC701 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-a7-ac701-g.html "AC701 Evaluation board")
+  * HPC connector (use ac701.xdc)
 * Kintex-7 [KC705 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board")
+  * LPC connector (use kc705-lpc.xdc)
+  * HPC connector (use kc705-hpc.xdc)
 * Virtex-7 [VC707 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board")
+  * HPC connector 1 (use vc707-hpc1.xdc)
+  * HPC connector 2 (use vc707-hpc2.xdc)
 * Virtex-7 [VC709 Evaluation board](http://www.xilinx.com/products/boards-and-kits/dk-v7-vc709-g.html "VC709 Evaluation board")
+  * HPC connector (use vc709.xdc)
 * Zynq-7000 [ZC702 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc702-g.html "ZC702 Evaluation board")
-* Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board")
+  * LPC connector 1 (use zc702-lpc1.xdc)
+  * LPC connector 2 (use zc702-lpc2.xdc)
+* Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (LPC only)
+  * LPC connector (use zc706-lpc.xdc)
+
+### Not-supported
+
+* Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (HPC)
+  * HPC connector: Pins LA18_CC and LA17_CC of the HPC connector are routed to non-clock-capable pins so they cannot
+  properly receive the RGMII receive clocks for ports 2 and 3 of the Ethernet FMC. The constraints file zc706-hpc.xdc is
+  provided for reference, however it will not pass compilation with the Xilinx tools due to this problem.
 
 ### Description
 
