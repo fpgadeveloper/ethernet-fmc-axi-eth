@@ -22,7 +22,13 @@ appropriate for the connector you want to use.
   * LPC connector 2 (use zc702-lpc2.xdc)
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board")
   * LPC connector (use zc706-lpc.xdc)
-  * HPC connector (use zc706-hpc.xdc)
+
+### Not-supported
+
+* Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board")
+  * HPC connector: Pins LA18_CC and LA17_CC of the HPC connector are routed to non-clock-capable pins so they cannot
+  properly receive the RGMII receive clocks for ports 2 and 3 of the Ethernet FMC. The constraints file zc706-hpc.xdc is
+  provided for reference, however it will not pass compilation with the Xilinx tools due to this problem.
 
 ### Virtex-7 VC707 & VC709 Board Warning
 
