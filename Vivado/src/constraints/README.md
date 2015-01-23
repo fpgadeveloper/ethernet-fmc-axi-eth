@@ -38,8 +38,20 @@ Ethernet FMC.
 
 ### Using two Ethernet FMCs on a single board
 
-If you want to use two Ethernet FMCs on the same board, you must combine the two constraint files for the board you are using.
-You will also have to rename the second set of net names so that they do not override the first set of constraints.
+The only Series-7 Evaluation boards that can support two Ethernet FMCs simultaneously are the 
+[KC705](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board") and [VC707](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board").
+These notes provide more details on 8-port support:
+
+* The KC705 and VC707 each have two FMC connectors that support the Ethernet FMC (use kc705-lpc-hpc.xdc and vc707-hpc2-hpc1.xdc respectively).
+* The ZC702 has two FMC connectors that can support the Ethernet FMC, however the Zynq device on this board does not have sufficient FPGA resources
+to support 8 x Xilinx AXI Ethernet IPs setup with DMA. If you want to use a MAC that requires less resources, it is possible that the ZC702 will
+work for you, in this case please refer to zc702-lpc2-lpc1.xdc.
+* The ZC706 has two FMC connectors, but only one (the LPC) can support the Ethernet FMC (see detail below).
+
+### For more information
+
+If you need more information on whether the Ethernet FMC is compatible with your carrier, please contact me [here](http://ethernetfmc.com/contact/ "Ethernet FMC Contact form").
+Just provide me with the pinout of your carrier and I'll be happy to check compatibility and generate a Vivado constraints file for you.
 
 
 Jeff Johnson
