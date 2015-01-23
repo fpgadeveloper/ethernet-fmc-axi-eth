@@ -24,15 +24,16 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 ### 8-port Support (2 x Ethernet FMCs)
 
 The only Series-7 Evaluation boards that can support two Ethernet FMCs simultaneously are the 
-[KC705](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board") and [VC707](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board").
+[KC705](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board"), [ZC702 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc702-g.html "ZC702 Evaluation board") 
+and [VC707](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board").
 These notes provide more details on 8-port support:
 
 * The KC705 and VC707 each have two FMC connectors that support the Ethernet FMC (use kc705-lpc-hpc.xdc and vc707-hpc2-hpc1.xdc respectively).
-* The ZC702 has two FMC connectors that can support the Ethernet FMC, however the Zynq device on this board does not have sufficient FPGA resources
-to support 8 x Xilinx AXI Ethernet IPs setup with DMA. If you want to use a MAC that requires less resources, it is possible that the ZC702 will
-work for you, in this case please refer to zc702-lpc2-lpc1.xdc.
+* The ZC702 has two FMC connectors that can support the Ethernet FMC, however note that the Zynq device on this board has limited FPGA resources
+for supporting 8 x Xilinx AXI Ethernet IPs (ie. the MACs). The device has enough resources when the 8 MACs are configured with FIFOs, however there are insufficient
+resources to configure them with DMAs. Alternatively, you could use a MAC that requires less resources. (use zc702-lpc2-lpc1.xdc)
 * The ZC706 has two FMC connectors, but only one (the LPC) can support the Ethernet FMC (see detail below).
-  
+
 ### Not-supported
 
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (HPC)
