@@ -273,3 +273,48 @@ set_property PACKAGE_PIN C21 [get_ports reset_port_7]
 
 create_clock -period 8.000 -name ref_clk_1_p -waveform {0.000 4.000} [get_ports ref_clk_1_p]
 
+# The following constraints are here to override some of the automatically
+# generated constraints for the AXI Ethernet IPs. Specifically the
+# grouping of the IDELAY_CTRLs and the IDELAYs.
+
+current_instance design_3_i/axi_ethernet_0/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_1/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_2/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_3/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_4/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_5/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_6/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+current_instance design_3_i/axi_ethernet_7/inst/eth_mac/inst
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+current_instance -quiet
+
+# Constraints for IDELAY_CTRL grouping
+# The automatically generated constraints group the IDELAY_CTRLs into the
+# same group, however in a design with 4 AXI Ethernet IPs, this is not
+# possible to achieve because they will be spread across 2 banks.
+# The following constraints group the IDELAY_CTRLs into two separate
+# groups, one for each bank.
+
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells design_3_i/axi_ethernet_0/inst/eth_mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells design_3_i/axi_ethernet_4/inst/eth_mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
