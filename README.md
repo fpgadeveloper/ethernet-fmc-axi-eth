@@ -24,8 +24,15 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 ### 8-port Support (2 x Ethernet FMCs)
 
 The only Series-7 Evaluation boards that can support two Ethernet FMCs simultaneously are the 
-[KC705](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board"), [ZC702 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc702-g.html "ZC702 Evaluation board") 
+[KC705](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board"), [ZC702](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc702-g.html "ZC702 Evaluation board") 
 and [VC707](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board").
+
+This repository contains example designs for using 2 x Ethernet FMCs on the same carrier. They all use 8
+Xilinx AXI Ethernet Subsystem IPs that are configured with FIFOs, as opposed to all the single Ethernet FMC example designs
+which are configured with DMAs. For the KC705 and VC707, the reason for this is that we would need to route 8 DMAs to the DDR3 memory, each DMA having 3 ports to
+map (ie. 8 x 3 = 24), however the AXI Interconnect is limited to only 16 slave ports. For the ZC702, the problem is a lack of FPGA
+resources as using 8 MACs configured with DMAs requires more resources than is contained in the Zynq device of that board.
+
 These notes provide more details on 8-port support:
 
 * The KC705 and VC707 each have two FMC connectors that support the Ethernet FMC (use kc705-lpc-hpc.xdc and vc707-hpc2-hpc1.xdc respectively).
