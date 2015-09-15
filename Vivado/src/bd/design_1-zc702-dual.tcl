@@ -1,7 +1,7 @@
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2014.4
+set scripts_vivado_version 2015.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -73,30 +73,30 @@ endgroup
 
 # Add the AXI Ethernet IPs for the LPC
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_0
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_1
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_2
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_2
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_3
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_3
 endgroup
 
 # Add the AXI Ethernet IPs for the HPC
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_4
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_4
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_5
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_5
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_6
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_6
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:6.2 axi_ethernet_7
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_7
 endgroup
 
 # Configure ports 1,2 and 3 for "Don't include shared logic"
@@ -109,16 +109,108 @@ set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_7]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_6]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_5]
 
-# Apply block automation for all AXI Ethernet: RGMII with DMA
+# Configure AXI Ethernet blocks for RGMII interfaces
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_3]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_4]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_5]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_6]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_7]
+
+# Create AXI Stream FIFOs
+
 startgroup
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_0]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_1]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_2]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_3]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_4]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_5]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_6]
-apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "FIFO" }  [get_bd_cells axi_ethernet_7]
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_0_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_1_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_2_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_3_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_4_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_5_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_6_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_7_fifo
+
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_0_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_1_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_2_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_3_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_4_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_5_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_6_fifo]
+set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_7_fifo]
+
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/m_axis_rxd] [get_bd_intf_pins axi_ethernet_0_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1/m_axis_rxd] [get_bd_intf_pins axi_ethernet_1_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2/m_axis_rxd] [get_bd_intf_pins axi_ethernet_2_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3/m_axis_rxd] [get_bd_intf_pins axi_ethernet_3_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_4/m_axis_rxd] [get_bd_intf_pins axi_ethernet_4_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_5/m_axis_rxd] [get_bd_intf_pins axi_ethernet_5_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_6/m_axis_rxd] [get_bd_intf_pins axi_ethernet_6_fifo/AXI_STR_RXD]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_7/m_axis_rxd] [get_bd_intf_pins axi_ethernet_7_fifo/AXI_STR_RXD]
+
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_0/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_1/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_2/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_3/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_4_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_4/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_5_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_5/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_6_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_6/s_axis_txd]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_7_fifo/AXI_STR_TXD] [get_bd_intf_pins axi_ethernet_7/s_axis_txd]
+
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_0/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_1/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_2/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_3/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_4_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_4/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_5_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_5/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_6_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_6/s_axis_txc]
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_7_fifo/AXI_STR_TXC] [get_bd_intf_pins axi_ethernet_7/s_axis_txc]
+
+connect_bd_net [get_bd_pins axi_ethernet_0_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_0/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_1_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_1/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_2_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_2/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_3_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_3/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_4_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_4/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_5_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_5/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_6_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_6/axi_txd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_7_fifo/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_7/axi_txd_arstn]
+
+connect_bd_net [get_bd_pins axi_ethernet_0_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_0/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_1_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_1/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_2_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_2/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_3_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_3/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_4_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_4/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_5_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_5/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_6_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_6/axi_txc_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_7_fifo/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_7/axi_txc_arstn]
+
+connect_bd_net [get_bd_pins axi_ethernet_0_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_0/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_1_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_1/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_2_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_2/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_3_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_3/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_4_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_4/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_5_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_5/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_6_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_6/axi_rxd_arstn]
+connect_bd_net [get_bd_pins axi_ethernet_7_fifo/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_7/axi_rxd_arstn]
+
+connect_bd_net -net [get_bd_nets axi_ethernet_0_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_0/axi_rxs_arstn] [get_bd_pins axi_ethernet_0_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_1_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_1/axi_rxs_arstn] [get_bd_pins axi_ethernet_1_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_2_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_2/axi_rxs_arstn] [get_bd_pins axi_ethernet_2_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_3_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_3/axi_rxs_arstn] [get_bd_pins axi_ethernet_3_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_4_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_4/axi_rxs_arstn] [get_bd_pins axi_ethernet_4_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_5_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_5/axi_rxs_arstn] [get_bd_pins axi_ethernet_5_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_6_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_6/axi_rxs_arstn] [get_bd_pins axi_ethernet_6_fifo/s2mm_prmry_reset_out_n]
+connect_bd_net -net [get_bd_nets axi_ethernet_7_fifo_s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_7/axi_rxs_arstn] [get_bd_pins axi_ethernet_7_fifo/s2mm_prmry_reset_out_n]
+
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_0/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_1/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_2/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_3/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_4/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_5/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_6/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
+connect_bd_net -net [get_bd_nets processing_system7_0_FCLK_CLK0] [get_bd_pins axi_ethernet_7/axis_clk] [get_bd_pins processing_system7_0/FCLK_CLK0]
 endgroup
 
 startgroup
@@ -143,36 +235,36 @@ endgroup
 # Make AXI Ethernet ports external: MDIO, RGMII and RESET
 # MDIO
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_0
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/mdio_io] [get_bd_intf_ports mdio_io_port_0]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_0
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/mdio] [get_bd_intf_ports mdio_io_port_0]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_1
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1/mdio_io] [get_bd_intf_ports mdio_io_port_1]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_1
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1/mdio] [get_bd_intf_ports mdio_io_port_1]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_2
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2/mdio_io] [get_bd_intf_ports mdio_io_port_2]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_2
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2/mdio] [get_bd_intf_ports mdio_io_port_2]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_3
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3/mdio_io] [get_bd_intf_ports mdio_io_port_3]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_3
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3/mdio] [get_bd_intf_ports mdio_io_port_3]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_4
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_4/mdio_io] [get_bd_intf_ports mdio_io_port_4]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_4
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_4/mdio] [get_bd_intf_ports mdio_io_port_4]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_5
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_5/mdio_io] [get_bd_intf_ports mdio_io_port_5]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_5
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_5/mdio] [get_bd_intf_ports mdio_io_port_5]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_6
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_6/mdio_io] [get_bd_intf_ports mdio_io_port_6]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_6
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_6/mdio] [get_bd_intf_ports mdio_io_port_6]
 endgroup
 startgroup
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_io:1.0 mdio_io_port_7
-connect_bd_intf_net [get_bd_intf_pins axi_ethernet_7/mdio_io] [get_bd_intf_ports mdio_io_port_7]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_7
+connect_bd_intf_net [get_bd_intf_pins axi_ethernet_7/mdio] [get_bd_intf_ports mdio_io_port_7]
 endgroup
 # RGMII
 startgroup
@@ -285,7 +377,7 @@ connect_bd_net [get_bd_pins axi_ethernet_4/ref_clk] [get_bd_pins processing_syst
 # Create differential IO buffer for the Ethernet FMC 125MHz clock (LPC)
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.0 util_ds_buf_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf_0
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
 startgroup
@@ -300,7 +392,7 @@ endgroup
 # Create differential IO buffer for the Ethernet FMC 125MHz clock (HPC)
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.0 util_ds_buf_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf_1
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_1/IBUF_OUT] [get_bd_pins axi_ethernet_4/gtx_clk]
 startgroup

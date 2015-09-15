@@ -17,7 +17,7 @@ set proj_dir [get_property directory [current_project]]
 
 # Set project properties
 set obj [get_projects zc702_lpc1_qgige_axieth]
-set_property "board_part" "xilinx.com:zc702:part0:1.1" $obj
+set_property "board_part" "xilinx.com:zc702:part0:1.2" $obj
 set_property "default_lib" "xil_defaultlib" $obj
 set_property "simulator_language" "Mixed" $obj
 set_property "source_mgmt_mode" "DisplayOnly" $obj
@@ -68,10 +68,10 @@ set_property "top" "design_1_wrapper" $obj
 
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
-  create_run -name synth_1 -part xc7z020clg484-1 -flow {Vivado Synthesis 2014} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
+  create_run -name synth_1 -part xc7z020clg484-1 -flow {Vivado Synthesis 2015} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
 } else {
   set_property strategy "Vivado Synthesis Defaults" [get_runs synth_1]
-  set_property flow "Vivado Synthesis 2014" [get_runs synth_1]
+  set_property flow "Vivado Synthesis 2015" [get_runs synth_1]
 }
 set obj [get_runs synth_1]
 
@@ -80,10 +80,10 @@ current_run -synthesis [get_runs synth_1]
 
 # Create 'impl_1' run (if not found)
 if {[string equal [get_runs -quiet impl_1] ""]} {
-  create_run -name impl_1 -part xc7z020clg484-1 -flow {Vivado Implementation 2014} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
+  create_run -name impl_1 -part xc7z020clg484-1 -flow {Vivado Implementation 2015} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
 } else {
   set_property strategy "Vivado Implementation Defaults" [get_runs impl_1]
-  set_property flow "Vivado Implementation 2014" [get_runs impl_1]
+  set_property flow "Vivado Implementation 2015" [get_runs impl_1]
 }
 set obj [get_runs impl_1]
 
@@ -99,3 +99,10 @@ source $origin_dir/src/bd/design_1-zc702.tcl
 set design_name [get_bd_designs]
 make_wrapper -files [get_files $design_name.bd] -top -import
 
+if {[lindex $argv 0] == "bitstream"} {
+  launch_runs synth_1
+  wait_on_run synth_1
+  launch_runs impl_1
+  wait_on_run impl_1
+  launch_runs impl_1 -to_step write_bitstream
+}
