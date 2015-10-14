@@ -1,7 +1,7 @@
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2015.2
+set scripts_vivado_version 2015.3
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -50,7 +50,7 @@ current_bd_instance $parentObj
 
 # Add the Memory controller (MIG) for the DDR3
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:2.3 mig_7series_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:2.4 mig_7series_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interface "ddr3_sdram_socket_j1" }  [get_bd_cells mig_7series_0]
 
@@ -62,8 +62,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "8KB"
 
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset" }  [get_bd_pins mig_7series_0/sys_rst]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset" }  [get_bd_pins rst_mig_7series_0_100M/ext_reset_in]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins rst_mig_7series_0_100M/ext_reset_in]
 endgroup
 
 # Configure the interrupt concat
@@ -241,12 +241,6 @@ endgroup
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset" }  [get_bd_pins rst_axi_ethernet_0_gtxclk_125M/ext_reset_in]
 endgroup
-
-# Correct the addresses to prevent overlap
-
-set_property offset 0x40C40000 [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_1_Reg0}]
-set_property offset 0x40C80000 [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_2_Reg0}]
-set_property offset 0x40CC0000 [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_3_Reg0}]
 
 # Restore current instance
 current_bd_instance $oldCurInst

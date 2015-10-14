@@ -99,10 +99,6 @@ source $origin_dir/src/bd/design_1-zc702.tcl
 set design_name [get_bd_designs]
 make_wrapper -files [get_files $design_name.bd] -top -import
 
-if {[lindex $argv 0] == "bitstream"} {
-  launch_runs synth_1
-  wait_on_run synth_1
-  launch_runs impl_1
-  wait_on_run impl_1
-  launch_runs impl_1 -to_step write_bitstream
-}
+# Update the compile order
+update_compile_order -fileset sources_1
+update_compile_order -fileset sim_1

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>zc706_lpc_echo_server_bsp</name>
-	<comment>Created by SDK v2014.4</comment>
+	<comment>Created by SDK v2015.3</comment>
 	<projects>
-		<project>design_1_wrapper_hw_platform_0</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

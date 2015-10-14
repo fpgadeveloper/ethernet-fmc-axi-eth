@@ -21,7 +21,8 @@ set_property "board_part" "xilinx.com:ac701:part0:1.2" $obj
 set_property "default_lib" "xil_defaultlib" $obj
 set_property "simulator_language" "Mixed" $obj
 set_property "source_mgmt_mode" "DisplayOnly" $obj
-set_property "target_language" "VHDL" $obj
+# Target language VHDL causing MIG problems since Vivado 2015.3
+#set_property "target_language" "VHDL" $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -99,10 +100,6 @@ source $origin_dir/src/bd/design_1-ac701.tcl
 set design_name [get_bd_designs]
 make_wrapper -files [get_files $design_name.bd] -top -import
 
-if {[lindex $argv 0] == "bitstream"} {
-  launch_runs synth_1
-  wait_on_run synth_1
-  launch_runs impl_1
-  wait_on_run impl_1
-  launch_runs impl_1 -to_step write_bitstream
-}
+# Update the compile order
+update_compile_order -fileset sources_1
+update_compile_order -fileset sim_1

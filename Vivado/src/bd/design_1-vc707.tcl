@@ -1,7 +1,7 @@
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2015.2
+set scripts_vivado_version 2015.3
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -50,7 +50,7 @@ current_bd_instance $parentObj
 
 # Add the Memory controller (MIG) for the DDR3
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:2.3 mig_7series_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:2.4 mig_7series_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interface "ddr3_sdram" }  [get_bd_cells mig_7series_0]
 
@@ -62,7 +62,7 @@ apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "8KB"
 
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset" }  [get_bd_pins mig_7series_0/sys_rst]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
 endgroup
 
 # Configure the interrupt concat
@@ -201,7 +201,7 @@ delete_bd_objs [get_bd_nets axi_ethernet_0_refclk_clk_out2] [get_bd_nets axi_eth
 # Connect 200MHz AXI Ethernet ref_clk
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:5.1 clk_wiz_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:5.2 clk_wiz_0
 endgroup
 connect_bd_net -net [get_bd_nets microblaze_0_Clk] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins mig_7series_0/ui_clk]
 connect_bd_net [get_bd_pins clk_wiz_0/reset] [get_bd_pins rst_mig_7series_0_100M/peripheral_reset]
@@ -245,12 +245,6 @@ startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
 connect_bd_net [get_bd_pins /ref_clk_fsel/dout] [get_bd_ports ref_clk_fsel]
 endgroup
-
-# Correct the addresses to prevent overlap
-
-set_property offset 0x40C40000 [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_1_Reg0}]
-set_property offset 0x40C80000 [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_2_Reg0}]
-set_property offset 0x40CC0000 [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_3_Reg0}]
 
 # Restore current instance
 current_bd_instance $oldCurInst

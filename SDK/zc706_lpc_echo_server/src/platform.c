@@ -18,8 +18,8 @@
 *
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* XILINX CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+* XILINX  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 * OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
@@ -37,6 +37,7 @@
 #include "xparameters.h"
 #include "xintc.h"
 #include "xil_exception.h"
+#include "lwip/tcp.h"
 #ifdef STDOUT_IS_16550
 #include "xuartns550_l.h"
 #endif
@@ -49,6 +50,9 @@ void dhcp_fine_tmr();
 void dhcp_coarse_tmr();
 #endif
 
+volatile int TcpFastTmrFlag = 0;
+volatile int TcpSlowTmrFlag = 0;
+
 void
 timer_callback()
 {
@@ -59,7 +63,7 @@ timer_callback()
 #if LWIP_DHCP==1
     static int dhcp_timer = 0;
 #endif
-	tcp_fasttmr();
+	 TcpFastTmrFlag = 1;
 
 	odd = !odd;
 	if (odd) {
@@ -68,8 +72,7 @@ timer_callback()
 		dhcp_timer++;
 		dhcp_timoutcntr--;
 #endif
-		tcp_slowtmr();
-
+		TcpSlowTmrFlag = 1;
 #if LWIP_DHCP==1
 		dhcp_fine_tmr();
 		if (dhcp_timer >= 120) {

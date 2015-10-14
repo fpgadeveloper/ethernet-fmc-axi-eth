@@ -21,6 +21,10 @@ set_property "board_part" "xilinx.com:kc705:part0:1.2" $obj
 set_property "default_lib" "xil_defaultlib" $obj
 set_property "simulator_language" "Mixed" $obj
 set_property "source_mgmt_mode" "DisplayOnly" $obj
+# Set VHDL as target language (default is Verilog)
+# Note: If you prefer Verilog, remove the following line and replace all references to 
+# "design_1_i/axi_ethernet_0/U0/eth_mac/U0" with "design_1_i/axi_ethernet_0/inst/eth_mac/inst"
+# in the project constraints file.
 set_property "target_language" "VHDL" $obj
 
 # Create 'sources_1' fileset (if not found)
@@ -99,10 +103,6 @@ source $origin_dir/src/bd/design_1-kc705-dual.tcl
 set design_name [get_bd_designs]
 make_wrapper -files [get_files $design_name.bd] -top -import
 
-if {[lindex $argv 0] == "bitstream"} {
-  launch_runs synth_1
-  wait_on_run synth_1
-  launch_runs impl_1
-  wait_on_run impl_1
-  launch_runs impl_1 -to_step write_bitstream
-}
+# Update the compile order
+update_compile_order -fileset sources_1
+update_compile_order -fileset sim_1
