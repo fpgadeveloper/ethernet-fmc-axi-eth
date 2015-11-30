@@ -59,12 +59,12 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ### Requirements
 
-* Vivado 2015.3 (see Library modifications below)
+* Vivado 2015.4 (see Library modifications below)
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
-### Library modifications for Vivado 2015.3
+### Library modifications for Vivado 2015.4
 
 To use this project, some modifications must be made to the lwIP libraries
 provided by the Xilinx SDK. These modifications can be made either to the
@@ -76,7 +76,7 @@ in the BSP sources being overwritten with the SDK sources.
 
 Open the following file:
 
-`C:\Xilinx\SDK\2015.3\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_2\src\contrib\ports\xilinx\netif\xaxiemacif_dma.c`
+`C:\Xilinx\SDK\2015.4\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_3\src\contrib\ports\xilinx\netif\xaxiemacif_dma.c`
 
 Replace this line of code:
 
@@ -90,7 +90,7 @@ With this one:
 
 Open the following file:
 
-`C:\Xilinx\SDK\2015.3\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_2\src\contrib\ports\xilinx\netif\xaxiemacif_physpeed.c`
+`C:\Xilinx\SDK\2015.4\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_3\src\contrib\ports\xilinx\netif\xaxiemacif_physpeed.c`
 
 Add the following define statement to the code:
 
