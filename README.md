@@ -167,7 +167,7 @@ unsigned int get_phy_speed_88E1510(XAxiEthernet *xaxiemacp, u32 phy_addr)
 
 	XAxiEthernet_PhyRead(xaxiemacp, phy_addr, IEEE_STATUS_REG_OFFSET, &status);
 	while ( !(status & IEEE_STAT_AUTONEGOTIATE_COMPLETE) ) {
-		sleep(1);
+		AxiEthernetUtilPhyDelay(1);
 		XAxiEthernet_PhyRead(xaxiemacp, phy_addr, IEEE_COPPER_SPECIFIC_STATUS_REG_2,
 																	&temp);
 		if (temp & IEEE_AUTONEG_ERROR_MASK) {

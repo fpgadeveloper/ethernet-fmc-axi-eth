@@ -68,7 +68,7 @@ endgroup
 
 # Configure the interrupt concat
 startgroup
-set_property -dict [list CONFIG.NUM_PORTS {16}] [get_bd_cells microblaze_0_xlconcat]
+set_property -dict [list CONFIG.NUM_PORTS {17}] [get_bd_cells microblaze_0_xlconcat]
 endgroup
 
 # Add the AXI Ethernet IPs
@@ -241,6 +241,25 @@ endgroup
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset" }  [get_bd_pins rst_axi_ethernet_0_gtxclk_125M/ext_reset_in]
 endgroup
+
+# Add UART for the Echo server example application
+
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550:2.0 axi_uart16550_0
+endgroup
+startgroup
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_uart16550_0/S_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "rs232_uart ( UART ) " }  [get_bd_intf_pins axi_uart16550_0/UART]
+endgroup
+
+# Add Timer for the Echo server example application
+
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer:2.0 axi_timer_0
+endgroup
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_timer_0/S_AXI]
+
+connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In16]
 
 # Restore current instance
 current_bd_instance $oldCurInst
