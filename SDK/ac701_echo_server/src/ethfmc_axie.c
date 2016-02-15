@@ -10,6 +10,8 @@
 #include "ethfmc_axie.h"
 #include "stdlib.h"
 
+static void __attribute__ ((noinline)) AxiEthernetUtilPhyDelay(unsigned int Seconds);
+
 unsigned EthFMC_get_IEEE_phy_speed(XAxiEthernet *xaxiemacp)
 {
 	u16 temp;
