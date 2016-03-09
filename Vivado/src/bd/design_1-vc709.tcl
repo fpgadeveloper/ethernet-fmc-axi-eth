@@ -57,9 +57,9 @@ apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interfac
 # Add the Microblaze
 startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze:9.5 microblaze_0
-set_property -dict [list CONFIG.C_CACHE_BYTE_SIZE {65536} CONFIG.C_DCACHE_BYTE_SIZE {65536}] [get_bd_cells microblaze_0]
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "8KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_addn_clk_0 (100 MHz)" }  [get_bd_cells microblaze_0]
+set_property -dict [list CONFIG.C_CACHE_BYTE_SIZE {65536} CONFIG.C_DCACHE_BYTE_SIZE {65536}] [get_bd_cells microblaze_0]
 
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
