@@ -57,8 +57,9 @@ apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interfac
 # Add the Microblaze
 startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze:9.5 microblaze_0
+set_property -dict [list CONFIG.C_CACHE_BYTE_SIZE {65536} CONFIG.C_DCACHE_BYTE_SIZE {65536}] [get_bd_cells microblaze_0]
 endgroup
-apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "8KB" ecc "None" cache "8KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_cells microblaze_0]
+apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "8KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_cells microblaze_0]
 
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
@@ -83,6 +84,12 @@ endgroup
 startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_3
 endgroup
+
+# Configure all ports for full checksum hardware offload
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_3]
 
 # Configure ports 1,2 and 3 for "Don't include shared logic"
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_3]
