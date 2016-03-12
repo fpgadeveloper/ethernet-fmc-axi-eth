@@ -58,11 +58,6 @@
  */
 #define ETH_FMC_PORT 0
 
-/*
- * NOTE: The BSP setting "use_axieth_on_zynq" must be set to 1.
- * To change BSP settings: right click on the BSP and click
- * "Board Support Package Settings" from the context menu.
- */
 #if ETH_FMC_PORT == 0
 #define EMAC_BASEADDR XPAR_AXIETHERNET_0_BASEADDR  // Eth FMC Port 0
 #endif

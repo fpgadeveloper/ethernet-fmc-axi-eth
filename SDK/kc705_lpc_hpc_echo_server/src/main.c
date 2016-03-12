@@ -51,7 +51,7 @@
 
 #include "xlwipconfig.h"
 
-/* Set the following DEFINE to the port number (0,1,2 or 3)
+/* Set the following DEFINE to the port number (0,1,2,3,4,5,6 or 7)
  * of the Ethernet FMC that you want to hook up
  * to the lwIP echo server. Only one port can be connected
  * to it in this version of the code.
@@ -59,16 +59,28 @@
 #define ETH_FMC_PORT 0
 
 #if ETH_FMC_PORT == 0
-#define EMAC_BASEADDR XPAR_AXIETHERNET_0_BASEADDR  // Eth FMC Port 0
+#define EMAC_BASEADDR XPAR_AXIETHERNET_0_BASEADDR  // LPC Eth FMC Port 0
 #endif
 #if ETH_FMC_PORT == 1
-#define EMAC_BASEADDR XPAR_AXIETHERNET_1_BASEADDR  // Eth FMC Port 1
+#define EMAC_BASEADDR XPAR_AXIETHERNET_1_BASEADDR  // LPC Eth FMC Port 1
 #endif
 #if ETH_FMC_PORT == 2
-#define EMAC_BASEADDR XPAR_AXIETHERNET_2_BASEADDR  // Eth FMC Port 2
+#define EMAC_BASEADDR XPAR_AXIETHERNET_2_BASEADDR  // LPC Eth FMC Port 2
 #endif
 #if ETH_FMC_PORT == 3
-#define EMAC_BASEADDR XPAR_AXIETHERNET_3_BASEADDR  // Eth FMC Port 3
+#define EMAC_BASEADDR XPAR_AXIETHERNET_3_BASEADDR  // LPC Eth FMC Port 3
+#endif
+#if ETH_FMC_PORT == 4
+#define EMAC_BASEADDR XPAR_AXIETHERNET_4_BASEADDR  // HPC Eth FMC Port 0
+#endif
+#if ETH_FMC_PORT == 5
+#define EMAC_BASEADDR XPAR_AXIETHERNET_5_BASEADDR  // HPC Eth FMC Port 1
+#endif
+#if ETH_FMC_PORT == 6
+#define EMAC_BASEADDR XPAR_AXIETHERNET_6_BASEADDR  // HPC Eth FMC Port 2
+#endif
+#if ETH_FMC_PORT == 7
+#define EMAC_BASEADDR XPAR_AXIETHERNET_7_BASEADDR  // HPC Eth FMC Port 3
 #endif
 
 

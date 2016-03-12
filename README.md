@@ -28,10 +28,9 @@ The only Series-7 Evaluation boards that can support two Ethernet FMCs simultane
 and [VC707](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board").
 
 This repository contains example designs for using 2 x Ethernet FMCs on the same carrier. They all use 8
-Xilinx AXI Ethernet Subsystem IPs that are configured with FIFOs, as opposed to all the single Ethernet FMC example designs
-which are configured with DMAs. For the KC705 and VC707, the reason for this is that we would need to route 8 DMAs to the DDR3 memory, each DMA having 3 ports to
-map (ie. 8 x 3 = 24), however the AXI Interconnect is limited to only 16 slave ports. For the ZC702, the problem is a lack of FPGA
-resources as using 8 MACs configured with DMAs requires more resources than is contained in the Zynq device of that board.
+Xilinx AXI Ethernet Subsystem IPs that are configured with DMAs, except for the ZC702 design, which is configured with FIFOs.
+The reason for this is a lack of FPGA resources as using 8 MACs configured with DMAs requires more resources than is
+contained in the Zynq device of that board.
 
 These notes provide more details on 8-port support:
 
@@ -219,6 +218,21 @@ and replace it with this block of code:
 ```
 
 We have just added an extra else-if statement to call our custom PHY speed function added earlier.
+
+### Building the SDK workspace
+
+The SDK folder in this repository contains an echo server application and BSP for each of the supported boards.
+Use this folder when creating your SDK workspace and only import the application and BSP that is relevant to your board.
+Do not import all applications and BSPs as they will not correspond to your hardware description and will not compile.
+
+### Microblaze design differences
+
+The designs for AC701, KC705, VC707 and VC709 all use the Microblaze soft processor. These designs
+have some specific differences when compared to the Zynq based designs:
+
+* MIG - the MIG is required to exploit the DDR3 memory of the eval boards.
+* AXI Timer - the lwIP echo server application requires a timer (Microblaze does not have one inherently).
+* AXI UART16550 - the lwIP echo server application requires a UART for console output.
 
 ### For more information
 
