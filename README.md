@@ -58,12 +58,18 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ### Requirements
 
-* Vivado 2015.4 (see Library modifications below)
+* Vivado 2016.1 (see Library modifications below)
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
-### Library modifications for Vivado 2015.4
+### Single port limit
+
+This example supports lwIP running on only one port of the Ethernet FMC. You can configure the port
+on which to run lwIP by setting the `ETH_FMC_PORT` define in the `main.c` file of the SDK application.
+Valid values for `ETH_FMC_PORT` are 0,1,2 or 3.
+
+### Library modifications for Vivado 2016.1
 
 To use this project, some modifications must be made to the lwIP libraries
 provided by the Xilinx SDK. These modifications can be made either to the
@@ -75,7 +81,7 @@ in the BSP sources being overwritten with the SDK sources.
 
 Open the following file:
 
-`C:\Xilinx\SDK\2015.4\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_3\src\contrib\ports\xilinx\netif\xaxiemacif_dma.c`
+`C:\Xilinx\SDK\2016.1\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_4\src\contrib\ports\xilinx\netif\xaxiemacif_dma.c`
 
 Replace this line of code:
 
@@ -89,7 +95,7 @@ With this one:
 
 Open the following file:
 
-`C:\Xilinx\SDK\2015.4\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_3\src\contrib\ports\xilinx\netif\xaxiemacif_physpeed.c`
+`C:\Xilinx\SDK\2016.1\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_4\src\contrib\ports\xilinx\netif\xaxiemacif_physpeed.c`
 
 Add the following define statement to the code:
 
@@ -104,16 +110,9 @@ Add the following function code just above the function called `get_IEEE_phy_spe
 unsigned int get_phy_speed_88E1510(XAxiEthernet *xaxiemacp, u32 phy_addr)
 {
 	u16 temp;
-	u16 phy_identifier;
-	u16 phy_model;
 	u16 control;
 	u16 status;
 	u16 partner_capabilities;
-
-	/* Get the PHY Identifier and Model number */
-	XAxiEthernet_PhyRead(xaxiemacp, phy_addr, 2, &phy_identifier);
-	XAxiEthernet_PhyRead(xaxiemacp, phy_addr, 3, &phy_model);
-	phy_model = phy_model & PHY_MODEL_NUM_MASK;
 
 	xil_printf("Start PHY autonegotiation \r\n");
 

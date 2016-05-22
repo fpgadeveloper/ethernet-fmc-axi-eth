@@ -1,16 +1,6 @@
 ################################################################
-# Check if script is running in correct Vivado version.
+# Block diagram build script
 ################################################################
-set scripts_vivado_version 2015.4
-set current_vivado_version [version -short]
-
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   puts "ERROR: This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."
-
-   return 1
-}
-
 set design_name design_1
 
 # CHECKING IF PROJECT EXISTS
@@ -50,7 +40,7 @@ current_bd_instance $parentObj
 
 # Add the Processor System and apply board preset
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7 processing_system7_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" }  [get_bd_cells processing_system7_0]
 
@@ -64,7 +54,7 @@ connect_bd_net [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins process
 
 # Add the concat for the interrupts
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0
 endgroup
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins processing_system7_0/IRQ_F2P]
 startgroup
@@ -73,30 +63,30 @@ endgroup
 
 # Add the AXI Ethernet IPs for the LPC
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_2
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_3
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
 endgroup
 
 # Add the AXI Ethernet IPs for the HPC
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_4
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_4
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_5
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_5
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_6
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_6
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_7
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_7
 endgroup
 
 # Configure ports 1,2 and 3 for "Don't include shared logic"
@@ -122,14 +112,14 @@ set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_7]
 # Create AXI Stream FIFOs
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_0_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_1_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_2_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_3_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_4_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_5_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_6_fifo
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_ethernet_7_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_0_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_1_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_2_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_3_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_4_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_5_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_6_fifo
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s axi_ethernet_7_fifo
 
 set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_0_fifo]
 set_property -dict [list CONFIG.C_TX_FIFO_DEPTH {4096} CONFIG.C_HAS_AXIS_TKEEP {true} CONFIG.C_RX_FIFO_DEPTH {4096} CONFIG.C_TX_FIFO_PF_THRESHOLD {4000} CONFIG.C_TX_FIFO_PE_THRESHOLD {10} CONFIG.C_RX_FIFO_PF_THRESHOLD {4000} CONFIG.C_RX_FIFO_PE_THRESHOLD {10}] [get_bd_cells axi_ethernet_1_fifo]
@@ -377,7 +367,7 @@ connect_bd_net [get_bd_pins axi_ethernet_4/ref_clk] [get_bd_pins processing_syst
 # Create differential IO buffer for the Ethernet FMC 125MHz clock (LPC)
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
 startgroup
@@ -392,7 +382,7 @@ endgroup
 # Create differential IO buffer for the Ethernet FMC 125MHz clock (HPC)
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_1
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_1/IBUF_OUT] [get_bd_pins axi_ethernet_4/gtx_clk]
 startgroup
@@ -407,7 +397,7 @@ endgroup
 # Create Ethernet FMC reference clock output enable and frequency select (LPC)
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_0_oe
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_oe
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_0_oe
@@ -415,7 +405,7 @@ connect_bd_net [get_bd_pins /ref_clk_0_oe/dout] [get_bd_ports ref_clk_0_oe]
 endgroup
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_0_fsel
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_fsel
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_0_fsel
@@ -425,7 +415,7 @@ endgroup
 # Create Ethernet FMC reference clock output enable and frequency select (HPC)
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_1_oe
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_oe
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_1_oe
@@ -433,7 +423,7 @@ connect_bd_net [get_bd_pins /ref_clk_1_oe/dout] [get_bd_ports ref_clk_1_oe]
 endgroup
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_1_fsel
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_fsel
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_1_fsel

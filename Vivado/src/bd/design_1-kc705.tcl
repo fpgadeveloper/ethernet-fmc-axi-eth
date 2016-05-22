@@ -1,16 +1,6 @@
 ################################################################
-# Check if script is running in correct Vivado version.
+# Block diagram build script
 ################################################################
-set scripts_vivado_version 2015.4
-set current_vivado_version [version -short]
-
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   puts "ERROR: This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."
-
-   return 1
-}
-
 set design_name design_1
 
 # CHECKING IF PROJECT EXISTS
@@ -71,7 +61,7 @@ endgroup
 
 # Add the Microblaze
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze:9.5 microblaze_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_cells microblaze_0]
 
@@ -87,16 +77,16 @@ endgroup
 
 # Add the AXI Ethernet IPs
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_2
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_3
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
 endgroup
 
 # Configure all ports for full checksum hardware offload
@@ -231,7 +221,7 @@ delete_bd_objs [get_bd_nets axi_ethernet_0_refclk_clk_out2] [get_bd_nets axi_eth
 # Connect 200MHz AXI Ethernet ref_clk
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:5.2 clk_wiz_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
 endgroup
 connect_bd_net -net [get_bd_nets microblaze_0_Clk] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins mig_7series_0/ui_clk]
 connect_bd_net [get_bd_pins clk_wiz_0/reset] [get_bd_pins rst_mig_7series_0_100M/peripheral_reset]
@@ -243,7 +233,7 @@ endgroup
 # Create differential IO buffer for the Ethernet FMC 125MHz clock
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
 startgroup
@@ -258,7 +248,7 @@ endgroup
 # Create Ethernet FMC reference clock output enable and frequency select
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_oe
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_oe
@@ -266,7 +256,7 @@ connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 endgroup
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_fsel
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
@@ -276,7 +266,7 @@ endgroup
 # Add UART for the Echo server example application
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550:2.0 axi_uart16550_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
 endgroup
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_uart16550_0/S_AXI]
@@ -286,7 +276,7 @@ endgroup
 # Add Timer for the Echo server example application
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer:2.0 axi_timer_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer axi_timer_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_timer_0/S_AXI]
 
