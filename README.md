@@ -1,8 +1,7 @@
-series7-qgige-axieth
+ethernet-fmc-axi-eth
 ====================
 
-Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ethernet FMC") on the Xilinx Series-7
-Evaluation boards and Xilinx UltraScale Evaluation boards using 4 AXI Ethernet blocks.
+Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ethernet FMC") using 4 AXI Ethernet blocks.
 
 ### Supported boards
 
