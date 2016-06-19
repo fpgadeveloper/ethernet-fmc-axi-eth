@@ -6,6 +6,10 @@ Evaluation boards and Xilinx UltraScale Evaluation boards using 4 AXI Ethernet b
 
 ### Supported boards
 
+* Zynq-7000 [ZedBoard](http://zedboard.org "ZedBoard")
+  * LPC connector (use zedboard.xdc)
+* Zynq-7000 [PicoZed FMC Carrier Card V2](http://zedboard.org/product/picozed-fmc-carrier-card-v2 "PicoZed FMC Carrier Card V2") with [PicoZed 7010/15/20/30](http://picozed.org "PicoZed")
+  * LPC connector (use pzfmc-7z0xx.xdc)
 * Artix-7 [AC701 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-a7-ac701-g.html "AC701 Evaluation board")
   * HPC connector (use ac701.xdc)
 * Kintex-7 [KC705 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board")
@@ -46,20 +50,7 @@ The critical block which does not pass timing requirements is the axi_mem_interc
 * The ZC702 has two FMC connectors that can support the Ethernet FMC, however note that the Zynq device on this board has limited FPGA resources
 for supporting 8 x Xilinx AXI Ethernet IPs (ie. the MACs). The device has enough resources when the 8 MACs are configured with FIFOs, however there are insufficient
 resources to configure them with DMAs. Alternatively, you could use a MAC that requires less resources. (use zc702-lpc2-lpc1.xdc)
-* The ZC706 has two FMC connectors, but only one (the LPC) can support the Ethernet FMC (see detail below).
-
-### Particularities and special notes
-
-* KCU105 board design for the LPC connector is configured for only 3 ports as there is a strange placement error which occurs when trying
-to build a design with 4 ports. The placement error has to do with IDELAYs and I have not reached a solution for this yet. There
-is no such problem with the HPC for this board.
-
-### Not-supported
-
-* Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (HPC)
-  * HPC connector: Pins LA18_CC and LA17_CC of the HPC connector are routed to non-clock-capable pins so they cannot
-  properly receive the RGMII receive clocks for ports 2 and 3 of the Ethernet FMC. The constraints file zc706-hpc.xdc is
-  provided for reference, however it will not pass compilation with the Xilinx tools due to this problem.
+* The ZC706 has two FMC connectors, but only one (the LPC) can support the Ethernet FMC (see detail in board specific notes below).
 
 ### Description
 
@@ -82,6 +73,51 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 This example supports lwIP running on only one port of the Ethernet FMC. You can configure the port
 on which to run lwIP by setting the `ETH_FMC_PORT` define in the `main.c` file of the SDK application.
 Valid values for `ETH_FMC_PORT` are 0,1,2 or 3.
+
+### Board specific notes
+
+#### ZC706
+
+* Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (HPC)
+  * HPC connector: Pins LA18_CC and LA17_CC of the HPC connector are routed to non-clock-capable pins so they cannot
+  properly receive the RGMII receive clocks for ports 2 and 3 of the Ethernet FMC. The constraints file zc706-hpc.xdc is
+  provided for reference, however it will not pass compilation with the Xilinx tools due to this problem.
+
+#### KCU105
+
+* KCU105 board design for the LPC connector is configured for only 3 ports as there is a strange placement error which occurs when trying
+to build a design with 4 ports. The placement error has to do with IDELAYs and I have not reached a solution for this yet. There
+is no such problem with the HPC for this board.
+
+#### PicoZed
+
+##### Differences between designs
+
+This repository contains a Vivado design for each of the PicoZed versions: 7Z010, 7Z020, 7Z015 and 7Z030.
+The main differences between the designs are described below:
+
+* 7Z010: We can't fit 4x AXI Ethernet IPs with DMAs into the 7Z010 device, so instead we use 3x AXI Ethernet and 1x
+GMII-to-RGMII connected to GEM1 (GEM0 could be connected to the PicoZed's onboard PHY if desired).
+* 7Z020: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
+* 7Z015: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
+* 7Z030: We use 4x AXI Ethernet IPs. The constraints file uses the 1.8V IO standards because this device has HP I/Os.
+
+##### Installation of PicoZed board definition files
+
+To use this project, you must first install the board definition files
+for the PicoZed into your Vivado installation.
+
+The following folders contain the board definition files and can be found in this project repository at this location:
+
+https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/board_files
+
+* `picozed_7010`
+* `picozed_7015`
+* `picozed_7020`
+* `picozed_7030`
+
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.1\data\boards\board_files` folder (this may
+be different on your machine, depending on your Vivado installation directory).
 
 ### Library modifications for Vivado 2016.1
 
