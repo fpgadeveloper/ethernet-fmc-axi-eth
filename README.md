@@ -27,6 +27,8 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
   * LPC connector 2 (use zc702-lpc2.xdc)
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (LPC only)
   * LPC connector (use zc706-lpc.xdc)
+* Zynq UltraScale+ ZCU102 Evaluation board
+  * HPC0 connector (use zcu102-hpc0.xdc)
 
 ### 8-port Support (2 x Ethernet FMCs)
 
