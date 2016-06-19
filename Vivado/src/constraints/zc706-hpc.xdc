@@ -3,6 +3,11 @@
 # receive the RGMII receive clock for ports 2 and 3 of the Ethernet FMC.
 # These constraints as they are will not pass the Xilinx tools.
 
+# Enable internal termination resistor on LVDS 125MHz ref_clk
+set_property DIFF_TERM TRUE [get_ports ref_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_n]
+
+# Define I/O standards
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_0_mdio_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[2]}]

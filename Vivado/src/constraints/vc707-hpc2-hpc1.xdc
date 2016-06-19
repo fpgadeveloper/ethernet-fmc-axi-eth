@@ -6,6 +6,11 @@
 # Constraints for first Ethernet FMC plugged onto the HPC2 connector
 # Ports are numbered 0 to 3
 
+# Enable internal termination resistor on LVDS 125MHz ref_clk
+set_property DIFF_TERM TRUE [get_ports ref_clk_0_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_0_n]
+
+# Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports mdio_io_port_0_mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[2]}]
@@ -141,6 +146,11 @@ create_clock -period 8.000 -name ref_clk_0_p -waveform {0.000 4.000} [get_ports 
 # Constraints for second Ethernet FMC plugged onto the HPC1 connector
 # Ports are numbered 4 to 7
 
+# Enable internal termination resistor on LVDS 125MHz ref_clk
+set_property DIFF_TERM TRUE [get_ports ref_clk_1_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_1_n]
+
+# Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_5_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports mdio_io_port_4_mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_5_rd[2]}]
