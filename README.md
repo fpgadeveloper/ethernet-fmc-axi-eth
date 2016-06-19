@@ -77,6 +77,11 @@ Valid values for `ETH_FMC_PORT` are 0,1,2 or 3.
 
 ### Board specific notes
 
+#### VC707 & VC709
+
+* These boards can only support the 1.8V version Ethernet FMC. The device on these boards have only HP (high-performance)
+I/Os which do not support 2.5V levels.
+
 #### ZC706
 
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (HPC)
@@ -86,9 +91,16 @@ Valid values for `ETH_FMC_PORT` are 0,1,2 or 3.
 
 #### KCU105
 
+* This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
+I/Os which do not support 2.5V levels.
 * KCU105 board design for the LPC connector is configured for only 3 ports as there is a strange placement error which occurs when trying
 to build a design with 4 ports. The placement error has to do with IDELAYs and I have not reached a solution for this yet. There
 is no such problem with the HPC for this board.
+
+#### ZCU102
+
+* This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
+I/Os which do not support 2.5V levels.
 
 #### PicoZed
 
