@@ -50,7 +50,7 @@ current_bd_instance $parentObj
 
 # Add the Processor System and apply board preset
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:1.1 zynq_ultra_ps_e_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e zynq_ultra_ps_e_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells zynq_ultra_ps_e_0]
 
@@ -65,8 +65,8 @@ connect_bd_net [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_p
 
 # Add the concat for the interrupts
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_1
 endgroup
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
 connect_bd_net [get_bd_pins xlconcat_1/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1]
@@ -77,10 +77,10 @@ endgroup
 
 # Add the AXI Ethernet IPs
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_0
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_1
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_2
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_3
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
 endgroup
 
 # Configure ports 1,2 and 3 for "Don't include shared logic"
@@ -90,10 +90,10 @@ set_property -dict [list CONFIG.PHY_TYPE {RGMII} CONFIG.SupportLevel {1}] [get_b
 set_property -dict [list CONFIG.PHY_TYPE {RGMII} CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_3]
 
 # Add the DMA for the AXI Ethernet Subsystem
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_0_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_1_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_2_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_3_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_0_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_1_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_2_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_3_dma
 
 # Connect AXI streaming interfaces
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/m_axis_rxd] [get_bd_intf_pins axi_ethernet_0_dma/S_AXIS_S2MM]
@@ -305,7 +305,7 @@ connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_n]
 # Create Ethernet FMC reference clock output enable and frequency select
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_oe
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_oe
@@ -313,7 +313,7 @@ connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 endgroup
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_fsel
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
