@@ -104,3 +104,10 @@ make_wrapper -files [get_files $design_name.bd] -top -import
 # Update the compile order
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
+
+# Ensure parameter propagation has been performed
+close_bd_design [current_bd_design]
+open_bd_design [get_files design_1.bd]
+validate_bd_design -force
+save_bd_design
+
