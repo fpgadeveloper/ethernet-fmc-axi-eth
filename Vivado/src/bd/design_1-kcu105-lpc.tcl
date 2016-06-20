@@ -50,7 +50,7 @@ current_bd_instance $parentObj
 
 # Add the Memory controller (MIG) for the DDR3
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4:2.0 ddr4_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
 endgroup
 
 # Connect MIG external interfaces
@@ -60,9 +60,40 @@ apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "ddr
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins ddr4_0/sys_rst]
 endgroup
 
+### ALTERNATE CREATION OF DDR4
+## Create interface ports
+#set C0_DDR4 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddr4_rtl:1.0 ddr4_sdram ]
+#set C0_SYS_CLK [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 default_sysclk_300 ]
+#set_property -dict [ list CONFIG.FREQ_HZ {300120000} ] $C0_SYS_CLK
+
+## Create instance: ddr4_0, and set properties
+#set ddr4_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0 ]
+#set_property -dict [ list \
+#CONFIG.ADDN_UI_CLKOUT1_FREQ_HZ {100} \
+#CONFIG.C0.ControllerType {DDR4_SDRAM} \
+#CONFIG.C0.DDR4_AxiDataWidth {512} \
+#CONFIG.C0.DDR4_AxiNarrowBurst {false} \
+#CONFIG.C0.DDR4_CasLatency {16} \
+#CONFIG.C0.DDR4_CasWriteLatency {16} \
+#CONFIG.C0.DDR4_DataWidth {64} \
+#CONFIG.C0.DDR4_InputClockPeriod {3332} \
+#CONFIG.C0.DDR4_Mem_Add_Map {ROW_COLUMN_BANK} \
+#CONFIG.C0.DDR4_MemoryPart {EDY4016AABG-DR-F} \
+#CONFIG.C0.DDR4_TimePeriod {833} \
+#] $ddr4_0
+
+## Connect ports
+#connect_bd_intf_net -intf_net ddr4_0_C0_DDR4 [get_bd_intf_ports ddr4_sdram] [get_bd_intf_pins ddr4_0/C0_DDR4]
+#connect_bd_intf_net -intf_net default_sysclk_300_1 [get_bd_intf_ports default_sysclk_300] [get_bd_intf_pins ddr4_0/C0_SYS_CLK]
+
+#apply_board_connection -board_interface "ddr4_sdram" -ip_intf "/ddr4_0/C0_DDR4" -diagram "design_1"
+#apply_board_connection -board_interface "default_sysclk_300" -ip_intf "/ddr4_0/C0_SYS_CLK" -diagram "design_1"
+#apply_board_connection -board_interface "reset" -ip_intf "/ddr4_0/SYSTEM_RESET" -diagram "design_1"
+### END OF ALTERNATE CREATION OF DDR4
+
 # Add the Microblaze
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze:9.6 microblaze_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 endgroup
 # Use 100MHz additional MIG clock (note: using the 300MHz MIG clock would make it hard to close timing and is not necessary)
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/ddr4_0/addn_ui_clkout1 (100 MHz)" }  [get_bd_cells microblaze_0]
@@ -78,21 +109,21 @@ endgroup
 
 # Add the AXI Ethernet IPs
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
 endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
 endgroup
 #startgroup
-#create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_2
+#create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
 #endgroup
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet:7.0 axi_ethernet_3
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
 endgroup
 
 # Create differential IO buffer for the first Ethernet FMC 125MHz clock
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_1/gtx_clk]
@@ -128,10 +159,10 @@ endgroup
 
 # Create DMAs
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_0_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_1_dma
-#create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_2_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma:7.1 axi_ethernet_3_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_0_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_1_dma
+#create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_2_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_3_dma
 endgroup
 
 startgroup
@@ -422,7 +453,7 @@ connect_bd_net [get_bd_pins ddr4_0/c0_ddr4_ui_clk] [get_bd_pins axi_ethernet_0/r
 # Create Ethernet FMC reference clock output enable and frequency select
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_oe
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_oe
@@ -430,7 +461,7 @@ connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 endgroup
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 ref_clk_fsel
+create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
 endgroup
 startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
@@ -440,7 +471,7 @@ endgroup
 # Add UART for the Echo server example application
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550:2.0 axi_uart16550_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
 endgroup
 startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_uart16550_0/S_AXI]
@@ -450,7 +481,7 @@ endgroup
 # Add Timer for the Echo server example application
 
 startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer:2.0 axi_timer_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer axi_timer_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_timer_0/S_AXI]
 
