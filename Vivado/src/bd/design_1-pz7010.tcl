@@ -1,7 +1,6 @@
 ################################################################
 # Block diagram build script
 ################################################################
-set design_name design_1
 
 # CHECKING IF PROJECT EXISTS
 if { [get_projects -quiet] eq "" } {

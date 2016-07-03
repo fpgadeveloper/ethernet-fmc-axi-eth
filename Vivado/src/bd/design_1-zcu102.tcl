@@ -1,17 +1,6 @@
 ################################################################
-# Check if script is running in correct Vivado version.
+# Block diagram build script
 ################################################################
-set scripts_vivado_version 2016.1
-set current_vivado_version [version -short]
-
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   puts "ERROR: This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."
-
-   return 1
-}
-
-set design_name design_1
 
 # CHECKING IF PROJECT EXISTS
 if { [get_projects -quiet] eq "" } {
@@ -54,9 +43,9 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e zynq_ultra_ps_e_0
 endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells zynq_ultra_ps_e_0]
 
-# Configure the PS: Generate 200MHz clock, Enable ETH1, Enable HP0, Enable interrupts
+# Configure the PS
 startgroup
-set_property -dict [list CONFIG.PSU__USE__S_AXI_GP2 {1} CONFIG.PSU__USE__IRQ0 {1} CONFIG.PSU__USE__IRQ1 {1}] [get_bd_cells zynq_ultra_ps_e_0]
+set_property -dict [list CONFIG.PSU__USE__S_AXI_GP2 {1} CONFIG.PSU__USE__IRQ0 {1} CONFIG.PSU__USE__IRQ1 {1} CONFIG.PSU__TTC0__PERIPHERAL__ENABLE {1} CONFIG.PSU__TTC0__PERIPHERAL__IO {EMIO}] [get_bd_cells zynq_ultra_ps_e_0]
 endgroup
 
 # Connect the FCLK_CLK0 to the PS GP0 and HP0

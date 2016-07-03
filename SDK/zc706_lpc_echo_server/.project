@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>zc706_lpc_echo_server</name>
-	<comment>Created by SDK v2015.4. zc706_lpc_echo_server_bsp - ps7_cortexa9_0</comment>
+	<comment>Created by SDK v2016.2. zc706_lpc_echo_server_bsp - ps7_cortexa9_0</comment>
 	<projects>
 		<project>zc706_lpc_echo_server_bsp</project>
 	</projects>

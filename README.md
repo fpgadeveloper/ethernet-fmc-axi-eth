@@ -64,7 +64,7 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ### Requirements
 
-* Vivado 2016.1 (see Library modifications below)
+* Vivado 2016.2 (see Library modifications below)
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -124,15 +124,15 @@ The following folders contain the board definition files and can be found in thi
 
 https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/board_files
 
-* `picozed_7010`
-* `picozed_7015`
-* `picozed_7020`
-* `picozed_7030`
+* `picozed_7010_fmc2`
+* `picozed_7015_fmc2`
+* `picozed_7020_fmc2`
+* `picozed_7030_fmc2`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.1\data\boards\board_files` folder (this may
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.2\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory).
 
-### Library modifications for Vivado 2016.1
+### Library modifications for Vivado 2016.2
 
 To use this project, some modifications must be made to the lwIP libraries
 provided by the Xilinx SDK. These modifications can be made either to the
@@ -144,7 +144,7 @@ in the BSP sources being overwritten with the SDK sources.
 
 Open the following file:
 
-`C:\Xilinx\SDK\2016.1\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_4\src\contrib\ports\xilinx\netif\xaxiemacif_dma.c`
+`C:\Xilinx\SDK\2016.2\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_5\src\contrib\ports\xilinx\netif\xaxiemacif_dma.c`
 
 Replace this line of code:
 
@@ -158,7 +158,7 @@ With this one:
 
 Open the following file:
 
-`C:\Xilinx\SDK\2016.1\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_4\src\contrib\ports\xilinx\netif\xaxiemacif_physpeed.c`
+`C:\Xilinx\SDK\2016.2\data\embeddedsw\ThirdParty\sw_services\lwip141_v1_5\src\contrib\ports\xilinx\netif\xaxiemacif_physpeed.c`
 
 Add the following define statement to the code:
 

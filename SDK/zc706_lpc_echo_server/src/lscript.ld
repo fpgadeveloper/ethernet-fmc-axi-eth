@@ -4,7 +4,7 @@
 /*                                                                 */
 /* Version:                                 */
 /*                                                                 */
-/* Copyright (c) 2010 Xilinx, Inc.  All rights reserved.           */
+/* Copyright (c) 2010-2016 Xilinx, Inc.  All rights reserved.      */
 /*                                                                 */
 /* Description : Cortex-A9 Linker Script                          */
 /*                                                                 */

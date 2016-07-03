@@ -134,26 +134,26 @@ set_property PACKAGE_PIN T11 [get_ports reset_port_3]
 # Constraints suggested by AR#65947 http://www.xilinx.com/support/answers/65947.html
 
 # BUFG on 200 MHz input clock
-set_property CLOCK_REGION X3Y2 [get_cells design_1_i/clk_wiz_0/inst/clkout2_buf]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/clk_wiz_0/inst/clkout2_buf]
 # BUFG on GTX Clock
 # Commented below because I removed the BUFG from clk_wiz_0 output 1 (in effort to save BUFG)
-#set_property CLOCK_REGION X3Y3      [get_cells design_1_i/clk_wiz_0/inst/clkout1_buf]
+#set_property CLOCK_REGION X3Y3      [get_cells *_i/clk_wiz_0/inst/clkout1_buf]
 # BUFG on RX Clock input
-set_property CLOCK_REGION X3Y2 [get_cells design_1_i/axi_ethernet_0/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y2 [get_cells design_1_i/axi_ethernet_0/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_0/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_0/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
-set_property CLOCK_REGION X3Y2 [get_cells design_1_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y2 [get_cells design_1_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
-set_property CLOCK_REGION X3Y3 [get_cells design_1_i/axi_ethernet_2/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y3 [get_cells design_1_i/axi_ethernet_2/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_2/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_2/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
-set_property CLOCK_REGION X3Y3 [get_cells design_1_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y3 [get_cells design_1_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
 # Clock definitions
 
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets design_1_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
 
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets design_1_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
 
