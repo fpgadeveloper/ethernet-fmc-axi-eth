@@ -119,12 +119,14 @@ connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_1/
 #connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_2/gtx_clk]
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_3/gtx_clk]
 startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_p
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_P] [get_bd_ports ref_clk_p]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
 endgroup
 startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_n
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_N] [get_bd_ports ref_clk_n]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
 endgroup
 
 # Configure all ports for full checksum hardware offload

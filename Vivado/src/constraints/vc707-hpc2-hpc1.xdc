@@ -141,7 +141,7 @@ set_property PACKAGE_PIN R32 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN P37 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN P38 [get_ports reset_port_3]
 
-create_clock -period 8.000 -name ref_clk_0_p -waveform {0.000 4.000} [get_ports ref_clk_0_p]
+#create_clock -period 8.000 -name ref_clk_0_p -waveform {0.000 4.000} [get_ports ref_clk_0_p]
 
 # Constraints for second Ethernet FMC plugged onto the HPC1 connector
 # Ports are numbered 4 to 7
@@ -281,7 +281,7 @@ set_property PACKAGE_PIN V31 [get_ports mdio_io_port_7_mdc]
 set_property PACKAGE_PIN V29 [get_ports mdio_io_port_7_mdio_io]
 set_property PACKAGE_PIN U29 [get_ports reset_port_7]
 
-create_clock -period 8.000 -name ref_clk_1_p -waveform {0.000 4.000} [get_ports ref_clk_1_p]
+#create_clock -period 8.000 -name ref_clk_1_p -waveform {0.000 4.000} [get_ports ref_clk_1_p]
 
 # The following constraints are here to override some of the automatically
 # generated constraints for the AXI Ethernet IPs. Specifically the

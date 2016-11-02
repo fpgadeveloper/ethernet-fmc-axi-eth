@@ -79,23 +79,6 @@ startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
 endgroup
 
-# Create differential IO buffer for the first Ethernet FMC 125MHz clock
-startgroup
-create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
-endgroup
-connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
-connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_1/gtx_clk]
-connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_2/gtx_clk]
-connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_3/gtx_clk]
-startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_p
-connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_P] [get_bd_ports ref_clk_p]
-endgroup
-startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_n
-connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_N] [get_bd_ports ref_clk_n]
-endgroup
-
 # Configure all ports for full checksum hardware offload
 set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_0]
 set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_1]
@@ -406,7 +389,38 @@ connect_bd_net [get_bd_pins axi_ethernet_3/interrupt] [get_bd_pins microblaze_0_
 
 # Connect 300MHz AXI Ethernet ref_clk
 
-connect_bd_net [get_bd_pins ddr4_0/c0_ddr4_ui_clk] [get_bd_pins axi_ethernet_0/ref_clk]
+create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
+set_property -dict [list CONFIG.PRIM_IN_FREQ.VALUE_SRC USER] [get_bd_cells clk_wiz_0]
+set_property -dict [list CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} \
+CONFIG.PRIM_IN_FREQ {125} \
+CONFIG.CLKOUT2_USED {true} \
+CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {125} \
+CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {300} \
+CONFIG.USE_LOCKED {false} \
+CONFIG.USE_RESET {false} \
+CONFIG.CLKIN1_JITTER_PS {80.0} \
+CONFIG.MMCM_DIVCLK_DIVIDE {1} \
+CONFIG.MMCM_CLKFBOUT_MULT_F {9.625} \
+CONFIG.MMCM_CLKIN1_PERIOD {8.0} \
+CONFIG.MMCM_CLKOUT0_DIVIDE_F {9.625} \
+CONFIG.MMCM_CLKOUT1_DIVIDE {4} \
+CONFIG.NUM_OUT_CLKS {2} \
+CONFIG.CLKOUT1_JITTER {107.164} \
+CONFIG.CLKOUT1_PHASE_ERROR {85.285} \
+CONFIG.CLKOUT2_JITTER {90.979} \
+CONFIG.CLKOUT2_PHASE_ERROR {85.285}] [get_bd_cells clk_wiz_0]
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
+connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_p] [get_bd_ports ref_clk_p]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
+connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_n]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
+
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_0/ref_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_0/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_1/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_2/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_3/gtx_clk]
 
 # Create Ethernet FMC reference clock output enable and frequency select
 

@@ -1,9 +1,9 @@
 #
-# build.tcl: Tcl script for re-creating project 'kc705_lpc_hpc_axieth'
+# build.tcl: Tcl script for re-creating project 'kc705_dual_axieth'
 #
 #*****************************************************************************************
 
-set design_name kc705_lpc_hpc
+set design_name kc705_dual_axieth
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
@@ -19,7 +19,7 @@ set proj_dir [get_property directory [current_project]]
 
 # Set project properties
 set obj [get_projects $design_name]
-set_property "board_part" "xilinx.com:kc705:part0:1.3" $obj
+set_property "board_part" "xilinx.com:kc705:part0:1.4" $obj
 set_property "default_lib" "xil_defaultlib" $obj
 set_property "simulator_language" "Mixed" $obj
 set_property "source_mgmt_mode" "DisplayOnly" $obj

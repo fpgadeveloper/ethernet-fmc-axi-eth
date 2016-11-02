@@ -133,5 +133,15 @@ set_property PACKAGE_PIN B26 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN E26 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN D26 [get_ports reset_port_3]
 
-create_clock -period 8.000 -name ref_clk_p -waveform {0.000 4.000} [get_ports ref_clk_p]
+#create_clock -period 8.000 -name ref_clk_p -waveform {0.000 4.000} [get_ports ref_clk_p]
 
+# The port mdio_io_port_3_mdio_io is assigned to a PACKAGE_PIN that uses BITSLICE_0 
+# of a Byte that will be using calibration. The signal connected to mdio_io_port_3_mdio_io 
+# will not be available during calibration and will only be available after RDY asserts.
+# If this condition is not acceptable for your design and board layout,
+# mdio_io_port_3_mdio_io will have to be moved to another PACKAGE_PIN that is not
+# undergoing calibration or be moved to a PACKAGE_PIN location that is not BITSLICE_0 or
+# BITSLICE_6 on that same Byte. If this condition is acceptable for your design and board
+# layout, this DRC can be bypassed by acknowledging the condition and setting the following
+# XDC constraint:
+set_property UNAVAILABLE_DURING_CALIBRATION TRUE [get_ports mdio_io_port_3_mdio_io]

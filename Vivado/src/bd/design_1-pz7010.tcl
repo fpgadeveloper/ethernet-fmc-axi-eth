@@ -45,7 +45,7 @@ apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {make_ex
 
 # Configure the PS: Generate 200MHz clock, Enable ETH1, Enable GP0, Enable interrupts
 startgroup
-set_property -dict [list CONFIG.PCW_USE_M_AXI_GP0 {1} CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {125} CONFIG.PCW_FPGA2_PERIPHERAL_FREQMHZ {200} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_EN_CLK1_PORT {1} CONFIG.PCW_EN_CLK2_PORT {1} CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_ENET1_PERIPHERAL_ENABLE {1}] [get_bd_cells processing_system7_0]
+set_property -dict [list CONFIG.PCW_USE_M_AXI_GP0 {1} CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {125} CONFIG.PCW_FPGA2_PERIPHERAL_FREQMHZ {200} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_EN_CLK1_PORT {1} CONFIG.PCW_EN_CLK2_PORT {1} CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_ENET1_PERIPHERAL_ENABLE {1} CONFIG.PCW_ENET1_GRP_MDIO_ENABLE {1}] [get_bd_cells processing_system7_0]
 endgroup
 
 # Connect the FCLK_CLK0 to the PS GP0
@@ -197,7 +197,7 @@ endgroup
 startgroup
 set_property -dict [list CONFIG.C_SIZE {1}] [get_bd_cells util_reduced_logic_0]
 endgroup
-connect_bd_net -net [get_bd_nets rst_processing_system7_0_100M_peripheral_aresetn] [get_bd_pins util_reduced_logic_0/Op1] [get_bd_pins rst_processing_system7_0_100M/peripheral_aresetn]
+connect_bd_net -net [get_bd_nets rst_ps7_0_100M_peripheral_aresetn] [get_bd_pins util_reduced_logic_0/Op1] [get_bd_pins rst_ps7_0_100M/peripheral_aresetn]
 startgroup
 create_bd_port -dir O reset_port_3
 connect_bd_net [get_bd_pins /util_reduced_logic_0/Res] [get_bd_ports reset_port_3]
@@ -229,8 +229,8 @@ connect_bd_net [get_bd_pins gmii_to_rgmii_0/clkin] [get_bd_pins processing_syste
 
 # Connect GMII-to-RGMII resets
 
-connect_bd_net [get_bd_pins rst_processing_system7_0_100M/peripheral_reset] [get_bd_pins gmii_to_rgmii_0/tx_reset]
-connect_bd_net -net [get_bd_nets rst_processing_system7_0_100M_peripheral_reset] [get_bd_pins gmii_to_rgmii_0/rx_reset] [get_bd_pins rst_processing_system7_0_100M/peripheral_reset]
+connect_bd_net [get_bd_pins rst_ps7_0_100M/peripheral_reset] [get_bd_pins gmii_to_rgmii_0/tx_reset]
+connect_bd_net -net [get_bd_nets rst_ps7_0_100M_peripheral_reset] [get_bd_pins gmii_to_rgmii_0/rx_reset] [get_bd_pins rst_ps7_0_100M/peripheral_reset]
 
 # Create differential IO buffer for the Ethernet FMC 125MHz clock
 
@@ -239,12 +239,14 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_1/gtx_clk]
 startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_p
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_P] [get_bd_ports ref_clk_p]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
 endgroup
 startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_n
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_N] [get_bd_ports ref_clk_n]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
 endgroup
 
 # Create Ethernet FMC reference clock output enable and frequency select

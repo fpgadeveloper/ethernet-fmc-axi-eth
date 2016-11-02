@@ -1,9 +1,9 @@
 #
-# build.tcl: Tcl script for re-creating project 'vc707_hpc2_hpc1'
+# build.tcl: Tcl script for re-creating project 'vc707_dual_axieth'
 #
 #*****************************************************************************************
 
-set design_name vc707_hpc2_hpc1
+set design_name vc707_dual_axieth
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."

@@ -1,4 +1,0 @@
-THIRPARTY=false
-HW_PROJECT_REFERENCE=kcu105_hpc_axieth_wrapper_hw_platform_0
-PROCESSOR=microblaze_0
-MSS_FILE=system.mss

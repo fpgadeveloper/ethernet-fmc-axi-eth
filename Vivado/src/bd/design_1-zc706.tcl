@@ -210,12 +210,14 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
 endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
 startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_p
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_P] [get_bd_ports ref_clk_p]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
 endgroup
 startgroup
-create_bd_port -dir I -from 0 -to 0 ref_clk_n
+create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_N] [get_bd_ports ref_clk_n]
+set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
 endgroup
 
 # Create Ethernet FMC reference clock output enable and frequency select
