@@ -17,6 +17,7 @@ generate the SDK workspace. Windows users can run the `build-sdk.bat` file which
 launches the Tcl script.
 
 The build script does three things:
+
 1. Prepares a local SDK repository containing a modified version of lwIP library,
 required by the echo server example application.
 2. Adds the ../EmbeddedSw directory as a local SDK repository.
