@@ -12,14 +12,14 @@ set origin_dir "."
 set orig_proj_dir "[file normalize "$origin_dir/$design_name"]"
 
 # Create project
-create_project $design_name $origin_dir/$design_name -part xczu9eg-ffvb1156-1-i-es1
+create_project $design_name $origin_dir/$design_name -part xczu9eg-ffvb1156-2-i-es2
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
 
 # Set project properties
 set obj [get_projects $design_name]
-set_property "board_part" "xilinx.com:zcu102:part0:1.1" $obj
+set_property "board_part" "xilinx.com:zcu102:part0:2.0" $obj
 set_property "default_lib" "xil_defaultlib" $obj
 set_property "simulator_language" "Mixed" $obj
 set_property "xpm_libraries" "XPM_CDC XPM_MEMORY" $obj
@@ -82,7 +82,7 @@ set_property "xelab.unifast" "" $obj
 
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
-  create_run -name synth_1 -part xczu9eg-ffvb1156-1-i-es1 -flow {Vivado Synthesis 2016} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
+  create_run -name synth_1 -part xczu9eg-ffvb1156-2-i-es2 -flow {Vivado Synthesis 2016} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
 } else {
   set_property strategy "Vivado Synthesis Defaults" [get_runs synth_1]
   set_property flow "Vivado Synthesis 2016" [get_runs synth_1]
@@ -94,7 +94,7 @@ current_run -synthesis [get_runs synth_1]
 
 # Create 'impl_1' run (if not found)
 if {[string equal [get_runs -quiet impl_1] ""]} {
-  create_run -name impl_1 -part xczu9eg-ffvb1156-1-i-es1 -flow {Vivado Implementation 2016} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
+  create_run -name impl_1 -part xczu9eg-ffvb1156-2-i-es2 -flow {Vivado Implementation 2016} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
 } else {
   set_property strategy "Vivado Implementation Defaults" [get_runs impl_1]
   set_property flow "Vivado Implementation 2016" [get_runs impl_1]

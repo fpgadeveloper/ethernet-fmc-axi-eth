@@ -64,7 +64,7 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ### Requirements
 
-* Vivado 2016.3
+* Vivado 2016.4
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -107,6 +107,11 @@ is no such problem with the HPC for this board.
 
 * This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
 I/Os which do not support 2.5V levels.
+* For optimal timing of the RGMII bus, the PHYs of ports 1 and 3 must be configured with RX clock skew
+DISABLED. This is due to the fact that signals LA01_CC and LA18_CC are not routed to clock capable pins on
+the ZCU102 board, and are thus subject to extra delay in the FPGA fabric. To disable the RX clock skew
+in Linux, use phy-mode "rgmii-txid" or "rgmii". To disable the RX clock skew in stand-alone applications,
+refer to this [technical guide](http://ethernetfmc.com/rgmii-interface-timing-considerations/ "RGMII Interface Timing Considerations").
 
 #### PicoZed
 
@@ -135,7 +140,7 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 * `picozed_7020_fmc2`
 * `picozed_7030_fmc2`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.3\data\boards\board_files` folder (this may
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.4\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory).
 
 ### Building the SDK workspace

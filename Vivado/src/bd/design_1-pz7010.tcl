@@ -75,6 +75,11 @@ endgroup
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_2]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_0]
 
+# Configure all AXI Ethernet for no frame filter and no statistics counter (saves LUTs)
+set_property -dict [list CONFIG.Frame_Filter {false} CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.Frame_Filter {false} CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.Frame_Filter {false} CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_2]
+
 # Configure AXI Ethernet blocks for RGMII interfaces
 set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_0]
 set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_1]
