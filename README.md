@@ -29,7 +29,10 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
   * LPC connector (use zc706-lpc.xdc)
 * Zynq UltraScale+ ZCU102 Evaluation board
   * HPC0 connector (use zcu102-hpc0.xdc)
-
+* Virtex Ultrascale [VCU108 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu108-g.html "VCU108 Evaluation board")
+  * HPC0 connector (use vcu108-hpc0.xdc)
+  * HPC1 connector (use vcu108-hpc1.xdc)
+  
 ### 8-port Support (2 x Ethernet FMCs)
 
 The only Evaluation boards that can support two Ethernet FMCs simultaneously are the 
