@@ -49,7 +49,8 @@ contained in the Zynq device of that board.
 These notes provide more details on 8-port support:
 
 * The KC705 and VC707 each have two FMC connectors that support the Ethernet FMC (use kc705-lpc-hpc.xdc and vc707-hpc2-hpc1.xdc respectively).
-* The KCU105 can support two Ethernet FMCs however the example design for a 7-port design contained in this repository does not achieve timing closure.
+* The KCU105 can support two Ethernet FMCs however the LPC only supports 3 ports so the dual design contains
+only 7 ports total.
 The critical block which does not pass timing requirements is the axi_mem_intercon.
 * The ZC702 has two FMC connectors that can support the Ethernet FMC, however note that the Zynq device on this board has limited FPGA resources
 for supporting 8 x Xilinx AXI Ethernet IPs (ie. the MACs). The device has enough resources when the 8 MACs are configured with FIFOs, however there are insufficient
@@ -86,7 +87,7 @@ to one of the following values depending on the port you want to target:
 
 ### Board specific notes
 
-#### VC707 & VC709
+#### VC707, VC709 & VCU108
 
 * These boards can only support the 1.8V version Ethernet FMC. The device on these boards have only HP (high-performance)
 I/Os which do not support 2.5V levels.
@@ -157,10 +158,10 @@ Instructions for building the SDK workspace can be found in the `SDK` directory 
 
 ### Microblaze design differences
 
-The designs for AC701, KC705, VC707 and VC709 all use the Microblaze soft processor. These designs
+The designs for AC701, KC705, VC707, VC709, KCU105 & VCU108 all use the Microblaze soft processor. These designs
 have some specific differences when compared to the Zynq based designs:
 
-* MIG - the MIG is required to exploit the DDR3 memory of the eval boards.
+* MIG - the MIG is required to exploit the DDR3/4 memory of the eval boards.
 * AXI Timer - the lwIP echo server application requires a timer (Microblaze does not have one inherently).
 * AXI UART16550 - the lwIP echo server application requires a UART for console output.
 

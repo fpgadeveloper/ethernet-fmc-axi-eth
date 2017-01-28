@@ -141,8 +141,6 @@ set_property PACKAGE_PIN Y32 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN W30 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN Y30 [get_ports reset_port_3]
 
-create_clock -period 8.000 -name ref_clk_0_p -waveform {0.000 4.000} [get_ports ref_clk_0_p]
-
 # Constraints for second Ethernet FMC plugged onto the HPC connector
 # Ports are numbered 4 to 7
 
@@ -281,58 +279,51 @@ set_property PACKAGE_PIN B26 [get_ports mdio_io_port_7_mdc]
 set_property PACKAGE_PIN E26 [get_ports mdio_io_port_7_mdio_io]
 set_property PACKAGE_PIN D26 [get_ports reset_port_7]
 
-create_clock -period 8.000 -name ref_clk_1_p -waveform {0.000 4.000} [get_ports ref_clk_1_p]
-
 # The following constraints are here to override some of the automatically
 # generated constraints for the AXI Ethernet IPs. Specifically the
 # grouping of the IDELAY_CTRLs and the IDELAYs.
 
-current_instance *_i/axi_ethernet_0/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_tx* tri_mode_ethernet_mac_i/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_0/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_0/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_0/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_0/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-current_instance *_i/axi_ethernet_1/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_tx* rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-#current_instance *_i/axi_ethernet_2/inst/eth_mac/inst
-#set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-#set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_tx* rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-#current_instance -quiet
+#set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_2/inst/eth_mac/instrgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_2/inst/eth_mac/instrgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+#set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_2/inst/eth_mac/instrgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_2/inst/eth_mac/instrgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-current_instance *_i/axi_ethernet_3/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {rgmii_interface/delay_rgmii_tx* rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-current_instance *_i/axi_ethernet_4/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_tx* tri_mode_ethernet_mac_i/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_4/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_4/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_4/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_4/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-current_instance *_i/axi_ethernet_5/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_tx* rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_5/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_5/inst/eth_mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_5/inst/eth_mac/inst/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_5/inst/eth_mac/inst/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-current_instance *_i/axi_ethernet_6/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_tx* rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_6/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_6/inst/eth_mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_6/inst/eth_mac/inst/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_6/inst/eth_mac/inst/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
-current_instance *_i/axi_ethernet_7/inst/eth_mac/inst
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_rx* rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {rgmii_interface/delay_rgmii_tx* rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
-current_instance -quiet
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_7/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_7/inst/eth_mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_7/inst/eth_mac/inst/rgmii_interface/delay_rgmii_tx* *_i/axi_ethernet_7/inst/eth_mac/inst/rgmii_interface/txdata_out_bus[*].delay_rgmii_tx*}]
 
 # Constraints for IDELAY_CTRL grouping
 # The automatically generated constraints group the IDELAY_CTRLs into the
-# same group, however in a design with 4 AXI Ethernet IPs, this is not
+# same group, however in a design with 7 AXI Ethernet IPs, this is not
 # possible to achieve because they will be spread across 2 banks.
 # The following constraints group the IDELAY_CTRLs into two separate
 # groups, one for each bank.
 
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells *_i/axi_ethernet_0/inst/eth_mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells *_i/axi_ethernet_4/inst/eth_mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
+
+# The port mdio_io_port_7_mdio_io is assigned to a PACKAGE_PIN that uses BITSLICE_0 
+# of a Byte that will be using calibration. The signal connected to mdio_io_port_3_mdio_io 
+# will not be available during calibration and will only be available after RDY asserts.
+# If this condition is not acceptable for your design and board layout,
+# mdio_io_port_3_mdio_io will have to be moved to another PACKAGE_PIN that is not
+# undergoing calibration or be moved to a PACKAGE_PIN location that is not BITSLICE_0 or
+# BITSLICE_6 on that same Byte. If this condition is acceptable for your design and board
+# layout, this DRC can be bypassed by acknowledging the condition and setting the following
+# XDC constraint:
+set_property UNAVAILABLE_DURING_CALIBRATION TRUE [get_ports mdio_io_port_7_mdio_io]
