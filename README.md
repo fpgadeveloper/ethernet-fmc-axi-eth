@@ -7,6 +7,8 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 
 * Zynq-7000 [ZedBoard](http://zedboard.org "ZedBoard")
   * LPC connector (use zedboard.xdc)
+* Zynq-7000 [MicroZed FMC Carrier](http://zedboard.org/product/microzed-fmc-carrier "MicroZed FMC Carrier") with [MicroZed 7Z020](http://microzed.org "MicroZed")
+  * LPC connector (use mzfmc-7z010-7z020.xdc)
 * Zynq-7000 [PicoZed FMC Carrier Card V2](http://zedboard.org/product/picozed-fmc-carrier-card-v2 "PicoZed FMC Carrier Card V2") with [PicoZed 7010/15/20/30](http://picozed.org "PicoZed")
   * LPC connector (use pzfmc-7z0xx.xdc)
 * Artix-7 [AC701 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-a7-ac701-g.html "AC701 Evaluation board")
