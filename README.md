@@ -75,6 +75,37 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
+### Build instructions
+
+To use the sources in this repository, please follow these steps:
+
+1. Download the repo as a zip file and extract the files to a directory
+   on your hard drive --OR-- Git users: clone the repo to your hard drive
+2. Open Windows Explorer, browse to the repo files on your hard drive.
+3. In the Vivado directory, you will find multiple batch files (*.bat).
+   Double click on the batch file that is appropriate to your hardware,
+   for example, double-click `build-zedboard.bat` if you are using the ZedBoard.
+   This will generate a Vivado project for your hardware platform.
+4. Run Vivado and open the project that was just created.
+5. Click Generate bitstream.
+6. When the bitstream is successfully generated, select `File->Export->Export Hardware`.
+   In the window that opens, tick "Include bitstream" and "Local to project".
+7. Return to Windows Explorer and browse to the SDK directory in the repo.
+8. Double click the `build-sdk.bat` batch file. The batch file will run the
+   `build-sdk.tcl` script and build the SDK workspace containing the hardware
+   design and the software application.
+9. Run Xilinx SDK (DO NOT use the Launch SDK option from Vivado) and select the workspace to be the SDK directory of the repo.
+10. Select `Project->Build automatically`.
+11. Connect and power up the hardware.
+12. Open a Putty terminal to view the UART output.
+13. In the SDK, select `Xilinx Tools->Program FPGA`.
+14. Right-click on the application and select `Run As->Launch on Hardware (System Debugger)`
+
+The software application used to test these projects is the lwIP Echo Server example that is built into
+Xilinx SDK. The application relies on the lwIP library (also built into Xilinx SDK) but with a few modifications.
+The modified version of the lwIP library is contained in the `EmbeddedSw` directory, which is added as a
+local SDK repository to the SDK workspace. See the readme in the SDK directory for more information.
+
 ### Single port limit
 
 The echo server example design currently can only target one Ethernet port at a time.
@@ -148,15 +179,6 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 
 Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.4\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory).
-
-### Building the SDK workspace
-
-The software application used to test these projects is the lwIP Echo Server example that is built into
-Xilinx SDK. The application relies on the lwIP library (also built into Xilinx SDK) but with a few modifications.
-The modified version of the lwIP library is contained in the `EmbeddedSw` directory, which is added as a
-local SDK repository to the SDK workspace.
-
-Instructions for building the SDK workspace can be found in the `SDK` directory of this repo.
 
 ### Microblaze design differences
 
