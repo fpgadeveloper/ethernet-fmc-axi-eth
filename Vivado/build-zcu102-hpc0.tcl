@@ -50,15 +50,6 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property "file_type" "XDC" $file_obj
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/src/constraints/zcu102-rgmii.xdc"]"
-set file_added [add_files -norecurse -fileset $obj $file]
-set file "$origin_dir/src/constraints/zcu102-rgmii.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property "file_type" "XDC" $file_obj
-set_property "processing_order" "LATE" $file_obj
-
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
 set_property "target_constrs_file" "[file normalize "$origin_dir/src/constraints/zcu102-hpc0.xdc"]" $obj

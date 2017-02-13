@@ -1,3 +1,9 @@
+# These constraints are suitable for ZCU102 Rev 1.0 (use earlier commits for Rev D)
+# ---------------------------------------------------------------------------------
+# Note that FMC pinout for ZCU102 Rev 1.0 (first released with the ES2 device) differs
+# from the ZCU102 Rev D (released with the ES1 device). See answer record for
+# more information: https://www.xilinx.com/support/answers/68050.html
+
 # These constraints are for the ZCU102-HPC0-QGIGE-AXIETH design which
 # uses 4x AXI Ethernet Subsystem IPs
 
@@ -71,23 +77,23 @@ set_property PACKAGE_PIN AC1 [get_ports mdio_io_port_0_mdio_io]
 set_property PACKAGE_PIN W4 [get_ports {rgmii_port_1_rd[2]}]
 set_property PACKAGE_PIN AC7 [get_ports {ref_clk_fsel[0]}]
 set_property PACKAGE_PIN AC6 [get_ports mdio_io_port_1_mdio_io]
-set_property PACKAGE_PIN L15 [get_ports rgmii_port_3_rxc]
-set_property PACKAGE_PIN K15 [get_ports rgmii_port_3_rx_ctl]
+set_property PACKAGE_PIN N9 [get_ports rgmii_port_3_rxc]
+set_property PACKAGE_PIN N8 [get_ports rgmii_port_3_rx_ctl]
 set_property PACKAGE_PIN M10 [get_ports {rgmii_port_3_rd[1]}]
 set_property PACKAGE_PIN L10 [get_ports {rgmii_port_3_rd[3]}]
-set_property PACKAGE_PIN W2 [get_ports rgmii_port_1_rxc]
-set_property PACKAGE_PIN W1 [get_ports rgmii_port_1_rx_ctl]
+set_property PACKAGE_PIN AB4 [get_ports rgmii_port_1_rxc]
+set_property PACKAGE_PIN AC4 [get_ports rgmii_port_1_rx_ctl]
 set_property PACKAGE_PIN AB3 [get_ports mdio_io_port_0_mdc]
 set_property PACKAGE_PIN AC3 [get_ports reset_port_0]
-set_property PACKAGE_PIN AB4 [get_ports {rgmii_port_1_rd[1]}]
-set_property PACKAGE_PIN AC4 [get_ports {rgmii_port_1_rd[3]}]
+set_property PACKAGE_PIN W2 [get_ports {rgmii_port_1_rd[1]}]
+set_property PACKAGE_PIN W1 [get_ports {rgmii_port_1_rd[3]}]
 set_property PACKAGE_PIN AB8 [get_ports {ref_clk_oe[0]}]
 set_property PACKAGE_PIN AC8 [get_ports mdio_io_port_1_mdc]
 set_property PACKAGE_PIN P11 [get_ports rgmii_port_2_rxc]
 set_property PACKAGE_PIN L16 [get_ports {rgmii_port_2_rd[2]}]
 set_property PACKAGE_PIN K16 [get_ports {rgmii_port_2_rd[3]}]
-set_property PACKAGE_PIN N9 [get_ports {rgmii_port_3_rd[0]}]
-set_property PACKAGE_PIN N8 [get_ports {rgmii_port_3_rd[2]}]
+set_property PACKAGE_PIN L15 [get_ports {rgmii_port_3_rd[0]}]
+set_property PACKAGE_PIN K15 [get_ports {rgmii_port_3_rd[2]}]
 set_property PACKAGE_PIN Y4 [get_ports rgmii_port_0_rxc]
 set_property PACKAGE_PIN Y3 [get_ports rgmii_port_0_rx_ctl]
 set_property PACKAGE_PIN Y2 [get_ports {rgmii_port_0_rd[2]}]
@@ -156,4 +162,19 @@ set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/eth_mac/inst/r
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
 
 set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
+
+# BITSLICE0 not available during BISC - The port rgmii_port_1_rxc is assigned to a PACKAGE_PIN that uses BITSLICE_1 of
+# a Byte that will be using calibration. The signal connected to rgmii_port_1_rxc will not be available during calibration
+# and will only be available after RDY asserts. If this condition is not acceptable for your design and board layout,
+# rgmii_port_1_rxc will have to be moved to another PACKAGE_PIN that is not undergoing calibration or be moved to a
+# PACKAGE_PIN location that is not BITSLICE_0 or BITSLICE_6 on that same Byte. If this condition is acceptable for your
+# design and board layout, this DRC can be bypassed by acknowledging the condition and setting the following XDC constraint:
+
+set_property UNAVAILABLE_DURING_CALIBRATION true [get_ports rgmii_port_1_rxc]
+set_property UNAVAILABLE_DURING_CALIBRATION true [get_ports rgmii_port_3_rxc]
+
+# Adjustment to the IDELAYs to make the timing pass
+set_property DELAY_VALUE 1000 [get_cells zcu102_hpc0_axieth_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
 

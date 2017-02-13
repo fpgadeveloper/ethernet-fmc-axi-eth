@@ -29,7 +29,7 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
   * LPC connector 2 (use zc702-lpc2.xdc)
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (LPC only)
   * LPC connector (use zc706-lpc.xdc)
-* Zynq UltraScale+ ZCU102 Evaluation board
+* Zynq UltraScale+ ZCU102 Evaluation board Rev 1.0 (loaded with ES2 device)
   * HPC0 connector (use zcu102-hpc0.xdc)
 * Virtex Ultrascale [VCU108 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu108-g.html "VCU108 Evaluation board")
   * HPC0 connector (use vcu108-hpc0.xdc)
@@ -142,13 +142,10 @@ is no such problem with the HPC for this board.
 
 #### ZCU102
 
+* This design supports the ZCU102 Rev 1.0 board. Use a commit before 2016-02-13 for the older Rev-D board design.
+Note that the FMC pinouts differ between Rev 1.0 and Rev D: https://www.xilinx.com/support/answers/68050.html
 * This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
 I/Os which do not support 2.5V levels.
-* For optimal timing of the RGMII bus, the PHYs of ports 1 and 3 must be configured with RX clock skew
-DISABLED. This is due to the fact that signals LA01_CC and LA18_CC are not routed to clock capable pins on
-the ZCU102 board, and are thus subject to extra delay in the FPGA fabric. To disable the RX clock skew
-in Linux, use phy-mode "rgmii-txid" or "rgmii". To disable the RX clock skew in stand-alone applications,
-refer to this [technical guide](http://ethernetfmc.com/rgmii-interface-timing-considerations/ "RGMII Interface Timing Considerations").
 
 #### PicoZed
 
