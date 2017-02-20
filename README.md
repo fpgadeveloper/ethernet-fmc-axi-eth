@@ -3,7 +3,7 @@ ethernet-fmc-axi-eth
 
 Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ethernet FMC") using 4 AXI Ethernet blocks.
 
-### Supported boards
+## Supported boards
 
 * Zynq-7000 [ZedBoard](http://zedboard.org "ZedBoard")
   * LPC connector (use zedboard.xdc)
@@ -35,7 +35,7 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
   * HPC0 connector (use vcu108-hpc0.xdc)
   * HPC1 connector (use vcu108-hpc1.xdc)
   
-### 8-port Support (2 x Ethernet FMCs)
+## 8-port Support (2 x Ethernet FMCs)
 
 The only Evaluation boards that can support two Ethernet FMCs simultaneously are the 
 [KC705](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board"), 
@@ -59,7 +59,7 @@ for supporting 8 x Xilinx AXI Ethernet IPs (ie. the MACs). The device has enough
 resources to configure them with DMAs. Alternatively, you could use a MAC that requires less resources. (use zc702-lpc2-lpc1.xdc)
 * The ZC706 has two FMC connectors, but only one (the LPC) can support the Ethernet FMC (see detail in board specific notes below).
 
-### Description
+## Description
 
 This project demonstrates the use of the Opsero [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ethernet FMC").
 The design contains 4 AXI Ethernet blocks configured with DMAs.
@@ -68,14 +68,14 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 > Note: Zynq PS block is replaced by MicroBlaze processor for the Artix, Kintex and Virtex boards.
 
-### Requirements
+## Requirements
 
 * Vivado 2016.4
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
-### Build instructions
+## Build instructions
 
 To use the sources in this repository, please follow these steps:
 
@@ -106,7 +106,7 @@ Xilinx SDK. The application relies on the lwIP library (also built into Xilinx S
 The modified version of the lwIP library is contained in the `EmbeddedSw` directory, which is added as a
 local SDK repository to the SDK workspace. See the readme in the SDK directory for more information.
 
-### Single port limit
+## Single port limit
 
 The echo server example design currently can only target one Ethernet port at a time.
 Selection of the Ethernet port can be changed by modifying the defines contained in the
@@ -118,21 +118,21 @@ to one of the following values depending on the port you want to target:
 * Ethernet FMC Port 2: `XPAR_AXIETHERNET_2_BASEADDR`
 * Ethernet FMC Port 3: `XPAR_AXIETHERNET_3_BASEADDR`
 
-### Board specific notes
+## Board specific notes
 
-#### VC707, VC709 & VCU108
+### VC707, VC709 & VCU108
 
 * These boards can only support the 1.8V version Ethernet FMC. The device on these boards have only HP (high-performance)
 I/Os which do not support 2.5V levels.
 
-#### ZC706
+### ZC706
 
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (HPC)
   * HPC connector: Pins LA18_CC and LA17_CC of the HPC connector are routed to non-clock-capable pins so they cannot
   properly receive the RGMII receive clocks for ports 2 and 3 of the Ethernet FMC. The constraints file zc706-hpc.xdc is
   provided for reference, however it will not pass compilation with the Xilinx tools due to this problem.
 
-#### KCU105
+### KCU105
 
 * This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
 I/Os which do not support 2.5V levels.
@@ -140,16 +140,16 @@ I/Os which do not support 2.5V levels.
 to build a design with 4 ports. The placement error has to do with IDELAYs and I have not reached a solution for this yet. There
 is no such problem with the HPC for this board.
 
-#### ZCU102
+### ZCU102
 
 * This design supports the ZCU102 Rev 1.0 board. Use a commit before 2016-02-13 for the older Rev-D board design.
 Note that the FMC pinouts differ between Rev 1.0 and Rev D: https://www.xilinx.com/support/answers/68050.html
 * This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
 I/Os which do not support 2.5V levels.
 
-#### PicoZed
+### PicoZed
 
-##### Differences between designs
+#### Differences between designs
 
 This repository contains a Vivado design for each of the PicoZed versions: 7Z010, 7Z020, 7Z015 and 7Z030.
 The main differences between the designs are described below:
@@ -160,7 +160,7 @@ GMII-to-RGMII connected to GEM1 (GEM0 could be connected to the PicoZed's onboar
 * 7Z015: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
 * 7Z030: We use 4x AXI Ethernet IPs. The constraints file uses the 1.8V IO standards because this device has HP I/Os.
 
-##### Installation of PicoZed board definition files
+#### Installation of PicoZed board definition files
 
 To use this project, you must first install the board definition files
 for the PicoZed into your Vivado installation.
@@ -177,7 +177,7 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.4\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory).
 
-### Microblaze design differences
+## Microblaze design differences
 
 The designs for AC701, KC705, VC707, VC709, KCU105 & VCU108 all use the Microblaze soft processor. These designs
 have some specific differences when compared to the Zynq based designs:
@@ -186,33 +186,33 @@ have some specific differences when compared to the Zynq based designs:
 * AXI Timer - the lwIP echo server application requires a timer (Microblaze does not have one inherently).
 * AXI UART16550 - the lwIP echo server application requires a UART for console output.
 
-### Troubleshooting
+## Troubleshooting
 
 Check the following if the project fails to build or generate a bitstream:
 
-#### 1. Are you using the correct version of Vivado for this version of the repository?
+### 1. Are you using the correct version of Vivado for this version of the repository?
 Check the version specified in the Requirements section of this readme file. Note that this project is regularly maintained to the latest
 version of Vivado and you may have to refer to an earlier commit of this repo if you are using an older version of Vivado.
 
-#### 2. Did you correctly follow the Build instructions in this readme file?
+### 2. Did you correctly follow the Build instructions in this readme file?
 All the projects in the repo are built, synthesised and implemented to a bitstream before being committed, so if you follow the
 instructions, there should not be any build issues.
 
-#### 3. Did you copy/clone the repo into a short directory structure?
+### 3. Did you copy/clone the repo into a short directory structure?
 Vivado doesn't cope well with long directory structures, so copy/clone the repo into a short directory structure such as
 `C:\projects\`. When working in long directory structures, you can get errors relating to missing files, particularly files 
 that are normally generated by Vivado (FIFOs, etc).
 
-### For more information
+## For more information
 
 If you need more information on whether the Ethernet FMC is compatible with your carrier, please contact me [here](http://ethernetfmc.com/contact/ "Ethernet FMC Contact form").
 Just provide me with the pinout of your carrier and I'll be happy to check compatibility and generate a Vivado constraints file for you.
 
-### License
+## License
 
 Feel free to modify the code for your specific application.
 
-### About us
+## About us
 
 This project was developed by [Opsero Inc.](http://opsero.com "Opsero Inc."),
 a tight-knit team of FPGA experts delivering FPGA products and design services to start-ups and tech companies. 
