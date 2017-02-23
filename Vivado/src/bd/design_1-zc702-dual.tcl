@@ -325,22 +325,22 @@ endgroup
 
 # Connect interrupts
 
-connect_bd_net [get_bd_pins axi_ethernet_0/mac_irq] [get_bd_pins xlconcat_0/In0]
-connect_bd_net [get_bd_pins axi_ethernet_0/interrupt] [get_bd_pins xlconcat_0/In1]
-connect_bd_net [get_bd_pins axi_ethernet_1/mac_irq] [get_bd_pins xlconcat_0/In2]
-connect_bd_net [get_bd_pins axi_ethernet_1/interrupt] [get_bd_pins xlconcat_0/In3]
-connect_bd_net [get_bd_pins axi_ethernet_2/mac_irq] [get_bd_pins xlconcat_0/In4]
-connect_bd_net [get_bd_pins axi_ethernet_2/interrupt] [get_bd_pins xlconcat_0/In5]
-connect_bd_net [get_bd_pins axi_ethernet_3/mac_irq] [get_bd_pins xlconcat_0/In6]
-connect_bd_net [get_bd_pins axi_ethernet_3/interrupt] [get_bd_pins xlconcat_0/In7]
-connect_bd_net [get_bd_pins axi_ethernet_4/mac_irq] [get_bd_pins xlconcat_0/In8]
-connect_bd_net [get_bd_pins axi_ethernet_4/interrupt] [get_bd_pins xlconcat_0/In9]
-connect_bd_net [get_bd_pins axi_ethernet_5/mac_irq] [get_bd_pins xlconcat_0/In10]
-connect_bd_net [get_bd_pins axi_ethernet_5/interrupt] [get_bd_pins xlconcat_0/In11]
-connect_bd_net [get_bd_pins axi_ethernet_6/mac_irq] [get_bd_pins xlconcat_0/In12]
-connect_bd_net [get_bd_pins axi_ethernet_6/interrupt] [get_bd_pins xlconcat_0/In13]
-connect_bd_net [get_bd_pins axi_ethernet_7/mac_irq] [get_bd_pins xlconcat_0/In14]
-connect_bd_net [get_bd_pins axi_ethernet_7/interrupt] [get_bd_pins xlconcat_0/In15]
+connect_bd_net [get_bd_pins axi_ethernet_0/interrupt] [get_bd_pins xlconcat_0/In0]
+connect_bd_net [get_bd_pins axi_ethernet_0_fifo/interrupt] [get_bd_pins xlconcat_0/In1]
+connect_bd_net [get_bd_pins axi_ethernet_1/interrupt] [get_bd_pins xlconcat_0/In2]
+connect_bd_net [get_bd_pins axi_ethernet_1_fifo/interrupt] [get_bd_pins xlconcat_0/In3]
+connect_bd_net [get_bd_pins axi_ethernet_2/interrupt] [get_bd_pins xlconcat_0/In4]
+connect_bd_net [get_bd_pins axi_ethernet_2_fifo/interrupt] [get_bd_pins xlconcat_0/In5]
+connect_bd_net [get_bd_pins axi_ethernet_3/interrupt] [get_bd_pins xlconcat_0/In6]
+connect_bd_net [get_bd_pins axi_ethernet_3_fifo/interrupt] [get_bd_pins xlconcat_0/In7]
+connect_bd_net [get_bd_pins axi_ethernet_4/interrupt] [get_bd_pins xlconcat_0/In8]
+connect_bd_net [get_bd_pins axi_ethernet_4_fifo/interrupt] [get_bd_pins xlconcat_0/In9]
+connect_bd_net [get_bd_pins axi_ethernet_5/interrupt] [get_bd_pins xlconcat_0/In10]
+connect_bd_net [get_bd_pins axi_ethernet_5_fifo/interrupt] [get_bd_pins xlconcat_0/In11]
+connect_bd_net [get_bd_pins axi_ethernet_6/interrupt] [get_bd_pins xlconcat_0/In12]
+connect_bd_net [get_bd_pins axi_ethernet_6_fifo/interrupt] [get_bd_pins xlconcat_0/In13]
+connect_bd_net [get_bd_pins axi_ethernet_7/interrupt] [get_bd_pins xlconcat_0/In14]
+connect_bd_net [get_bd_pins axi_ethernet_7_fifo/interrupt] [get_bd_pins xlconcat_0/In15]
 
 # Connect AXI Ethernet clocks
 
