@@ -70,7 +70,7 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ## Requirements
 
-* Vivado 2016.4
+* Vivado 2017.1
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -160,21 +160,23 @@ GMII-to-RGMII connected to GEM1 (GEM0 could be connected to the PicoZed's onboar
 * 7Z015: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
 * 7Z030: We use 4x AXI Ethernet IPs. The constraints file uses the 1.8V IO standards because this device has HP I/Os.
 
-#### Installation of PicoZed board definition files
+#### Installation of MicroZed and PicoZed board definition files
 
-To use this project, you must first install the board definition files
-for the PicoZed into your Vivado installation.
+To use the projects for the MicroZed and PicoZed, you must first install the board definition files
+for those boards into your Vivado installation.
 
 The following folders contain the board definition files and can be found in this project repository at this location:
 
 https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/board_files
 
+* `microzed_7010`
+* `microzed_7020`
 * `picozed_7010_fmc2`
 * `picozed_7015_fmc2`
 * `picozed_7020_fmc2`
 * `picozed_7030_fmc2`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2016.4\data\boards\board_files` folder (this may
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2017.1\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory).
 
 ## Microblaze design differences

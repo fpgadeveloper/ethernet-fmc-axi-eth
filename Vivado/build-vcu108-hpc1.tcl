@@ -19,14 +19,12 @@ set proj_dir [get_property directory [current_project]]
 
 # Set project properties
 set obj [get_projects $design_name]
-set_property "board_part" "xilinx.com:vcu108:part0:1.2" $obj
-set_property "default_lib" "xil_defaultlib" $obj
-set_property "ip_cache_permissions" "read write" $obj
-set_property "sim.ip.auto_export_scripts" "1" $obj
-set_property "simulator_language" "Mixed" $obj
-set_property "xpm_libraries" "XPM_CDC XPM_MEMORY" $obj
-set_property "xsim.array_display_limit" "64" $obj
-set_property "xsim.trace_limit" "65536" $obj
+set_property -name "board_part" -value "xilinx.com:vcu108:part0:1.2" -objects $obj
+set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
+set_property -name "ip_cache_permissions" -value "read write" -objects $obj
+set_property -name "ip_output_repo" -value "$proj_dir/$design_name.cache/ip" -objects $obj
+set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
+set_property -name "simulator_language" -value "Mixed" -objects $obj
 
 # Create 'sources_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sources_1] ""]} {
@@ -70,17 +68,13 @@ set obj [get_filesets sim_1]
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
 set_property "top" "${design_name}_wrapper" $obj
-set_property "transport_int_delay" "0" $obj
-set_property "transport_path_delay" "0" $obj
-set_property "xelab.nosort" "1" $obj
-set_property "xelab.unifast" "" $obj
 
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
-  create_run -name synth_1 -part xcvu095-ffva2104-2-e -flow {Vivado Synthesis 2016} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
+  create_run -name synth_1 -part xcvu095-ffva2104-2-e -flow {Vivado Synthesis 2017} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
 } else {
   set_property strategy "Vivado Synthesis Defaults" [get_runs synth_1]
-  set_property flow "Vivado Synthesis 2016" [get_runs synth_1]
+  set_property flow "Vivado Synthesis 2017" [get_runs synth_1]
 }
 set obj [get_runs synth_1]
 
@@ -89,14 +83,14 @@ current_run -synthesis [get_runs synth_1]
 
 # Create 'impl_1' run (if not found)
 if {[string equal [get_runs -quiet impl_1] ""]} {
-  create_run -name impl_1 -part xcvu095-ffva2104-2-e -flow {Vivado Implementation 2016} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
+  create_run -name impl_1 -part xcvu095-ffva2104-2-e -flow {Vivado Implementation 2017} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
 } else {
   set_property strategy "Vivado Implementation Defaults" [get_runs impl_1]
-  set_property flow "Vivado Implementation 2016" [get_runs impl_1]
+  set_property flow "Vivado Implementation 2017" [get_runs impl_1]
 }
 set obj [get_runs impl_1]
-set_property "steps.write_bitstream.args.readback_file" "0" $obj
-set_property "steps.write_bitstream.args.verbose" "0" $obj
+set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
+set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
 
 # set the current impl run
 current_run -implementation [get_runs impl_1]

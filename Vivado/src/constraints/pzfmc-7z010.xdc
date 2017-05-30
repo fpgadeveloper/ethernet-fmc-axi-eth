@@ -137,13 +137,13 @@ set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells -hier -
 set_property IDELAY_VALUE 16 [get_cells -hier -filter {name =~ *_i/gmii_to_rgmii_0/U0/*_gmii_to_rgmii_0_0_core/*delay_rgmii_rxd*}]
 create_clock -period 8.000 -name rgmii_port_3_rx_clk -waveform {0.000 4.000} [get_ports rgmii_port_3_rxc]
 
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_1/U0/eth_mac/U0/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_1/U0/eth_mac/U0/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_0/U0/eth_mac/U0/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_0/U0/eth_mac/U0/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_2/U0/eth_mac/U0/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_2/U0/eth_mac/U0/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_1/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells {*_i/axi_ethernet_0/inst/mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_0/inst/mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/delay_rgmii_rx* *_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells *_i/gmii_to_rgmii_0/U0/i_gmii_to_rgmii_block/*_gmii_to_rgmii_0_0_core/i_gmii_to_rgmii/i_gmii_to_rgmii/gen_rgmii_rx_zq.delay_rgmii_rx_ctl]
 set_property IDELAY_VALUE 16 [get_cells *_i/gmii_to_rgmii_0/U0/i_gmii_to_rgmii_block/*_gmii_to_rgmii_0_0_core/i_gmii_to_rgmii/i_gmii_to_rgmii/gen_rgmii_rx_zq.delay_rgmii_rx_ctl]
 
-set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells *_i/axi_ethernet_1/U0/eth_mac/U0/tri_mode_ethernet_mac_idelayctrl_common_i]
+set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells *_i/axi_ethernet_1/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
 # IODELAY group for GMII-to-RGMII block
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells *_i/gmii_to_rgmii_0/U0/i_*_gmii_to_rgmii_0_0_idelayctrl]
 

@@ -49,44 +49,26 @@ if { [file exists "$mig_file"] == 1 } {
 set_property -dict [ list CONFIG.XML_INPUT_FILE {mig_a.prj}  ] $mig_7series_0
 
 # Connect MIG external interfaces
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 ddr3_sdram
 connect_bd_intf_net [get_bd_intf_pins mig_7series_0/DDR3] [get_bd_intf_ports ddr3_sdram]
-endgroup
-startgroup
 create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 sys_diff_clock
 connect_bd_intf_net [get_bd_intf_pins mig_7series_0/SYS_CLK] [get_bd_intf_ports sys_diff_clock]
-endgroup
 
 # Add the Microblaze
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
-endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_cells microblaze_0]
 
-startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
-endgroup
 
 # Configure the interrupt concat
-startgroup
 set_property -dict [list CONFIG.NUM_PORTS {17}] [get_bd_cells microblaze_0_xlconcat]
-endgroup
 
 # Add the AXI Ethernet IPs
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
-endgroup
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
-endgroup
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
-endgroup
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
-endgroup
 
 # Configure all ports for full checksum hardware offload
 set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_0]
@@ -100,14 +82,11 @@ set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_2]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_1]
 
 # Apply block automation for all AXI Ethernet: RGMII with DMA
-startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_0]
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_1]
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_2]
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_3]
-endgroup
 
-startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1/s_axi]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2/s_axi]
@@ -128,60 +107,35 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_SG]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_MM2S]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_S2MM]
-endgroup
 
 # Make AXI Ethernet ports external: MDIO, RGMII and RESET
 # MDIO
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_0
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/mdio] [get_bd_intf_ports mdio_io_port_0]
-endgroup
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_1
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1/mdio] [get_bd_intf_ports mdio_io_port_1]
-endgroup
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_2
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2/mdio] [get_bd_intf_ports mdio_io_port_2]
-endgroup
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 mdio_io_port_3
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3/mdio] [get_bd_intf_ports mdio_io_port_3]
-endgroup
 # RGMII
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:rgmii_rtl:1.0 rgmii_port_0
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/rgmii] [get_bd_intf_ports rgmii_port_0]
-endgroup
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:rgmii_rtl:1.0 rgmii_port_1
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_1/rgmii] [get_bd_intf_ports rgmii_port_1]
-endgroup
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:rgmii_rtl:1.0 rgmii_port_2
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_2/rgmii] [get_bd_intf_ports rgmii_port_2]
-endgroup
-startgroup
 create_bd_intf_port -mode Master -vlnv xilinx.com:interface:rgmii_rtl:1.0 rgmii_port_3
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_3/rgmii] [get_bd_intf_ports rgmii_port_3]
-endgroup
 # RESET
-startgroup
 create_bd_port -dir O -type rst reset_port_0
 connect_bd_net [get_bd_pins /axi_ethernet_0/phy_rst_n] [get_bd_ports reset_port_0]
-endgroup
-startgroup
 create_bd_port -dir O -type rst reset_port_1
 connect_bd_net [get_bd_pins /axi_ethernet_1/phy_rst_n] [get_bd_ports reset_port_1]
-endgroup
-startgroup
 create_bd_port -dir O -type rst reset_port_2
 connect_bd_net [get_bd_pins /axi_ethernet_2/phy_rst_n] [get_bd_ports reset_port_2]
-endgroup
-startgroup
 create_bd_port -dir O -type rst reset_port_3
 connect_bd_net [get_bd_pins /axi_ethernet_3/phy_rst_n] [get_bd_ports reset_port_3]
-endgroup
 
 
 # Connect interrupts
@@ -219,66 +173,42 @@ delete_bd_objs [get_bd_nets axi_ethernet_0_refclk_clk_out2] [get_bd_nets axi_eth
 
 # Connect 200MHz AXI Ethernet ref_clk
 
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
-endgroup
 connect_bd_net -net [get_bd_nets microblaze_0_Clk] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins mig_7series_0/ui_clk]
 connect_bd_net [get_bd_pins clk_wiz_0/reset] [get_bd_pins rst_mig_7series_0_100M/peripheral_reset]
 connect_bd_net [get_bd_pins axi_ethernet_0/ref_clk] [get_bd_pins clk_wiz_0/clk_out1]
-startgroup
 set_property -dict [list CONFIG.PRIM_SOURCE {No_buffer} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {200} CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.000} CONFIG.CLKOUT1_JITTER {114.829}] [get_bd_cells clk_wiz_0]
-endgroup
 
 # Create differential IO buffer for the Ethernet FMC 125MHz clock
 
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
-endgroup
 connect_bd_net [get_bd_pins util_ds_buf_0/IBUF_OUT] [get_bd_pins axi_ethernet_0/gtx_clk]
-startgroup
 create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_P] [get_bd_ports ref_clk_p]
 set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
-endgroup
-startgroup
 create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
 connect_bd_net [get_bd_pins /util_ds_buf_0/IBUF_DS_N] [get_bd_ports ref_clk_n]
 set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
-endgroup
 
 # Create Ethernet FMC reference clock output enable and frequency select
 
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
-endgroup
-startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_oe
 connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
-endgroup
 
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
-endgroup
-startgroup
 create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
 connect_bd_net [get_bd_pins /ref_clk_fsel/dout] [get_bd_ports ref_clk_fsel]
-endgroup
 
 # Add UART for the Echo server example application
 
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
-endgroup
-startgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_uart16550_0/S_AXI]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "rs232_uart ( UART ) " }  [get_bd_intf_pins axi_uart16550_0/UART]
-endgroup
 
 # Add Timer for the Echo server example application
 
-startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer axi_timer_0
-endgroup
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_timer_0/S_AXI]
 
 connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In16]

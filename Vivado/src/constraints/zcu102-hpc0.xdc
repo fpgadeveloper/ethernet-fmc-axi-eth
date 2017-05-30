@@ -145,23 +145,23 @@ set_property CLOCK_REGION X3Y2 [get_cells *_i/clk_wiz_0/inst/clkout2_buf]
 # Commented below because I removed the BUFG from clk_wiz_0 output 1 (in effort to save BUFG)
 #set_property CLOCK_REGION X3Y3      [get_cells *_i/clk_wiz_0/inst/clkout1_buf]
 # BUFG on RX Clock input
-set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_0/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_0/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_0/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_0/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
-set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y2 [get_cells *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
-set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_2/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_2/inst/eth_mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
-set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
+set_property CLOCK_REGION X3Y3 [get_cells *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk_iddr]
 
 # Clock definitions
 
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_1/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
 
-set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rgmii_rxc_ibuf_i/O]
 
 # BITSLICE0 not available during BISC - The port rgmii_port_1_rxc is assigned to a PACKAGE_PIN that uses BITSLICE_1 of
 # a Byte that will be using calibration. The signal connected to rgmii_port_1_rxc will not be available during calibration
@@ -174,7 +174,7 @@ set_property UNAVAILABLE_DURING_CALIBRATION true [get_ports rgmii_port_1_rxc]
 set_property UNAVAILABLE_DURING_CALIBRATION true [get_ports rgmii_port_3_rxc]
 
 # Adjustment to the IDELAYs to make the timing pass
-set_property DELAY_VALUE 1000 [get_cells zcu102_hpc0_axieth_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
-set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/eth_mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1000 [get_cells zcu102_hpc0_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
 
