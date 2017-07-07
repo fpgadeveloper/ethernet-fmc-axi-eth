@@ -3,13 +3,24 @@ ethernet-fmc-axi-eth
 
 Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ethernet FMC") using 4 AXI Ethernet blocks.
 
+## Requirements
+
+This project is designed for Vivado 2017.2. If you are using an older version of Vivado, then you *MUST* use an older version
+of this repository. Refer to the [list of commits](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/commits/master "list of commits")
+to find links to the older versions of this repository.
+
+* Vivado 2017.2
+* [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
+* One of the above listed evaluation boards
+* [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
+
 ## Supported boards
 
 * Zynq-7000 [ZedBoard](http://zedboard.org "ZedBoard")
   * LPC connector (use zedboard.xdc)
 * Zynq-7000 [MicroZed FMC Carrier](http://zedboard.org/product/microzed-fmc-carrier "MicroZed FMC Carrier") with [MicroZed 7Z020](http://microzed.org "MicroZed")
   * LPC connector (use mzfmc-7z010-7z020.xdc)
-* Zynq-7000 [PicoZed FMC Carrier Card V2](http://zedboard.org/product/picozed-fmc-carrier-card-v2 "PicoZed FMC Carrier Card V2") with [PicoZed 7010/15/20/30](http://picozed.org "PicoZed")
+* Zynq-7000 [PicoZed FMC Carrier Card V2](http://zedboard.org/product/picozed-fmc-carrier-card-v2 "PicoZed FMC Carrier Card V2") with [PicoZed 7015/20/30](http://picozed.org "PicoZed")
   * LPC connector (use pzfmc-7z0xx.xdc)
 * Artix-7 [AC701 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-a7-ac701-g.html "AC701 Evaluation board")
   * HPC connector (use ac701.xdc)
@@ -67,13 +78,6 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 ![Block diagram](http://ethernetfmc.com/wp-content/uploads/2014/10/qgige_all_axi_ethernet.png "Zynq Quad Gig Ethernet All AXI Ethernet")
 
 > Note: Zynq PS block is replaced by MicroBlaze processor for the Artix, Kintex and Virtex boards.
-
-## Requirements
-
-* Vivado 2017.1
-* [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
-* One of the above listed evaluation boards
-* [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
 ## Build instructions
 
@@ -151,11 +155,9 @@ I/Os which do not support 2.5V levels.
 
 #### Differences between designs
 
-This repository contains a Vivado design for each of the PicoZed versions: 7Z010, 7Z020, 7Z015 and 7Z030.
+This repository contains a Vivado design for these PicoZed versions: 7Z020, 7Z015 and 7Z030.
 The main differences between the designs are described below:
 
-* 7Z010: We can't fit 4x AXI Ethernet IPs with DMAs into the 7Z010 device, so instead we use 3x AXI Ethernet and 1x
-GMII-to-RGMII connected to GEM1 (GEM0 could be connected to the PicoZed's onboard PHY if desired).
 * 7Z020: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
 * 7Z015: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
 * 7Z030: We use 4x AXI Ethernet IPs. The constraints file uses the 1.8V IO standards because this device has HP I/Os.
@@ -176,7 +178,7 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 * `picozed_7020_fmc2`
 * `picozed_7030_fmc2`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2017.1\data\boards\board_files` folder (this may
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2017.2\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory).
 
 ## Microblaze design differences

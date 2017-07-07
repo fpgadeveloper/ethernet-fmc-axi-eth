@@ -305,3 +305,12 @@ set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells {*_i/ax
 
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells *_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells *_i/axi_ethernet_4/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
+
+# IDELAY values for RGMII RX interface of port 2
+set_property IDELAY_VALUE 13 [get_cells {*/axi_ethernet_2/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
+set_property IDELAY_VALUE 13 [get_cells {*/axi_ethernet_2/inst/mac/inst/rgmii_interface/rxdata_bus[1].delay_rgmii_rxd}]
+set_property IDELAY_VALUE 13 [get_cells {*/axi_ethernet_2/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
+set_property IDELAY_VALUE 13 [get_cells {*/axi_ethernet_2/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
+set_property IDELAY_VALUE 13 [get_cells {*/axi_ethernet_2/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl}]
+
+

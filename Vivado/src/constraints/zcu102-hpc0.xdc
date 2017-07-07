@@ -178,3 +178,8 @@ set_property DELAY_VALUE 1000 [get_cells zcu102_hpc0_axieth_i/axi_ethernet_3/ins
 set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
 set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
 
+set_property DELAY_VALUE 1000 [get_cells zcu102_hpc0_axieth_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[1].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1000 [get_cells {zcu102_hpc0_axieth_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
+
