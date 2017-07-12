@@ -150,6 +150,9 @@ is no such problem with the HPC for this board.
 Note that the FMC pinouts differ between Rev 1.0 and Rev D: https://www.xilinx.com/support/answers/68050.html
 * This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
 I/Os which do not support 2.5V levels.
+* Known issue: On this board, DHCP does not function correctly in the echo server application and produces error message
+`Error set buf addr 201116 with 4 and 3, 2`. To get around this issue, disable DHCP by inserting `#define LWIP_DHCP 0`
+into the `main.c` file.
 
 ### PicoZed
 

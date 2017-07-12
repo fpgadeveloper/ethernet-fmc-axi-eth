@@ -173,34 +173,34 @@ connect_bd_net [get_bd_pins axi_ethernet_3_dma/mm2s_introut] [get_bd_pins xlconc
 connect_bd_net [get_bd_pins axi_ethernet_3_dma/s2mm_introut] [get_bd_pins xlconcat_1/In7]
 
 # Use connection automation to connect AXI lite interfaces
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/S_AXI_LITE]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/S_AXI_LITE]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/S_AXI_LITE]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/S_AXI_LITE]
 
 # Use connection automation to connect AXI MM interfaces of the DMA
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/axi_ethernet_0_dma/M_AXI_SG" Clk "Auto" }  [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP0_FPD]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/axi_ethernet_0_dma/M_AXI_SG" intc_ip "Auto" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP0_FPD]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_S2MM]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_S2MM]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_S2MM]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_S2MM]
 
 # Make AXI Ethernet ports external: MDIO, RGMII and RESET
 # MDIO
