@@ -40,7 +40,7 @@ to find links to the older versions of this repository.
   * LPC connector 2 (use zc702-lpc2.xdc)
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (LPC only)
   * LPC connector (use zc706-lpc.xdc)
-* Zynq UltraScale+ ZCU102 Evaluation board Rev 1.0 (loaded with ES2 device)
+* Zynq UltraScale+ ZCU102 Evaluation board Rev 1.0
   * HPC0 connector (use zcu102-hpc0.xdc)
 * Virtex Ultrascale [VCU108 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu108-g.html "VCU108 Evaluation board")
   * HPC0 connector (use vcu108-hpc0.xdc)
