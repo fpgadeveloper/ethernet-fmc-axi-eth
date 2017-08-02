@@ -1,0 +1,12 @@
+diff -Naur a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c	2017-08-02 09:07:29.000000000 -0400
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c	2017-08-02 13:27:22.000000000 -0400
+@@ -1651,7 +1651,7 @@
+ 		} else if (lp->phy_type == XAE_PHY_TYPE_RGMII_2_0) {
+ 			phydev = of_phy_connect(lp->ndev, lp->phy_node,
+ 						axienet_adjust_link, 0,
+-						PHY_INTERFACE_MODE_RGMII_ID);
++						lp->phy_interface);
+ 		} else if ((lp->axienet_config->mactype == XAXIENET_1G) ||
+ 			     (lp->axienet_config->mactype == XAXIENET_2_5G)) {
+ 			phydev = of_phy_connect(lp->ndev, lp->phy_node,

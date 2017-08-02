@@ -1,0 +1,6 @@
+iface eth0 inet dhcp
+iface eth1 inet dhcp
+iface eth2 inet dhcp
+iface eth3 inet dhcp
+iface eth4 inet dhcp
+
