@@ -45,6 +45,8 @@ to find links to the older versions of this repository.
 * Virtex Ultrascale [VCU108 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu108-g.html "VCU108 Evaluation board")
   * HPC0 connector (use vcu108-hpc0.xdc)
   * HPC1 connector (use vcu108-hpc1.xdc)
+* Virtex Ultrascale+ [VCU118 ES1 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu118-es1-g.html "VCU118 ES1 Evaluation board")
+  * HPC1 connector (use vcu118-es1.xdc)
   
 ## 8-port Support (2 x Ethernet FMCs)
 
