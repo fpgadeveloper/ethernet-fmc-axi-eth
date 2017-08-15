@@ -41,6 +41,11 @@ do
     continue
   fi
 
+  # Get the port configuration
+  vivadoprj="../Vivado/$proj/$proj.xpr"
+  portconfig=$(grep -Po -m 1 '(?<=src/constraints/rgmii-)[^.]+' $vivadoprj)
+  portconfig="ports-$portconfig"
+
   # Get CPU type from first letters of project name
   type=$(echo $proj | cut -c1-3)
   if [[ $type == *z* ]]; then
@@ -50,7 +55,11 @@ do
       petalinux-create --type project --template zynqMP --name $proj
       cd $proj
       petalinux-config --get-hw-description ../$f --oldconfig
+      cp -R ../src/common/* .
       cp -R ../src/zynqMP/* .
+      if [[ $portconfig != "ports-" ]]; then
+        cp -R ../src/$portconfig/* .
+      fi
       petalinux-build
       petalinux-package --boot --fsbl ./images/linux/zynqmp_fsbl.elf --fpga ../$bit --u-boot
       cd ..
@@ -60,7 +69,11 @@ do
       petalinux-create --type project --template zynq --name $proj
       cd $proj
       petalinux-config --get-hw-description ../$f --oldconfig
+      cp -R ../src/common/* .
       cp -R ../src/zynq/* .
+      if [[ $portconfig != "ports-" ]]; then
+        cp -R ../src/$portconfig/* .
+      fi
       petalinux-build
       petalinux-package --boot --fsbl ./images/linux/zynq_fsbl.elf --fpga ../$bit --u-boot
       cd ..
@@ -71,8 +84,13 @@ do
     petalinux-create --type project --template microblaze --name $proj
     cd $proj
     petalinux-config --get-hw-description ../$f --oldconfig
+    cp -R ../src/common/* .
     cp -R ../src/microblaze/* .
+    if [[ $portconfig != "ports-" ]]; then
+      cp -R ../src/$portconfig/* .
+    fi
     petalinux-build
+    petalinux-package --boot --fpga ../$bit --u-boot --kernel
     cd ..
   fi
 done

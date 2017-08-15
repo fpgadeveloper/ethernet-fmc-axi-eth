@@ -67,9 +67,9 @@ set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property "file_type" "XDC" $file_obj
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/src/constraints/rgmii-0123.xdc"]"
+set file "[file normalize "$origin_dir/src/constraints/rgmii-01234567.xdc"]"
 set file_added [add_files -norecurse -fileset $obj $file]
-set file "$origin_dir/src/constraints/rgmii-0123.xdc"
+set file "$origin_dir/src/constraints/rgmii-01234567.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property "file_type" "XDC" $file_obj
