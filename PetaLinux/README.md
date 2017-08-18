@@ -95,3 +95,44 @@ replace the above code with the following:
 ```
 
 The included patch handles this modification - you do not need to manually modify any code.
+
+### Port configurations
+
+#### AC701, KC705, KCU105, VC707, VC709
+
+* eth0: Ethernet FMC Port 0
+* eth1: Ethernet FMC Port 1
+* eth2: Ethernet FMC Port 2
+* eth3: Ethernet FMC Port 3
+
+#### MicroZed, PicoZed, ZC702, ZC706, ZCU102, ZedBoard
+
+* eth0: GEM0 to Ethernet port of the dev board
+* eth1: Ethernet FMC Port 0
+* eth2: Ethernet FMC Port 1
+* eth3: Ethernet FMC Port 2
+* eth4: Ethernet FMC Port 3
+
+#### VC707 Dual design
+
+* eth0: HPC2 Ethernet FMC Port 0 (AXI Ethernet)
+* eth1: HPC2 Ethernet FMC Port 1 (AXI Ethernet)
+* eth2: HPC2 Ethernet FMC Port 2 (AXI Ethernet)
+* eth3: HPC2 Ethernet FMC Port 3 (AXI Ethernet)
+* eth4: HPC1 Ethernet FMC Port 0 (AXI Ethernet)
+* eth5: HPC1 Ethernet FMC Port 1 (AXI Ethernet)
+* eth6: HPC1 Ethernet FMC Port 2 (AXI Ethernet)
+* eth7: HPC1 Ethernet FMC Port 3 (AXI Ethernet)
+
+#### ZC702 Dual design
+
+* eth0: Ethernet port of the dev board (GEM0)
+* eth1: LPC2 Ethernet FMC Port 0 (AXI Ethernet)
+* eth2: LPC2 Ethernet FMC Port 1 (AXI Ethernet)
+* eth3: LPC2 Ethernet FMC Port 2 (AXI Ethernet)
+* eth4: LPC2 Ethernet FMC Port 3 (AXI Ethernet)
+* eth5: LPC1 Ethernet FMC Port 0 (AXI Ethernet)
+* eth6: LPC1 Ethernet FMC Port 1 (AXI Ethernet)
+* eth7: LPC1 Ethernet FMC Port 2 (AXI Ethernet)
+* eth8: LPC1 Ethernet FMC Port 3 (AXI Ethernet)
+
