@@ -38,28 +38,15 @@ set oldCurInst [current_bd_instance .]
 current_bd_instance $parentObj
 
 # Add the Memory controller (MIG) for the DDR3
-set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series  mig_7series_0 ]
-set folder [pwd]
-set mig_file [glob $folder/src/mig/mig_ac701*.prj]
-if { [file exists "$mig_file"] == 1 } { 
-   set str_mig_folder [get_property IP_DIR [ get_ips [ get_property CONFIG.Component_Name $mig_7series_0 ] ] ]
-   puts "Copying <$mig_file> to <$str_mig_folder/mig_a.prj>..."
-   file copy $mig_file "$str_mig_folder/mig_a.prj"
-}
-set_property -dict [ list CONFIG.XML_INPUT_FILE {mig_a.prj}  ] $mig_7series_0
-
-# Connect MIG external interfaces
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 ddr3_sdram
-connect_bd_intf_net [get_bd_intf_pins mig_7series_0/DDR3] [get_bd_intf_ports ddr3_sdram]
-create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 sys_diff_clock
-connect_bd_intf_net [get_bd_intf_pins mig_7series_0/SYS_CLK] [get_bd_intf_ports sys_diff_clock]
+create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series mig_7series_0
+apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interface "ddr3_sdram" }  [get_bd_cells mig_7series_0]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
 
 # Add the Microblaze
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_cells microblaze_0]
 
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
 
 # Configure the interrupt concat
 set_property -dict [list CONFIG.NUM_PORTS {17}] [get_bd_cells microblaze_0_xlconcat]
