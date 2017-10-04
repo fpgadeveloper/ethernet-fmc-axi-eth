@@ -4,9 +4,38 @@
 # from the ZCU102 Rev D (released with the ES1 device). See answer record for
 # more information: https://www.xilinx.com/support/answers/68050.html
 
-# These constraints are for the ZCU102-HPC0-QGIGE-AXIETH design which
+# These constraints are for the ZCU102-HPC0-AXIETH design which
 # uses 4x AXI Ethernet Subsystem IPs
 
+# Notes on ZCU102 HPC0 connector
+# ------------------------------
+#
+# Ethernet FMC Port 0:
+# --------------------
+# * Requires LA00, LA02, LA03, LA04, LA05, LA06, LA07, LA08
+# * All are routed to Bank 66
+# * LA00 is routed to a clock capable pin
+#
+# Ethernet FMC Port 1:
+# --------------------
+# * Requires LA01, LA06, LA09, LA10, LA11, LA12, LA13, LA14, LA15, LA16
+# * All are routed to Bank 66
+# * LA01 is NOT routed to a clock capable pin
+#
+# Ethernet FMC Port 2:
+# --------------------
+# * Requires LA17, LA19, LA20, LA21, LA22, LA23, LA24, LA25
+# * All are routed to Bank 67
+# * LA17 is routed to a clock capable pin
+#
+# Ethernet FMC Port 3:
+# --------------------
+# * Requires LA18, LA26, LA27, LA28, LA29, LA30, LA31, LA32
+# * All are routed to Bank 67
+# * LA18 is NOT routed to a clock capable pin
+#
+
+# Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports mdio_io_port_0_mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[2]}]
