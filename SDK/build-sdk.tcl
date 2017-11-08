@@ -126,6 +126,19 @@ proc get_processor_name {hw_project_name} {
   return ""
 }
 
+proc design_contains_ip {hw_project_name ip_type} {
+  set periphs [getperipherals $hw_project_name]
+  # For each line of the peripherals table
+  foreach line [split $periphs "\n"] {
+    set values [regexp -all -inline {\S+} $line]
+    # If we find the IP type in this design, then return 1
+    if {[lindex $values 2] == $ip_type} {
+      return 1
+    }
+  }
+  return 0
+}
+
 # Creates the .bif file for a Zynq board
 proc create_zynq_bif {board_name app_name vivado_name target_dir sdk_dir} {
   set full_sdk_dir [file normalize $sdk_dir]
@@ -297,30 +310,32 @@ proc create_boot_files {} {
       }
     }
     
-    # Don't generate boot files for Microblaze designs
-    if {[str_contains $proc_instance "microblaze_"]} {
-      continue
-    }
-    
     # If all required files exist, then generate boot files
     # Create directory for the boot file if it doesn't already exist
     if {[file exists "./boot/$board_name"] == 0} {
       file mkdir "./boot/$board_name"
     }
 	
-    # For Zynq MP designs
-    if {[str_contains $proc_instance "psu_cortexa53_"]} {
-      puts "Generating BOOT.bin file for Zynq MP $board_name project."
-      # Generate the .bif file
-      create_zynqmp_bif $board_name $app_name $vivado_folder "./boot" "."
-      exec bootgen -image .\\boot\\${board_name}.bif -arch zynqmp -o .\\boot\\${board_name}\\BOOT.bin -w on
-    # For Zynq designs
+	# For Microblaze designs
+	if {[str_contains $proc_instance "microblaze"]} {
+	  puts "Copying bitstream and elf for $board_name project."
+      # Copy the bitstream and elf file to the boot folder
+      file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.bit" "./boot/${board_name}"
+      file copy "./${app_name}/Debug/${app_name}.elf" "./boot/${board_name}"
+      file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.mmi" "./boot/${board_name}"
+	# For Zynq MP designs
+	} elseif {[str_contains $proc_instance "psu_cortexa53_"]} {
+	  puts "Generating BOOT.bin file for Zynq MP $board_name project."
+	  # Generate the .bif file
+	  create_zynqmp_bif $board_name $app_name $vivado_folder "./boot" "."
+	  exec bootgen -image .\\boot\\${board_name}.bif -arch zynqmp -o .\\boot\\${board_name}\\BOOT.bin -w on
+	# For Zynq designs
     } else {
-      puts "Generating BOOT.bin file for Zynq $board_name project."
-      # Generate the .bif file
-      create_zynq_bif $board_name $app_name $vivado_folder "./boot" "."
-      exec bootgen -image .\\boot\\${board_name}.bif -arch zynq -o .\\boot\\${board_name}\\BOOT.bin -w on
-    }
+	  puts "Generating BOOT.bin file for Zynq $board_name project."
+	  # Generate the .bif file
+	  create_zynq_bif $board_name $app_name $vivado_folder "./boot" "."
+	  exec bootgen -image .\\boot\\${board_name}.bif -arch zynq -o .\\boot\\${board_name}\\BOOT.bin -w on
+	}
   }
 }
 
