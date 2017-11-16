@@ -3,12 +3,18 @@
 # two Ethernet FMCs - one connected to each FMC connector
 ################################################################
 
+#GPIO LEDs
+set_property PACKAGE_PIN AB8 [get_ports mmcm_lock]
+set_property IOSTANDARD LVCMOS15 [get_ports mmcm_lock]
+set_property PACKAGE_PIN AA8 [get_ports init_calib_complete]
+set_property IOSTANDARD LVCMOS15 [get_ports init_calib_complete]
+
 # Constraints for first Ethernet FMC plugged onto the LPC connector
 # Ports are numbered 0 to 3
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports ref_clk_0_p]
-set_property DIFF_TERM TRUE [get_ports ref_clk_0_n]
+set_property DIFF_TERM TRUE [get_ports ref_clk_0_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_0_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[0]}]
@@ -51,8 +57,8 @@ set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_2_mdio_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[2]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_p]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_n]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_clk_p]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_clk_n]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_td[0]}]
@@ -116,8 +122,8 @@ set_property PACKAGE_PIN AD26 [get_ports mdio_io_port_2_mdio_io]
 set_property PACKAGE_PIN AF28 [get_ports {rgmii_port_3_td[0]}]
 set_property PACKAGE_PIN AD29 [get_ports {rgmii_port_3_td[2]}]
 set_property PACKAGE_PIN AE29 [get_ports {rgmii_port_3_td[3]}]
-set_property PACKAGE_PIN AF22 [get_ports ref_clk_0_p]
-set_property PACKAGE_PIN AG23 [get_ports ref_clk_0_n]
+set_property PACKAGE_PIN AF22 [get_ports ref_clk_0_clk_p]
+set_property PACKAGE_PIN AG23 [get_ports ref_clk_0_clk_n]
 set_property PACKAGE_PIN AF20 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN AF21 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN AH21 [get_ports {rgmii_port_0_td[0]}]
@@ -141,14 +147,14 @@ set_property PACKAGE_PIN AB30 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN Y30 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN AA30 [get_ports reset_port_3]
 
-create_clock -period 8.000 -name ref_clk_0_p -waveform {0.000 4.000} [get_ports ref_clk_0_p]
+create_clock -period 8.000 -name ref_clk_0_clk_p -waveform {0.000 4.000} [get_ports ref_clk_0_clk_p]
 
 # Constraints for second Ethernet FMC plugged onto the HPC connector
 # Ports are numbered 4 to 7
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports ref_clk_1_p]
-set_property DIFF_TERM TRUE [get_ports ref_clk_1_n]
+set_property DIFF_TERM TRUE [get_ports ref_clk_1_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_1_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_5_rd[0]}]
@@ -191,8 +197,8 @@ set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_6_mdio_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_7_td[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_7_td[2]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_7_td[3]}]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_p]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_n]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_clk_p]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_clk_n]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_4_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_4_rd[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_4_td[0]}]
@@ -256,8 +262,8 @@ set_property PACKAGE_PIN F17 [get_ports mdio_io_port_6_mdio_io]
 set_property PACKAGE_PIN B17 [get_ports {rgmii_port_7_td[0]}]
 set_property PACKAGE_PIN G22 [get_ports {rgmii_port_7_td[2]}]
 set_property PACKAGE_PIN F22 [get_ports {rgmii_port_7_td[3]}]
-set_property PACKAGE_PIN D27 [get_ports ref_clk_1_p]
-set_property PACKAGE_PIN C27 [get_ports ref_clk_1_n]
+set_property PACKAGE_PIN D27 [get_ports ref_clk_1_clk_p]
+set_property PACKAGE_PIN C27 [get_ports ref_clk_1_clk_n]
 set_property PACKAGE_PIN H24 [get_ports {rgmii_port_4_rd[0]}]
 set_property PACKAGE_PIN H25 [get_ports {rgmii_port_4_rd[1]}]
 set_property PACKAGE_PIN G28 [get_ports {rgmii_port_4_td[0]}]
@@ -281,7 +287,7 @@ set_property PACKAGE_PIN C22 [get_ports mdio_io_port_7_mdc]
 set_property PACKAGE_PIN D21 [get_ports mdio_io_port_7_mdio_io]
 set_property PACKAGE_PIN C21 [get_ports reset_port_7]
 
-create_clock -period 8.000 -name ref_clk_1_p -waveform {0.000 4.000} [get_ports ref_clk_1_p]
+create_clock -period 8.000 -name ref_clk_1_clk_p -waveform {0.000 4.000} [get_ports ref_clk_1_clk_p]
 
 # The following constraints are here to override some of the automatically
 # generated constraints for the AXI Ethernet IPs. Specifically the

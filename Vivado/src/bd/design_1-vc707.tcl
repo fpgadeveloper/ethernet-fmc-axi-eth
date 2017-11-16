@@ -38,31 +38,76 @@ set oldCurInst [current_bd_instance .]
 current_bd_instance $parentObj
 
 # Add the Memory controller (MIG) for the DDR3
-set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series  mig_7series_0 ]
-set folder [pwd]
-set mig_file [glob $folder/src/mig/mig_vc707*.prj]
-if { [file exists "$mig_file"] == 1 } { 
-   set str_mig_folder [get_property IP_DIR [ get_ips [ get_property CONFIG.Component_Name $mig_7series_0 ] ] ]
-   puts "Copying <$mig_file> to <$str_mig_folder/mig_a.prj>..."
-   file copy $mig_file "$str_mig_folder/mig_a.prj"
-}
-set_property -dict [ list CONFIG.XML_INPUT_FILE {mig_a.prj}  ] $mig_7series_0
-
-# Connect MIG external interfaces
-create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 ddr3_sdram
-connect_bd_intf_net [get_bd_intf_pins mig_7series_0/DDR3] [get_bd_intf_ports ddr3_sdram]
-create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 sys_diff_clock
-connect_bd_intf_net [get_bd_intf_pins mig_7series_0/SYS_CLK] [get_bd_intf_ports sys_diff_clock]
-
-# Add the Microblaze
-create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
-apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_cells microblaze_0]
-
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
+create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series mig_7series_0
+apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interface "ddr3_sdram" }  [get_bd_cells mig_7series_0]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
 
+# Create ports
+set mmcm_lock [ create_bd_port -dir O mmcm_lock ]
+set init_calib_complete [ create_bd_port -dir O init_calib_complete ]
+
+# Add the MicroBlaze
+create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
+apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "16KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_addn_clk_0 (100 MHz)" }  [get_bd_cells microblaze_0]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins rst_mig_7series_0_100M/ext_reset_in]
+
+# Configure MicroBlaze for Linux
+set_property -dict [list CONFIG.G_TEMPLATE_LIST {4} \
+CONFIG.G_USE_EXCEPTIONS {1} \
+CONFIG.C_USE_MSR_INSTR {1} \
+CONFIG.C_USE_PCMP_INSTR {1} \
+CONFIG.C_USE_BARREL {1} \
+CONFIG.C_USE_DIV {1} \
+CONFIG.C_USE_HW_MUL {2} \
+CONFIG.C_UNALIGNED_EXCEPTIONS {1} \
+CONFIG.C_ILL_OPCODE_EXCEPTION {1} \
+CONFIG.C_M_AXI_I_BUS_EXCEPTION {1} \
+CONFIG.C_M_AXI_D_BUS_EXCEPTION {1} \
+CONFIG.C_DIV_ZERO_EXCEPTION {1} \
+CONFIG.C_PVR {2} \
+CONFIG.C_OPCODE_0x0_ILLEGAL {1} \
+CONFIG.C_ICACHE_LINE_LEN {8} \
+CONFIG.C_ICACHE_VICTIMS {8} \
+CONFIG.C_ICACHE_STREAMS {1} \
+CONFIG.C_DCACHE_VICTIMS {8} \
+CONFIG.C_USE_MMU {3} \
+CONFIG.C_MMU_ZONES {2}] [get_bd_cells microblaze_0]
+
+# Clock wizard to generate 125MHz and 200MHz from Ethernet FMC reference clock
+create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
+set_property -dict [list CONFIG.PRIM_IN_FREQ.VALUE_SRC USER] [get_bd_cells clk_wiz_0]
+set_property -dict [list CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} \
+CONFIG.PRIM_IN_FREQ {125} \
+CONFIG.CLKOUT2_USED {true} \
+CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {125} \
+CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {200} \
+CONFIG.USE_RESET {false} \
+CONFIG.CLKIN1_JITTER_PS {80.0} \
+CONFIG.MMCM_DIVCLK_DIVIDE {1} \
+CONFIG.MMCM_CLKFBOUT_MULT_F {8.000} \
+CONFIG.MMCM_CLKIN1_PERIOD {8.000} \
+CONFIG.MMCM_CLKOUT0_DIVIDE_F {8.000} \
+CONFIG.MMCM_CLKOUT1_DIVIDE {5} \
+CONFIG.NUM_OUT_CLKS {2} \
+CONFIG.CLKOUT1_JITTER {119.348} \
+CONFIG.CLKOUT1_PHASE_ERROR {96.948} \
+CONFIG.CLKOUT2_JITTER {109.241} \
+CONFIG.CLKOUT2_PHASE_ERROR {96.948}] [get_bd_cells clk_wiz_0]
+
+# Processor system reset for 125MHz clock
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_125M
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins rst_clk_wiz_0_125M/slowest_sync_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_clk_wiz_0_125M/dcm_locked]
+connect_bd_net [get_bd_ports reset] [get_bd_pins rst_clk_wiz_0_125M/ext_reset_in]
+
+# Create port for Ethernet FMC reference clock and connect to clock wizard
+create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 ref_clk
+set_property -dict [list CONFIG.FREQ_HZ {125000000}] [get_bd_intf_ports ref_clk]
+connect_bd_intf_net [get_bd_intf_ports ref_clk] [get_bd_intf_pins clk_wiz_0/CLK_IN1_D]
+
 # Configure the interrupt concat
-set_property -dict [list CONFIG.NUM_PORTS {17}] [get_bd_cells microblaze_0_xlconcat]
+set_property -dict [list CONFIG.NUM_PORTS {18}] [get_bd_cells microblaze_0_xlconcat]
 
 # Add the AXI Ethernet IPs
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
@@ -80,6 +125,17 @@ set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cell
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_3]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_2]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.SupportLevel {1}] [get_bd_cells axi_ethernet_0]
+
+# Connect AXI Ethernet clocks
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_0/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_0/ref_clk]
+#connect_bd_net [get_bd_pins axi_ethernet_0/gtx_clk_out] [get_bd_pins axi_ethernet_1/gtx_clk]
+#connect_bd_net [get_bd_pins axi_ethernet_0/gtx_clk_out] [get_bd_pins axi_ethernet_2/gtx_clk]
+#connect_bd_net [get_bd_pins axi_ethernet_0/gtx_clk_out] [get_bd_pins axi_ethernet_3/gtx_clk]
+#connect_bd_net [get_bd_pins axi_ethernet_0/gtx_clk90_out] [get_bd_pins axi_ethernet_1/gtx_clk90]
+#connect_bd_net [get_bd_pins axi_ethernet_0/gtx_clk90_out] [get_bd_pins axi_ethernet_2/gtx_clk90]
+#connect_bd_net [get_bd_pins axi_ethernet_0/gtx_clk90_out] [get_bd_pins axi_ethernet_3/gtx_clk90]
 
 # Apply block automation for all AXI Ethernet: RGMII with DMA
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_0]
@@ -87,26 +143,44 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGM
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_2]
 apply_bd_automation -rule xilinx.com:bd_rule:axi_ethernet -config {PHY_TYPE "RGMII" FIFO_DMA "DMA" }  [get_bd_cells axi_ethernet_3]
 
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3/s_axi]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/S_AXI_LITE]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_S2MM]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/S_AXI_LITE]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_S2MM]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/S_AXI_LITE]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_S2MM]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/S_AXI_LITE]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_SG]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_MM2S]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3/s_axi]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/S_AXI_LITE]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_0_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/M_AXI_S2MM]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_SG]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_MM2S]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/mig_7series_0/S_AXI" intc_ip "/axi_mem_intercon" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/M_AXI_S2MM]
+
+# Add register slices to axi_mem_intercon to help timing
+set_property -dict [list CONFIG.M00_HAS_REGSLICE {4} \
+CONFIG.M01_HAS_REGSLICE {4} \
+CONFIG.S00_HAS_REGSLICE {4} \
+CONFIG.S01_HAS_REGSLICE {4} \
+CONFIG.S02_HAS_REGSLICE {4} \
+CONFIG.S03_HAS_REGSLICE {4} \
+CONFIG.S04_HAS_REGSLICE {4} \
+CONFIG.S05_HAS_REGSLICE {4} \
+CONFIG.S06_HAS_REGSLICE {4} \
+CONFIG.S07_HAS_REGSLICE {4} \
+CONFIG.S08_HAS_REGSLICE {4} \
+CONFIG.S09_HAS_REGSLICE {4} \
+CONFIG.S10_HAS_REGSLICE {4} \
+CONFIG.S11_HAS_REGSLICE {4} \
+CONFIG.S12_HAS_REGSLICE {4} \
+CONFIG.S13_HAS_REGSLICE {4}] [get_bd_cells axi_mem_intercon]
 
 # Make AXI Ethernet ports external: MDIO, RGMII and RESET
 # MDIO
@@ -158,46 +232,6 @@ connect_bd_net [get_bd_pins axi_ethernet_2/interrupt] [get_bd_pins microblaze_0_
 connect_bd_net [get_bd_pins axi_ethernet_3/mac_irq] [get_bd_pins microblaze_0_xlconcat/In14]
 connect_bd_net [get_bd_pins axi_ethernet_3/interrupt] [get_bd_pins microblaze_0_xlconcat/In15]
 
-# Delete the clock wizard that is automatically generated by Vivado 2015.2
-
-delete_bd_objs [get_bd_nets axi_ethernet_0_refclk_clk_out2] [get_bd_nets axi_ethernet_0_refclk_clk_out1] [get_bd_cells axi_ethernet_0_refclk]
-
-# Connect 200MHz AXI Ethernet ref_clk
-
-create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
-set_property -dict [list CONFIG.PRIM_IN_FREQ.VALUE_SRC USER] [get_bd_cells clk_wiz_0]
-set_property -dict [list CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} \
-CONFIG.PRIM_IN_FREQ {125} \
-CONFIG.CLKOUT2_USED {true} \
-CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {125} \
-CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {200} \
-CONFIG.USE_LOCKED {false} \
-CONFIG.USE_RESET {false} \
-CONFIG.CLKIN1_JITTER_PS {80.0} \
-CONFIG.MMCM_DIVCLK_DIVIDE {1} \
-CONFIG.MMCM_CLKFBOUT_MULT_F {8.000} \
-CONFIG.MMCM_CLKIN1_PERIOD {8.0} \
-CONFIG.MMCM_CLKOUT0_DIVIDE_F {8.000} \
-CONFIG.MMCM_CLKOUT1_DIVIDE {5} \
-CONFIG.NUM_OUT_CLKS {2} \
-CONFIG.CLKOUT1_JITTER {119.348} \
-CONFIG.CLKOUT1_PHASE_ERROR {96.948} \
-CONFIG.CLKOUT2_JITTER {109.241} \
-CONFIG.CLKOUT2_PHASE_ERROR {96.948}] [get_bd_cells clk_wiz_0]
-create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
-connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_p] [get_bd_ports ref_clk_p]
-set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
-create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
-connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_n]
-set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
-
-#connect_bd_net -net [get_bd_nets microblaze_0_Clk] [get_bd_pins mig_7series_0/ui_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_0/ref_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_0/gtx_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_1/gtx_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_2/gtx_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_3/gtx_clk]
-
 # Create Ethernet FMC reference clock output enable and frequency select
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
@@ -214,12 +248,14 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_uart16550_0/S_AXI]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "rs232_uart ( UART ) " }  [get_bd_intf_pins axi_uart16550_0/UART]
 
+connect_bd_net [get_bd_pins axi_uart16550_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In16]
+
 # Add Timer for the Echo server example application
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer axi_timer_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_timer_0/S_AXI]
 
-connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In16]
+connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In17]
 
 # Add AXI EMC (linear flash) for PetaLinux
 
@@ -228,7 +264,12 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "linear_flash ( Linear flash ) " }  [get_bd_intf_pins axi_emc_0/EMC_INTF]
 apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config {Clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_pins axi_emc_0/rdclk]
 
+# Create external port connections
+connect_bd_net [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_ports mmcm_lock]
+connect_bd_net [get_bd_pins mig_7series_0/init_calib_complete] [get_bd_ports init_calib_complete]
+
 # Restore current instance
 current_bd_instance $oldCurInst
 
 save_bd_design
+

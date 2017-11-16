@@ -51,11 +51,33 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/ddr4_0/addn_ui_clkout1 (100 MHz)" }  [get_bd_cells microblaze_0]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 
+# Configure MicroBlaze for Linux
+set_property -dict [list CONFIG.G_TEMPLATE_LIST {4} \
+CONFIG.G_USE_EXCEPTIONS {1} \
+CONFIG.C_USE_MSR_INSTR {1} \
+CONFIG.C_USE_PCMP_INSTR {1} \
+CONFIG.C_USE_BARREL {1} \
+CONFIG.C_USE_DIV {1} \
+CONFIG.C_USE_HW_MUL {2} \
+CONFIG.C_UNALIGNED_EXCEPTIONS {1} \
+CONFIG.C_ILL_OPCODE_EXCEPTION {1} \
+CONFIG.C_M_AXI_I_BUS_EXCEPTION {1} \
+CONFIG.C_M_AXI_D_BUS_EXCEPTION {1} \
+CONFIG.C_DIV_ZERO_EXCEPTION {1} \
+CONFIG.C_PVR {2} \
+CONFIG.C_OPCODE_0x0_ILLEGAL {1} \
+CONFIG.C_ICACHE_LINE_LEN {8} \
+CONFIG.C_ICACHE_VICTIMS {8} \
+CONFIG.C_ICACHE_STREAMS {1} \
+CONFIG.C_DCACHE_VICTIMS {8} \
+CONFIG.C_USE_MMU {3} \
+CONFIG.C_MMU_ZONES {2}] [get_bd_cells microblaze_0]
+
 # Connect 100MHz processor system reset external reset to the reset port
 connect_bd_net [get_bd_ports reset] [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
 
 # Configure the interrupt concat
-set_property -dict [list CONFIG.NUM_PORTS {17}] [get_bd_cells microblaze_0_xlconcat]
+set_property -dict [list CONFIG.NUM_PORTS {18}] [get_bd_cells microblaze_0_xlconcat]
 
 # Add the AXI Ethernet IPs
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
@@ -358,12 +380,14 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_uart16550_0/S_AXI]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "rs232_uart ( UART ) " }  [get_bd_intf_pins axi_uart16550_0/UART]
 
+connect_bd_net [get_bd_pins axi_uart16550_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In16]
+
 # Add Timer for the Echo server example application
 
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer axi_timer_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_timer_0/S_AXI]
 
-connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In16]
+connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In17]
 
 
 # Restore current instance

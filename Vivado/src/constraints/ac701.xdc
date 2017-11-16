@@ -1,6 +1,12 @@
+#GPIO LEDs
+set_property PACKAGE_PIN M26 [get_ports mmcm_lock]
+set_property IOSTANDARD LVCMOS33 [get_ports mmcm_lock]
+set_property PACKAGE_PIN T24 [get_ports init_calib_complete]
+set_property IOSTANDARD LVCMOS33 [get_ports init_calib_complete]
+
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports ref_clk_p]
-set_property DIFF_TERM TRUE [get_ports ref_clk_n]
+set_property DIFF_TERM TRUE [get_ports ref_clk_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[0]}]
@@ -43,8 +49,8 @@ set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_2_mdio_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[2]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_p]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_n]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_clk_p]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_clk_n]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_td[0]}]
@@ -108,8 +114,8 @@ set_property PACKAGE_PIN F22 [get_ports mdio_io_port_2_mdio_io]
 set_property PACKAGE_PIN F24 [get_ports {rgmii_port_3_td[0]}]
 set_property PACKAGE_PIN E26 [get_ports {rgmii_port_3_td[2]}]
 set_property PACKAGE_PIN D26 [get_ports {rgmii_port_3_td[3]}]
-set_property PACKAGE_PIN D19 [get_ports ref_clk_p]
-set_property PACKAGE_PIN C19 [get_ports ref_clk_n]
+set_property PACKAGE_PIN D19 [get_ports ref_clk_clk_p]
+set_property PACKAGE_PIN C19 [get_ports ref_clk_clk_n]
 set_property PACKAGE_PIN H14 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN H15 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN F18 [get_ports {rgmii_port_0_td[0]}]
@@ -133,5 +139,5 @@ set_property PACKAGE_PIN D25 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN H26 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN G26 [get_ports reset_port_3]
 
-create_clock -period 8.000 -name ref_clk_p -waveform {0.000 4.000} [get_ports ref_clk_p]
+create_clock -period 8.000 -name ref_clk_clk_p -waveform {0.000 4.000} [get_ports ref_clk_clk_p]
 

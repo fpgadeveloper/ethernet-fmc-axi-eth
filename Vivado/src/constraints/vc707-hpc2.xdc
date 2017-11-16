@@ -1,6 +1,12 @@
+#GPIO LEDs
+set_property PACKAGE_PIN AM39 [get_ports mmcm_lock]
+set_property IOSTANDARD LVCMOS18 [get_ports mmcm_lock]
+set_property PACKAGE_PIN AN39 [get_ports init_calib_complete]
+set_property IOSTANDARD LVCMOS18 [get_ports init_calib_complete]
+
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports ref_clk_p]
-set_property DIFF_TERM TRUE [get_ports ref_clk_n]
+set_property DIFF_TERM TRUE [get_ports ref_clk_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[0]}]
@@ -43,8 +49,8 @@ set_property IOSTANDARD LVCMOS18 [get_ports mdio_io_port_2_mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS [get_ports ref_clk_p]
-set_property IOSTANDARD LVDS [get_ports ref_clk_n]
+set_property IOSTANDARD LVDS [get_ports ref_clk_clk_p]
+set_property IOSTANDARD LVDS [get_ports ref_clk_clk_n]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_td[0]}]
@@ -108,8 +114,8 @@ set_property PACKAGE_PIN R34 [get_ports mdio_io_port_2_mdio_io]
 set_property PACKAGE_PIN W37 [get_ports {rgmii_port_3_td[0]}]
 set_property PACKAGE_PIN V39 [get_ports {rgmii_port_3_td[2]}]
 set_property PACKAGE_PIN V40 [get_ports {rgmii_port_3_td[3]}]
-set_property PACKAGE_PIN AF39 [get_ports ref_clk_p]
-set_property PACKAGE_PIN AF40 [get_ports ref_clk_n]
+set_property PACKAGE_PIN AF39 [get_ports ref_clk_clk_p]
+set_property PACKAGE_PIN AF40 [get_ports ref_clk_clk_n]
 set_property PACKAGE_PIN AK39 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN AL39 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN AL41 [get_ports {rgmii_port_0_td[0]}]
@@ -133,5 +139,5 @@ set_property PACKAGE_PIN R32 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN P37 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN P38 [get_ports reset_port_3]
 
-#create_clock -period 8.000 -name ref_clk_p -waveform {0.000 4.000} [get_ports ref_clk_p]
+#create_clock -period 8.000 -name ref_clk_clk_p -waveform {0.000 4.000} [get_ports ref_clk_clk_p]
 

@@ -78,11 +78,17 @@ do
     petalinux-config --get-hw-description ../$f --oldconfig
   fi
 
+  # Get the board name
+  board=${proj%%_*}
+  
   # Copy PetaLinux config files
   cp -R ../src/common/* .
   cp -R ../src/$cpu_type/* .
   if [[ $portconfig != "ports-" ]]; then
     cp -R ../src/$portconfig/* .
+  fi
+  if [ -d "../src/$board" ]; then
+    cp -R ../src/$board/* .
   fi
 
   # Build PetaLinux project if not built already
@@ -95,17 +101,19 @@ do
 
   # Package PetaLinux project if not packaged
   if [[ $cpu_type == microblaze ]]; then
-    if [ -f "./images/linux/boot.mcs" ]; then
-      echo "> PetaLinux project already packaged"
-    else
-      echo "> Packaging PetaLinux project"
-      petalinux-package --boot --force \
-      --fpga ../$bit --offset 0x000000 \
-      $fsbl_option --u-boot --offset 0x1400000 \
-      --kernel --offset 0x1600000 \
-      --flash-size 128 \
-      --flash-intf BPIx16
-    fi
+    # Do nothing for now
+    :
+    # if [ -f "./images/linux/boot.mcs" ]; then
+    #   echo "> PetaLinux project already packaged"
+    # else
+    #   echo "> Packaging PetaLinux project"
+    #   petalinux-package --boot --force \
+    #   --fpga ../$bit --offset 0x000000 \
+    #   $fsbl_option --u-boot --offset 0x1400000 \
+    #   --kernel --offset 0x1600000 \
+    #   --flash-size 128 \
+    #   --flash-intf BPIx16
+    # fi
   else
     if [[ -f "./images/linux/BOOT.BIN" && -f "./images/linux/image.ub" ]]; then
       echo "> PetaLinux project already packaged"
