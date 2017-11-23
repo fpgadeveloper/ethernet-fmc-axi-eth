@@ -4,7 +4,7 @@
 #*****************************************************************************************
 
 # Check the version of Vivado used
-set version_required "2017.2"
+set version_required "2017.3"
 set ver [lindex [split $::env(XILINX_VIVADO) /] 3]
 if {![string equal $ver $version_required]} {
   puts "###############################"
@@ -106,12 +106,17 @@ current_run -synthesis [get_runs synth_1]
 
 # Create 'impl_1' run (if not found)
 if {[string equal [get_runs -quiet impl_1] ""]} {
-  create_run -name impl_1 -part xcku040-ffva1156-2-e -flow {Vivado Implementation 2017} -strategy "Vivado Implementation Defaults" -constrset constrs_1 -parent_run synth_1
+  create_run -name impl_1 -part xcku040-ffva1156-2-e -flow {Vivado Implementation 2017} -strategy "Performance_Explore" -constrset constrs_1 -parent_run synth_1
 } else {
-  set_property strategy "Vivado Implementation Defaults" [get_runs impl_1]
+  set_property strategy "Performance_Explore" [get_runs impl_1]
   set_property flow "Vivado Implementation 2017" [get_runs impl_1]
 }
 set obj [get_runs impl_1]
+set_property -name "steps.opt_design.args.directive" -value "Explore" -objects $obj
+set_property -name "steps.place_design.args.directive" -value "Explore" -objects $obj
+set_property -name "steps.phys_opt_design.is_enabled" -value "1" -objects $obj
+set_property -name "steps.phys_opt_design.args.directive" -value "Explore" -objects $obj
+set_property -name "steps.route_design.args.directive" -value "Explore" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj
 set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
 

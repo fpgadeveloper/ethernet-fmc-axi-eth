@@ -77,7 +77,7 @@ CONFIG.C_MMU_ZONES {2}] [get_bd_cells microblaze_0]
 connect_bd_net [get_bd_ports reset] [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
 
 # Configure the interrupt concat
-set_property -dict [list CONFIG.NUM_PORTS {23}] [get_bd_cells microblaze_0_xlconcat]
+set_property -dict [list CONFIG.NUM_PORTS {24}] [get_bd_cells microblaze_0_xlconcat]
 
 # Add the AXI Ethernet IPs for the LPC
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
@@ -416,12 +416,18 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0
 # Configure axi_mem_intercon for 4 slave ports (first 2 already used by the Microblaze)
 set_property -dict [list CONFIG.NUM_SI {4} CONFIG.NUM_MI {1}] [get_bd_cells axi_mem_intercon]
 
-# Add register slices to help pass timing
+# Add register slices to help pass timing and configure for "Performance" strategy
 set_property -dict [list CONFIG.M00_HAS_REGSLICE {4} \
 CONFIG.S00_HAS_REGSLICE {4} \
 CONFIG.S01_HAS_REGSLICE {4} \
 CONFIG.S02_HAS_REGSLICE {4} \
-CONFIG.S03_HAS_REGSLICE {4}] [get_bd_cells axi_mem_intercon]
+CONFIG.S03_HAS_REGSLICE {4} \
+CONFIG.STRATEGY {2} \
+CONFIG.ENABLE_ADVANCED_OPTIONS {0} \
+CONFIG.S00_HAS_DATA_FIFO {2} \
+CONFIG.S01_HAS_DATA_FIFO {2} \
+CONFIG.S02_HAS_DATA_FIFO {2} \
+CONFIG.S03_HAS_DATA_FIFO {2}] [get_bd_cells axi_mem_intercon]
 
 # Connect the resets and clocks to the slave interfaces that we just added
 connect_bd_net [get_bd_pins axi_mem_intercon/S02_ARESETN] [get_bd_pins rst_refclk_250M_0/peripheral_aresetn]
@@ -675,6 +681,14 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0
 
 connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In22]
 
+# Add the AXI Quad SPI for flash memory
+
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi axi_quad_spi_0
+apply_bd_automation -rule xilinx.com:bd_rule:board  [get_bd_intf_pins axi_quad_spi_0/SPI_0]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "Auto" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
+set_property -dict [ list CONFIG.C_FIFO_DEPTH {256} CONFIG.C_SPI_MEMORY {2} CONFIG.C_SPI_MODE {2} ] [get_bd_cells axi_quad_spi_0]
+connect_bd_net [get_bd_pins axi_quad_spi_0/ext_spi_clk] [get_bd_pins ddr4_0/addn_ui_clkout1]
+connect_bd_net [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In23]
 
 # Restore current instance
 current_bd_instance $oldCurInst

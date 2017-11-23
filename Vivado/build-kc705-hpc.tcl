@@ -4,7 +4,7 @@
 #*****************************************************************************************
 
 # Check the version of Vivado used
-set version_required "2017.2"
+set version_required "2017.3"
 set ver [lindex [split $::env(XILINX_VIVADO) /] 3]
 if {![string equal $ver $version_required]} {
   puts "###############################"
@@ -44,7 +44,6 @@ set_property -name "simulator_language" -value "Mixed" -objects $obj
 if {[string equal [get_filesets -quiet sources_1] ""]} {
   create_fileset -srcset sources_1
 }
-
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]

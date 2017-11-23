@@ -82,13 +82,22 @@ do
   board=${proj%%_*}
   
   # Copy PetaLinux config files
-  cp -R ../src/common/* .
-  cp -R ../src/$cpu_type/* .
-  if [[ $portconfig != "ports-" ]]; then
-    cp -R ../src/$portconfig/* .
-  fi
-  if [ -d "../src/$board" ]; then
-    cp -R ../src/$board/* .
+  if [[ -f "configdone.txt" ]]; then
+    echo "> PetaLinux config files already transferred"
+  else
+    echo "> Transferring PetaLinux config files"
+    cp -R ../src/common/* .
+    cp -R ../src/$cpu_type/* .
+    if [[ $portconfig != "ports-" ]]; then
+      cp -R ../src/$portconfig/* .
+    fi
+    if [ -d "../src/$board" ]; then
+      cp -R ../src/$board/* .
+    fi
+    # File to indicate that config files have been transferred 
+    touch configdone.txt
+    # Run petalinux-config again to register the config files
+    petalinux-config --oldconfig
   fi
 
   # Build PetaLinux project if not built already

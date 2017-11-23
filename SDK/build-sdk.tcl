@@ -64,11 +64,20 @@ proc fill_local_libraries {} {
   # For each of the custom lwIP versions in our local repo
   foreach lwip_dir [glob -type d "../EmbeddedSw/ThirdParty/sw_services/*"] {
     # Work out the original version library directory name by removing the appended "9"
-    set lib_name [string trimright [lindex [split $lwip_dir /] end] "9"]
+    set lib_name [string range [lindex [split $lwip_dir /] end] 0 end-1]
     set orig_dir "$sdk_dir/data/embeddedsw/ThirdParty/sw_services/$lib_name"
     puts "Copying files from $orig_dir to $lwip_dir"
     # Copy the original files to local repo, without overwriting existing code
     copy-r $orig_dir $lwip_dir
+  }
+  # For each of the custom axi_ethernet driver versions in our local repo
+  foreach driver_dir [glob -type d "../EmbeddedSw/XilinxProcessorIPLib/drivers/*"] {
+    # Work out the original version library directory name by removing the appended "9"
+    set lib_name [string range [lindex [split $driver_dir /] end] 0 end-1]
+    set orig_dir "$sdk_dir/data/embeddedsw/XilinxProcessorIPLib/drivers/$lib_name"
+    puts "Copying files from $orig_dir to $driver_dir"
+    # Copy the original files to local repo, without overwriting existing code
+    copy-r $orig_dir $driver_dir
   }
 }
 

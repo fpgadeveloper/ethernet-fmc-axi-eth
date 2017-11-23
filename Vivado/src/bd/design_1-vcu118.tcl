@@ -48,8 +48,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "res
 # Add the Microblaze
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 
-# Use 103MHz additional MIG clock (note: using the 300MHz MIG clock would make it hard to close timing and is not necessary)
-apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/ddr4_0/addn_ui_clkout1 (103 MHz)" }  [get_bd_cells microblaze_0]
+# Use 100MHz additional MIG clock (note: using the 300MHz MIG clock would make it hard to close timing and is not necessary)
+apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "64KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/ddr4_0/addn_ui_clkout1 (100 MHz)" }  [get_bd_cells microblaze_0]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 
 # Configure MicroBlaze for Linux
@@ -74,45 +74,23 @@ CONFIG.C_DCACHE_VICTIMS {8} \
 CONFIG.C_USE_MMU {3} \
 CONFIG.C_MMU_ZONES {2}] [get_bd_cells microblaze_0]
 
+# Configure MicroBlaze for Low-end Linux with MMU
+#set_property -dict [list CONFIG.G_TEMPLATE_LIST {5} \
+#CONFIG.C_USE_DIV {0} \
+#CONFIG.C_USE_HW_MUL {1} \
+#CONFIG.C_DIV_ZERO_EXCEPTION {0} \
+#CONFIG.C_PVR {0} \
+#CONFIG.C_ADDR_TAG_BITS {18} \
+#CONFIG.C_CACHE_BYTE_SIZE {8192} \
+#CONFIG.C_ICACHE_LINE_LEN {4} \
+#CONFIG.C_ICACHE_VICTIMS {0} \
+#CONFIG.C_ICACHE_STREAMS {0} \
+#CONFIG.C_DCACHE_ADDR_TAG {18} \
+#CONFIG.C_DCACHE_BYTE_SIZE {8192} \
+#CONFIG.C_DCACHE_VICTIMS {0}] [get_bd_cells microblaze_0]
+
 # Connect 100MHz processor system reset external reset to the reset port
 connect_bd_net [get_bd_ports reset] [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
-
-# Configure the interrupt concat
-set_property -dict [list CONFIG.NUM_PORTS {18}] [get_bd_cells microblaze_0_xlconcat]
-
-# Add the AXI Ethernet IPs
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
-
-# Configure all ports for full checksum hardware offload
-set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_0]
-set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_1]
-set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_2]
-set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_3]
-
-# Configure ports 1,2 and 3 for "Don't include shared logic"
-set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_3]
-set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_2]
-set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_1]
-
-# Configure all AXI Ethernet: RGMII with DMA
-set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_0]
-set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_1]
-set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_2]
-set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_3]
-
-# Create DMAs
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_0_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_1_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_2_dma
-create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_3_dma
-
-set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_0_dma]
-set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_1_dma]
-set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_2_dma]
-set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_3_dma]
 
 # Create the clock wizard to generate 300MHz, 125MHz and 250MHz from Ethernet FMC 125MHz ref clock
 create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
@@ -149,18 +127,79 @@ create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
 connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_n]
 set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
 
-# Connect clocks to the AXI Ethernets
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_0/ref_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_0/gtx_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_1/gtx_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_2/gtx_clk]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_3/gtx_clk]
+# Add proc system reset for the 300MHz clock generated by the clock wizard
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_300M
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins rst_clk_wiz_0_300M/slowest_sync_clk]
+connect_bd_net [get_bd_ports reset] [get_bd_pins rst_clk_wiz_0_300M/ext_reset_in]
+connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_clk_wiz_0_300M/dcm_locked]
+
+# Add proc system reset for the 125MHz clock generated by the clock wizard
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_125M
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins rst_clk_wiz_0_125M/slowest_sync_clk]
+connect_bd_net [get_bd_ports reset] [get_bd_pins rst_clk_wiz_0_125M/ext_reset_in]
+connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_clk_wiz_0_125M/dcm_locked]
 
 # Add proc system reset for the 250MHz clock generated by the clock wizard
 create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_refclk_250M
 connect_bd_net [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins rst_refclk_250M/slowest_sync_clk]
 connect_bd_net [get_bd_ports reset] [get_bd_pins rst_refclk_250M/ext_reset_in]
 connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_refclk_250M/dcm_locked]
+
+# Configure the interrupt concat
+set_property -dict [list CONFIG.NUM_PORTS {18}] [get_bd_cells microblaze_0_xlconcat]
+
+# Add the AXI Ethernet IPs
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_2
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_3
+
+# Configure all ports for full checksum hardware offload
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_3]
+
+# Configure ports 1,2 and 3 for "Don't include shared logic"
+set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_3]
+set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_1]
+
+# Configure all AXI Ethernet: RGMII with DMA
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_3]
+
+# Disable the stats counters to help pass timing
+set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_3]
+
+# Disable the frame filters to help pass timing
+set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_0]
+set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_1]
+set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_2]
+set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_3]
+
+# Create DMAs
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_0_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_1_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_2_dma
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_ethernet_3_dma
+
+set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_0_dma]
+set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_1_dma]
+set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_2_dma]
+set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_3_dma]
+
+# Connect clocks to the AXI Ethernets
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_0/ref_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_0/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_1/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_2/gtx_clk]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_3/gtx_clk]
 
 # Connect DMAs to AXI Ethernets
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_0/m_axis_rxd] [get_bd_intf_pins axi_ethernet_0_dma/S_AXIS_S2MM]

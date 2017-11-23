@@ -99,6 +99,18 @@ set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_3]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_2]
 set_property -dict [list CONFIG.SupportLevel {0}] [get_bd_cells axi_ethernet_1]
 
+## Disable the stats counters to help pass timing
+#set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_0]
+#set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_1]
+#set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_2]
+#set_property -dict [list CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_3]
+
+## Disable the frame filters to help pass timing
+#set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_0]
+#set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_1]
+#set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_2]
+#set_property -dict [list CONFIG.Frame_Filter {false}] [get_bd_cells axi_ethernet_3]
+
 # Configure all AXI Ethernet: RGMII with DMA
 set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_0]
 set_property -dict [list CONFIG.PHY_TYPE {RGMII}] [get_bd_cells axi_ethernet_1]

@@ -327,3 +327,24 @@ set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells *_i/axi
 # layout, this DRC can be bypassed by acknowledging the condition and setting the following
 # XDC constraint:
 set_property UNAVAILABLE_DURING_CALIBRATION TRUE [get_ports mdio_io_port_7_mdio_io]
+
+#QSPI
+set_property PACKAGE_PIN M20 [ get_ports spi_rtl_io0_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io0_io]
+
+set_property PACKAGE_PIN L20 [ get_ports spi_rtl_io1_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io1_io]
+
+set_property PACKAGE_PIN R22 [ get_ports spi_rtl_io2_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io2_io]
+
+set_property PACKAGE_PIN R21 [ get_ports spi_rtl_io3_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io3_io]
+
+set_property PACKAGE_PIN G26 [ get_ports spi_rtl_ss_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_ss_io]
+
+# SCK not used - loc it to unused pin: GPIO_LED_1_LS
+set_property PACKAGE_PIN H23 [ get_ports spi_rtl_sck_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_sck_io]
+
