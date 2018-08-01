@@ -150,31 +150,32 @@ set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre
 #set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_2_dma]
 set_property -dict [list CONFIG.c_sg_length_width {16} CONFIG.c_include_mm2s_dre {1} CONFIG.c_sg_use_stsapp_length {1} CONFIG.c_include_s2mm_dre {1}] [get_bd_cells axi_ethernet_3_dma]
 
-# Create the clock wizard to generate 300MHz and 125MHz from Ethernet FMC 125MHz ref clock
+# Create the clock wizard to generate 300MHz, 125MHz and 250MHz from Ethernet FMC 125MHz ref clock
 create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
 set_property -dict [list CONFIG.PRIM_IN_FREQ.VALUE_SRC USER] [get_bd_cells clk_wiz_0]
 set_property -dict [list CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} \
 CONFIG.PRIM_IN_FREQ {125} \
 CONFIG.CLKOUT2_USED {true} \
 CONFIG.CLKOUT3_USED {true} \
-CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {300} \
+CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {333.333} \
 CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {125} \
 CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {250} \
 CONFIG.USE_RESET {false} \
 CONFIG.CLKIN1_JITTER_PS {80.0} \
 CONFIG.MMCM_DIVCLK_DIVIDE {1} \
-CONFIG.MMCM_CLKFBOUT_MULT_F {6.000} \
+CONFIG.MMCM_CLKFBOUT_MULT_F {8.000} \
 CONFIG.MMCM_CLKIN1_PERIOD {8.0} \
-CONFIG.MMCM_CLKOUT0_DIVIDE_F {2.500} \
-CONFIG.MMCM_CLKOUT1_DIVIDE {6} \
-CONFIG.MMCM_CLKOUT2_DIVIDE {3} \
+CONFIG.MMCM_CLKIN2_PERIOD {10.000} \
+CONFIG.MMCM_CLKOUT0_DIVIDE_F {3.000} \
+CONFIG.MMCM_CLKOUT1_DIVIDE {8} \
+CONFIG.MMCM_CLKOUT2_DIVIDE {4} \
 CONFIG.NUM_OUT_CLKS {3} \
-CONFIG.CLKOUT1_JITTER {109.127} \
-CONFIG.CLKOUT1_PHASE_ERROR {112.379} \
-CONFIG.CLKOUT2_JITTER {128.871} \
-CONFIG.CLKOUT2_PHASE_ERROR {112.379} \
-CONFIG.CLKOUT3_JITTER {112.962} \
-CONFIG.CLKOUT3_PHASE_ERROR {112.379}] [get_bd_cells clk_wiz_0]
+CONFIG.CLKOUT1_JITTER {99.263} \
+CONFIG.CLKOUT1_PHASE_ERROR {96.948} \
+CONFIG.CLKOUT2_JITTER {119.348} \
+CONFIG.CLKOUT2_PHASE_ERROR {96.948} \
+CONFIG.CLKOUT3_JITTER {104.759} \
+CONFIG.CLKOUT3_PHASE_ERROR {96.948}] [get_bd_cells clk_wiz_0]
 
 # Create the ports for the external ref clock input
 create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
@@ -279,9 +280,13 @@ connect_bd_net [get_bd_pins axi_ethernet_1_dma/axi_resetn] [get_bd_pins rst_ddr4
 connect_bd_net [get_bd_pins axi_ethernet_3_dma/axi_resetn] [get_bd_pins rst_ddr4_0_100M/peripheral_aresetn]
 
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
+set_property range 256K [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_0_Reg0}]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1/s_axi]
+set_property range 256K [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_1_Reg0}]
 #apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2/s_axi]
+#set_property range 256K [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_2_Reg0}]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3/s_axi]
+set_property range 256K [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_3_Reg0}]
 
 # Configure axi_mem_intercon for 11 slave ports (first 2 already used by the Microblaze)
 set_property -dict [list CONFIG.NUM_SI {11} CONFIG.NUM_MI {1}] [get_bd_cells axi_mem_intercon]

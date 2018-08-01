@@ -112,14 +112,14 @@ The included patch handles this modification - you do not need to manually modif
 
 ### Port configurations
 
-#### AC701, KC705, KCU105, VC707, VC709
+#### AC701, KC705, KCU105, VC707, VC709, ZCU102
 
 * eth0: Ethernet FMC Port 0
 * eth1: Ethernet FMC Port 1
 * eth2: Ethernet FMC Port 2
 * eth3: Ethernet FMC Port 3
 
-#### MicroZed, PicoZed, ZC702, ZC706, ZCU102, ZedBoard
+#### MicroZed, PicoZed, ZC702, ZC706, ZedBoard
 
 * eth0: GEM0 to Ethernet port of the dev board
 * eth1: Ethernet FMC Port 0

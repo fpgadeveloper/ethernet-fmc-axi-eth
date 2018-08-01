@@ -5,11 +5,11 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 
 ## Requirements
 
-This project is designed for Vivado 2017.3. If you are using an older version of Vivado, then you *MUST* use an older version
+This project is designed for Vivado 2018.2. If you are using an older version of Vivado, then you *MUST* use an older version
 of this repository. Refer to the [list of commits](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/commits/master "list of commits")
 to find links to the older versions of this repository.
 
-* Vivado 2017.3 (requires patch, see notes below)
+* Vivado 2018.2
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -45,21 +45,6 @@ to find links to the older versions of this repository.
 * Virtex Ultrascale [VCU108 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu108-g.html "VCU108 Evaluation board")
   * HPC0 connector (use vcu108-hpc0.xdc)
   
-## Vivado 2017.3 patch for TEMAC hardware evaluation license
-
-If you are using a TEMAC hardware evaluation license, required to evaluate the AXI Ethernet Subsystem IP core, 
-then you will need to apply this patch to Vivado 2017.3 in order to build these example designs.
-
-Create a text file called `init.tcl` in the folder `C:\Xilinx\Vivado\2017.3\scripts`. This script will run each
-time a Vivado instance is launched. Copy and paste the code below into the file, and then save it:
-```
-# Workaround for Vivado 2017.3 issue with AXI Ethernet IP Hardware Eval licence
-# https://forums.xilinx.com/t5/Networking-and-Connectivity/AXI-Ethernet-generated-file-not-found-in-Vivado-2017-3/td-p/800348
-set_param ips.generation.cacheXitResults false
-```
-For more information regarding this patch, please see this Xilinx 
-[forum post](https://forums.xilinx.com/t5/Networking-and-Connectivity/AXI-Ethernet-generated-file-not-found-in-Vivado-2017-3/td-p/800348 "AXI Ethernet generated file not found in Vivado 2017.3").
-
 ## 8-port Support (2 x Ethernet FMCs)
 
 The only Evaluation boards that can support two Ethernet FMCs simultaneously are the 
@@ -179,7 +164,7 @@ The main differences between the designs are described below:
 #### Installation of MicroZed and PicoZed board definition files
 
 To use the projects for the MicroZed and PicoZed, you must first install the board definition files
-for those boards into your Vivado installation.
+for those boards into your Vivado and Xilinx SDK installation.
 
 The following folders contain the board definition files and can be found in this project repository at this location:
 
@@ -192,8 +177,9 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 * `picozed_7020_fmc2`
 * `picozed_7030_fmc2`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2017.3\data\boards\board_files` folder (this may
-be different on your machine, depending on your Vivado installation directory).
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2018.2\data\boards\board_files` folder (this may
+be different on your machine, depending on your Vivado installation directory). You also need to make a copy into the
+Xilinx SDK installation at this location: `C:\Xilinx\SDK\2018.2\data\boards\board_files`.
 
 ## Microblaze design differences
 

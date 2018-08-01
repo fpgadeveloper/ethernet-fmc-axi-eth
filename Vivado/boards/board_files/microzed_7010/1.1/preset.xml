@@ -50,7 +50,7 @@
         <user_parameter name="CONFIG.PCW_EN_RST2_PORT" value="0"/> 
         <user_parameter name="CONFIG.PCW_EN_RST3_PORT" value="0"/> 
         <user_parameter name="CONFIG.PCW_EN_DDR" value="1"/> 
-        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_MEMORY_TYPE" value="DDR 3 (Low Voltage)"/> 
+        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_MEMORY_TYPE" value="DDR 3"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_PARTNO" value="MT41K256M16 RE-125"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_DEVICE_CAPACITY" value="4096 MBits"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_BUS_WIDTH" value="32 Bit" />
@@ -61,10 +61,10 @@
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_DRAM_WIDTH" value="16 Bits"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_T_RAS_MIN" value="35.0"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_SPEED_BIN" value="DDR3_1066F"/> 
-        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_0_LENGTH_MM" value="39.7"/> 
-        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_1_LENGTH_MM" value="39.7"/> 
-        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_2_LENGTH_MM" value="54.14"/> 
-        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_3_LENGTH_MM" value="54.14"/> 
+        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_0_LENGTH_MM" value="54.14"/> 
+        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_1_LENGTH_MM" value="54.14"/> 
+        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_2_LENGTH_MM" value="39.7"/> 
+        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_CLOCK_3_LENGTH_MM" value="39.7"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_DQ_0_LENGTH_MM" value="49.59"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_DQ_1_LENGTH_MM" value="51.74"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_DQ_2_LENGTH_MM" value="50.32"/> 
@@ -84,7 +84,7 @@
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY1" value="0.298"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY2" value="0.338"/> 
         <user_parameter name="CONFIG.PCW_UIPARAM_DDR_BOARD_DELAY3" value="0.334"/> 
-        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_USE_INTERNAL_VREF" value="1"/> 
+        <user_parameter name="CONFIG.PCW_UIPARAM_DDR_USE_INTERNAL_VREF" value="0"/> 
         <user_parameter name="CONFIG.PCW_QSPI_GRP_SINGLE_SS_IO" value="MIO 1 .. 6"/> 
         <user_parameter name="CONFIG.PCW_USB0_RESET_IO" value="MIO 7"/> 
         <user_parameter name="CONFIG.PCW_QSPI_GRP_FBCLK_IO" value="MIO 8"/> 
