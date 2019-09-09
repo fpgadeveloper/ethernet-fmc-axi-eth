@@ -397,12 +397,12 @@ proc check_apps {} {
 
 # Copy original lwIP library sources into the local SDK repo
 puts "Building the local SDK repo from original sources"
-#fill_local_libraries
+fill_local_libraries
 
 # Create the SDK workspace
 puts "Creating the SDK workspace"
-#create_sdk_ws
-#build_projects
+create_sdk_ws
+build_projects
 create_boot_files
 check_apps
 
