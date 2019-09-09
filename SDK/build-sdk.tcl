@@ -335,6 +335,11 @@ proc create_boot_files {} {
         puts "ELF does not exist for ${board_name}_fsbl"
         continue
       }
+      if {[str_contains $proc_instance "psu_cortexa53_"]} {
+        set arch_type "zynqmp"
+      } else {
+        set arch_type "zynq"
+      }
     }
     
     # If all required files exist, then generate boot files
@@ -350,25 +355,24 @@ proc create_boot_files {} {
       file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.bit" "./boot/${board_name}"
       file copy "./${app_name}/Debug/${app_name}.elf" "./boot/${board_name}"
       file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.mmi" "./boot/${board_name}"
-    # For Zynq MP designs
-    } elseif {[str_contains $proc_instance "psu_cortexa53_"]} {
-      puts "Generating BOOT.bin file for Zynq MP $board_name project."
-      # Generate the .bif file
-      create_zynqmp_bif $board_name $app_name $vivado_folder "./boot" "."
-      set bootgen_cmd "bootgen -image ./boot/${board_name}.bif -arch zynqmp -o ./boot/${board_name}/BOOT.bin -w on"
-    # For Zynq designs
+    # For Zynq and Zynq MP designs
     } else {
-      puts "Generating BOOT.bin file for Zynq $board_name project."
       # Generate the .bif file
-      create_zynq_bif $board_name $app_name $vivado_folder "./boot" "."
-      set bootgen_cmd "bootgen -image ./boot/${board_name}.bif -arch zynq -o ./boot/${board_name}/BOOT.bin -w on"
+      if { $arch_type == "zynqmp" } {
+        puts "Generating BOOT.bin file for Zynq MP $board_name project."
+        create_zynqmp_bif $board_name $app_name $vivado_folder "./boot" "."
+      } else {
+        puts "Generating BOOT.bin file for Zynq $board_name project."
+        create_zynq_bif $board_name $app_name $vivado_folder "./boot" "."
+      }
+      set bootgen_cmd "bootgen -image ./boot/${board_name}.bif -arch ${arch_type} -o ./boot/${board_name}/BOOT.bin -w on"
+      # Swap forward slashes for back slashes on Windows systems
+      set OS [lindex $::tcl_platform(os) 0]
+      if { $OS == "Windows" } {
+        regsub -all {/} $bootgen_cmd {\\\\} bootgen_cmd
+      }
+      exec {*}$bootgen_cmd
     }
-    # Swap forward slashes for back slashes on Windows systems
-    set OS [lindex $::tcl_platform(os) 0]
-    if { $OS == "Windows" } {
-      regsub -all {/} $bootgen_cmd {\\\\} bootgen_cmd
-    }
-    exec {*}$bootgen_cmd
   }
 }
 
@@ -393,12 +397,12 @@ proc check_apps {} {
 
 # Copy original lwIP library sources into the local SDK repo
 puts "Building the local SDK repo from original sources"
-fill_local_libraries
+#fill_local_libraries
 
 # Create the SDK workspace
 puts "Creating the SDK workspace"
-create_sdk_ws
-build_projects
+#create_sdk_ws
+#build_projects
 create_boot_files
 check_apps
 
