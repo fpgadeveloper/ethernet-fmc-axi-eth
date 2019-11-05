@@ -38,9 +38,9 @@ set oldCurInst [current_bd_instance .]
 current_bd_instance $parentObj
 
 # Add the Memory controller (MIG) for the DDR3
-create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series mig_7series_0
-apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interface "ddr3_sdram" }  [get_bd_cells mig_7series_0]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_7series_0/sys_rst]
+create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series mig_0
+apply_bd_automation -rule xilinx.com:bd_rule:mig_7series -config {Board_Interface "ddr3_sdram" }  [get_bd_cells mig_0]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins mig_0/sys_rst]
 
 # Create ports
 set mmcm_lock [ create_bd_port -dir O mmcm_lock ]
@@ -48,9 +48,9 @@ set init_calib_complete [ create_bd_port -dir O init_calib_complete ]
 
 # Add the MicroBlaze
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
-apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "128KB" ecc "None" cache "16KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_7series_0/ui_addn_clk_0 (100 MHz)" }  [get_bd_cells microblaze_0]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_7series_0/S_AXI]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins rst_mig_7series_0_100M/ext_reset_in]
+apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "128KB" ecc "None" cache "16KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/mig_0/ui_addn_clk_0 (100 MHz)" }  [get_bd_cells microblaze_0]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins mig_0/S_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins rst_mig_0_100M/ext_reset_in]
 
 # Configure MicroBlaze for Linux
 set_property -dict [list CONFIG.G_TEMPLATE_LIST {4} \
@@ -249,14 +249,14 @@ connect_bd_intf_net [get_bd_intf_pins axi_ethernet_5/s_axis_txd] [get_bd_intf_pi
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_6/s_axis_txd] [get_bd_intf_pins axi_ethernet_6_dma/M_AXIS_MM2S]
 connect_bd_intf_net [get_bd_intf_pins axi_ethernet_7/s_axis_txd] [get_bd_intf_pins axi_ethernet_7_dma/M_AXIS_MM2S]
 
-connect_bd_net [get_bd_pins axi_ethernet_0/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_1/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_2/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_3/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_4/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_5/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_6/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_7/s_axi_lite_clk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_0/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_1/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_2/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_3/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_4/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_5/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_6/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_7/s_axi_lite_clk] [get_bd_pins mig_0/ui_addn_clk_0]
 
 connect_bd_net [get_bd_pins axi_ethernet_0/axis_clk] [get_bd_pins clk_wiz_0/clk_out1]
 connect_bd_net [get_bd_pins axi_ethernet_1/axis_clk] [get_bd_pins clk_wiz_0/clk_out1]
@@ -267,14 +267,14 @@ connect_bd_net [get_bd_pins axi_ethernet_5/axis_clk] [get_bd_pins clk_wiz_1/clk_
 connect_bd_net [get_bd_pins axi_ethernet_6/axis_clk] [get_bd_pins clk_wiz_1/clk_out1]
 connect_bd_net [get_bd_pins axi_ethernet_7/axis_clk] [get_bd_pins clk_wiz_1/clk_out1]
 
-connect_bd_net [get_bd_pins axi_ethernet_0_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_1_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_2_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_3_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_4_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_5_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_6_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
-connect_bd_net [get_bd_pins axi_ethernet_7_dma/s_axi_lite_aclk] [get_bd_pins mig_7series_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_0_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_1_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_2_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_3_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_4_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_5_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_6_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
+connect_bd_net [get_bd_pins axi_ethernet_7_dma/s_axi_lite_aclk] [get_bd_pins mig_0/ui_addn_clk_0]
 
 connect_bd_net [get_bd_pins axi_ethernet_0_dma/m_axi_sg_aclk] [get_bd_pins clk_wiz_0/clk_out1]
 connect_bd_net [get_bd_pins axi_ethernet_1_dma/m_axi_sg_aclk] [get_bd_pins clk_wiz_0/clk_out1]
@@ -360,22 +360,22 @@ connect_bd_net [get_bd_pins axi_ethernet_7/axi_txc_arstn] [get_bd_pins axi_ether
 connect_bd_net [get_bd_pins axi_ethernet_7/axi_rxd_arstn] [get_bd_pins axi_ethernet_7_dma/s2mm_prmry_reset_out_n]
 connect_bd_net [get_bd_pins axi_ethernet_7/axi_rxs_arstn] [get_bd_pins axi_ethernet_7_dma/s2mm_sts_reset_out_n]
 
-connect_bd_net [get_bd_pins axi_ethernet_0/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_1/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_2/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_3/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_4/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_5/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_6/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_7/s_axi_lite_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_0_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_1_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_2_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_3_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_4_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_5_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_6_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_ethernet_7_dma/axi_resetn] [get_bd_pins rst_mig_7series_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_0/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_1/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_2/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_3/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_4/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_5/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_6/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_7/s_axi_lite_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_0_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_1_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_2_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_3_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_4_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_5_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_6_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_ethernet_7_dma/axi_resetn] [get_bd_pins rst_mig_0_100M/peripheral_aresetn]
 
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_0/s_axi]
 set_property range 256K [get_bd_addr_segs {microblaze_0/Data/SEG_axi_ethernet_0_Reg0}]
@@ -399,7 +399,7 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_mem_intercon_0
 set_property -dict [list CONFIG.NUM_SI {11} CONFIG.NUM_MI {1} CONFIG.NUM_MI {1}] [get_bd_cells axi_mem_intercon_0]
 set_property -dict [list CONFIG.NUM_SI {16} CONFIG.NUM_MI {1} CONFIG.NUM_MI {1}] [get_bd_cells axi_mem_intercon]
 connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_mem_intercon_0/M00_AXI] [get_bd_intf_pins axi_mem_intercon/S02_AXI]
-connect_bd_net [get_bd_pins axi_mem_intercon/S02_ARESETN] [get_bd_pins rst_mig_7series_0_200M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_mem_intercon/S02_ARESETN] [get_bd_pins rst_mig_0_200M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon/S03_ARESETN] [get_bd_pins rst_clk_wiz_0_125M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon/S04_ARESETN] [get_bd_pins rst_clk_wiz_0_125M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon/S05_ARESETN] [get_bd_pins rst_clk_wiz_0_125M/peripheral_aresetn]
@@ -413,7 +413,7 @@ connect_bd_net [get_bd_pins axi_mem_intercon/S12_ARESETN] [get_bd_pins rst_clk_w
 connect_bd_net [get_bd_pins axi_mem_intercon/S13_ARESETN] [get_bd_pins rst_clk_wiz_0_125M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon/S14_ARESETN] [get_bd_pins rst_clk_wiz_0_125M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon/S15_ARESETN] [get_bd_pins rst_clk_wiz_1_125M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_mem_intercon/S02_ACLK] [get_bd_pins mig_7series_0/ui_clk]
+connect_bd_net [get_bd_pins axi_mem_intercon/S02_ACLK] [get_bd_pins mig_0/ui_clk]
 connect_bd_net [get_bd_pins axi_mem_intercon/S03_ACLK] [get_bd_pins clk_wiz_0/clk_out1]
 connect_bd_net [get_bd_pins axi_mem_intercon/S04_ACLK] [get_bd_pins clk_wiz_0/clk_out1]
 connect_bd_net [get_bd_pins axi_mem_intercon/S05_ACLK] [get_bd_pins clk_wiz_0/clk_out1]
@@ -427,10 +427,10 @@ connect_bd_net [get_bd_pins axi_mem_intercon/S12_ACLK] [get_bd_pins clk_wiz_0/cl
 connect_bd_net [get_bd_pins axi_mem_intercon/S13_ACLK] [get_bd_pins clk_wiz_0/clk_out1]
 connect_bd_net [get_bd_pins axi_mem_intercon/S14_ACLK] [get_bd_pins clk_wiz_0/clk_out1]
 connect_bd_net [get_bd_pins axi_mem_intercon/S15_ACLK] [get_bd_pins clk_wiz_1/clk_out1]
-connect_bd_net [get_bd_pins axi_mem_intercon_0/ACLK] [get_bd_pins mig_7series_0/ui_clk]
-connect_bd_net [get_bd_pins axi_mem_intercon_0/M00_ACLK] [get_bd_pins mig_7series_0/ui_clk]
-connect_bd_net [get_bd_pins axi_mem_intercon_0/M00_ARESETN] [get_bd_pins rst_mig_7series_0_200M/peripheral_aresetn]
-connect_bd_net [get_bd_pins axi_mem_intercon_0/ARESETN] [get_bd_pins rst_mig_7series_0_200M/interconnect_aresetn]
+connect_bd_net [get_bd_pins axi_mem_intercon_0/ACLK] [get_bd_pins mig_0/ui_clk]
+connect_bd_net [get_bd_pins axi_mem_intercon_0/M00_ACLK] [get_bd_pins mig_0/ui_clk]
+connect_bd_net [get_bd_pins axi_mem_intercon_0/M00_ARESETN] [get_bd_pins rst_mig_0_200M/peripheral_aresetn]
+connect_bd_net [get_bd_pins axi_mem_intercon_0/ARESETN] [get_bd_pins rst_mig_0_200M/interconnect_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon_0/S00_ARESETN] [get_bd_pins rst_clk_wiz_1_125M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon_0/S01_ARESETN] [get_bd_pins rst_clk_wiz_1_125M/peripheral_aresetn]
 connect_bd_net [get_bd_pins axi_mem_intercon_0/S02_ARESETN] [get_bd_pins rst_clk_wiz_1_125M/peripheral_aresetn]
@@ -645,12 +645,12 @@ connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlc
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi axi_quad_spi_0
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "spi_flash ( SPI flash ) " }  [get_bd_intf_pins axi_quad_spi_0/SPI_0]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "Auto" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
-apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config {Clk "/mig_7series_0/ui_clk (100 MHz)" }  [get_bd_pins axi_quad_spi_0/ext_spi_clk]
+apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config {Clk "/mig_0/ui_clk (100 MHz)" }  [get_bd_pins axi_quad_spi_0/ext_spi_clk]
 connect_bd_net [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In26]
 
 # Create external port connections
-connect_bd_net [get_bd_ports mmcm_lock] [get_bd_pins mig_7series_0/mmcm_locked]
-connect_bd_net [get_bd_ports init_calib_complete] [get_bd_pins mig_7series_0/init_calib_complete]
+connect_bd_net [get_bd_ports mmcm_lock] [get_bd_pins mig_0/mmcm_locked]
+connect_bd_net [get_bd_ports init_calib_complete] [get_bd_pins mig_0/init_calib_complete]
 
 # Restore current instance
 current_bd_instance $oldCurInst

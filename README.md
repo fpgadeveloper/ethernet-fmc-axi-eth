@@ -5,11 +5,11 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 
 ## Requirements
 
-This project is designed for Vivado 2018.2. If you are using an older version of Vivado, then you *MUST* use an older version
+This project is designed for Vivado 2019.2. If you are using an older version of Vivado, then you *MUST* use an older version
 of this repository. Refer to the [list of commits](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/commits/master "list of commits")
 to find links to the older versions of this repository.
 
-* Vivado 2018.2
+* Vivado 2019.2
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the above listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -177,9 +177,9 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 * `picozed_7020_fmc2`
 * `picozed_7030_fmc2`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2018.2\data\boards\board_files` folder (this may
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2019.2\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory). You also need to make a copy into the
-Xilinx SDK installation at this location: `C:\Xilinx\SDK\2018.2\data\boards\board_files`.
+Xilinx SDK installation at this location: `C:\Xilinx\SDK\2019.2\data\boards\board_files`.
 
 ## Microblaze design differences
 
