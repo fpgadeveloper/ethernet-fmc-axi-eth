@@ -42,7 +42,15 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7 processing_system
 apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" }  [get_bd_cells processing_system7_0]
 
 # Configure the PS: Enable HP0, Enable interrupts
-set_property -dict [list CONFIG.PCW_USE_S_AXI_HP0 {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_IRQ_F2P_INTR {1}] [get_bd_cells processing_system7_0]
+set_property -dict [list CONFIG.PCW_USE_M_AXI_GP0 {1} \
+CONFIG.PCW_USE_S_AXI_HP0 {1} \
+CONFIG.PCW_USE_FABRIC_INTERRUPT {1} \
+CONFIG.PCW_IRQ_F2P_INTR {1}] [get_bd_cells processing_system7_0]
+
+# The ZedBoard design requires the I2C0 peripheral to be enabled in PS
+if {$design_name == "zedboard_axieth"} {
+  set_property -dict [list CONFIG.PCW_I2C0_PERIPHERAL_ENABLE {1}] [get_bd_cells processing_system7_0]
+}
 
 # Connect the FCLK_CLK0 to the PS GP0 and HP0
 connect_bd_net [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK]
@@ -89,6 +97,13 @@ connect_bd_intf_net [get_bd_intf_ports ref_clk] [get_bd_intf_pins clk_wiz_0/CLK_
 create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins processing_system7_0/IRQ_F2P]
 set_property -dict [list CONFIG.NUM_PORTS {16}] [get_bd_cells xlconcat_0]
+
+# I2C port for ZedBoard design
+if {$design_name == "zedboard_axieth"} {
+  # Add the port for IIC
+  create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_fmc
+  connect_bd_intf_net [get_bd_intf_pins processing_system7_0/IIC_0] [get_bd_intf_ports iic_fmc]
+}
 
 # Add the AXI Ethernet IPs
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0
@@ -277,6 +292,20 @@ apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/processing_s
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/processing_system7_0/M_AXI_GP0" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_1_dma/S_AXI_LITE]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/processing_system7_0/M_AXI_GP0" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_2_dma/S_AXI_LITE]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/processing_system7_0/M_AXI_GP0" Clk "Auto" }  [get_bd_intf_pins axi_ethernet_3_dma/S_AXI_LITE]
+
+# Enable Auto reg slices on slave interfaces to help timing
+set_property -dict [list CONFIG.S00_HAS_REGSLICE {3} \
+CONFIG.S01_HAS_REGSLICE {3} \
+CONFIG.S02_HAS_REGSLICE {3} \
+CONFIG.S03_HAS_REGSLICE {3} \
+CONFIG.S04_HAS_REGSLICE {3} \
+CONFIG.S05_HAS_REGSLICE {3} \
+CONFIG.S06_HAS_REGSLICE {3} \
+CONFIG.S07_HAS_REGSLICE {3} \
+CONFIG.S08_HAS_REGSLICE {3} \
+CONFIG.S09_HAS_REGSLICE {3} \
+CONFIG.S10_HAS_REGSLICE {3} \
+CONFIG.S11_HAS_REGSLICE {3}] [get_bd_cells axi_mem_intercon]
 
 assign_bd_address
 

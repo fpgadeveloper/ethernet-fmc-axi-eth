@@ -17,33 +17,31 @@ to find links to the older versions of this repository.
 ## Supported boards
 
 * Zynq-7000 [ZedBoard](http://zedboard.org "ZedBoard")
-  * LPC connector (use zedboard.xdc)
+  * LPC connector
 * Zynq-7000 [MicroZed FMC Carrier](http://zedboard.org/product/microzed-fmc-carrier "MicroZed FMC Carrier") with [MicroZed 7Z020](http://microzed.org "MicroZed")
-  * LPC connector (use mzfmc-7z010-7z020.xdc)
+  * LPC connector
 * Zynq-7000 [PicoZed FMC Carrier Card V2](http://zedboard.org/product/picozed-fmc-carrier-card-v2 "PicoZed FMC Carrier Card V2") with [PicoZed 7015/20/30](http://picozed.org "PicoZed")
-  * LPC connector (use pzfmc-7z0xx.xdc)
+  * LPC connector
 * Artix-7 [AC701 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-a7-ac701-g.html "AC701 Evaluation board")
-  * HPC connector (use ac701.xdc)
+  * HPC connector
 * Kintex-7 [KC705 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-k7-kc705-g.html "KC705 Evaluation board")
-  * LPC connector (use kc705-lpc.xdc)
-  * HPC connector (use kc705-hpc.xdc)
+  * LPC connector
+  * HPC connector
 * Kintex UltraScale [KCU105 Evaluation board](http://www.xilinx.com/products/boards-and-kits/kcu105.html "KCU105 Evaluation board")
-  * LPC connector (use kcu105-lpc.xdc)
-  * HPC connector (use kcu105-hpc.xdc)
+  * LPC connector
+  * HPC connector
 * Virtex-7 [VC707 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-v7-vc707-g.html "VC707 Evaluation board")
-  * HPC connector 1 (use vc707-hpc1.xdc)
-  * HPC connector 2 (use vc707-hpc2.xdc)
+  * HPC connector 1
+  * HPC connector 2
 * Virtex-7 [VC709 Evaluation board](http://www.xilinx.com/products/boards-and-kits/dk-v7-vc709-g.html "VC709 Evaluation board")
-  * HPC connector (use vc709.xdc)
+  * HPC connector
 * Zynq-7000 [ZC702 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc702-g.html "ZC702 Evaluation board")
-  * LPC connector 1 (use zc702-lpc1.xdc)
-  * LPC connector 2 (use zc702-lpc2.xdc)
+  * LPC connector 1
+  * LPC connector 2
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (LPC only)
-  * LPC connector (use zc706-lpc.xdc)
+  * LPC connector
 * Zynq UltraScale+ ZCU102 Evaluation board Rev 1.0
-  * HPC0 connector (use zcu102-hpc0.xdc)
-* Virtex Ultrascale [VCU108 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/ek-u1-vcu108-g.html "VCU108 Evaluation board")
-  * HPC0 connector (use vcu108-hpc0.xdc)
+  * HPC0 connector
   
 ## 8-port Support (2 x Ethernet FMCs)
 
@@ -123,7 +121,7 @@ to one of the following values depending on the port you want to target:
 
 ## Board specific notes
 
-### VC707, VC709 & VCU108
+### VC707 & VC709
 
 * These boards can only support the 1.8V version Ethernet FMC. The device on these boards have only HP (high-performance)
 I/Os which do not support 2.5V levels.
@@ -183,7 +181,7 @@ Xilinx SDK installation at this location: `C:\Xilinx\SDK\2019.2\data\boards\boar
 
 ## Microblaze design differences
 
-The designs for AC701, KC705, VC707, VC709, KCU105 & VCU108 all use the Microblaze soft processor. These designs
+The designs for AC701, KC705, VC707, VC709 & KCU105 all use the Microblaze soft processor. These designs
 have some specific differences when compared to the Zynq based designs:
 
 * MIG - the MIG is required to exploit the DDR3/4 memory of the eval boards.
