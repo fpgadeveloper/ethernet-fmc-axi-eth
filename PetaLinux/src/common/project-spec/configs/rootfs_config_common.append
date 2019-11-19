@@ -1,0 +1,3 @@
+CONFIG_ethtool=y
+CONFIG_ethtool-dev=y
+CONFIG_ethtool-dbg=y

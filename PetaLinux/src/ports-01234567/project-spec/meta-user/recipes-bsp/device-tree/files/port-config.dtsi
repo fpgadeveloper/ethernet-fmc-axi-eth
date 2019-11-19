@@ -1,0 +1,129 @@
+
+    &axi_ethernet_0 {  
+        local-mac-address = [00 0a 35 00 01 22];  
+        phy-handle = <&phy0>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy0: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_1 {  
+        local-mac-address = [00 0a 35 00 01 23];  
+        phy-handle = <&phy1>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy1: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_2 {  
+        local-mac-address = [00 0a 35 00 01 24];  
+        phy-handle = <&phy2>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy2: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_3 {  
+        local-mac-address = [00 0a 35 00 01 25];  
+        phy-handle = <&phy3>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy3: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_4 {  
+        local-mac-address = [00 0a 35 00 01 26];  
+        phy-handle = <&phy4>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy4: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_5 {  
+        local-mac-address = [00 0a 35 00 01 27];  
+        phy-handle = <&phy5>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy5: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_6 {  
+        local-mac-address = [00 0a 35 00 01 28];  
+        phy-handle = <&phy6>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy6: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_7 {  
+        local-mac-address = [00 0a 35 00 01 29];  
+        phy-handle = <&phy7>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            phy7: phy@0 {  
+                compatible = "marvell,88e1510";  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+

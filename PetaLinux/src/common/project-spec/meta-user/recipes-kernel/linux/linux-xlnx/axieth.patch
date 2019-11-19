@@ -1,0 +1,13 @@
+diff --git a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+index 72f469c..5a5baaa 100644
+--- a/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
++++ b/drivers/net/ethernet/xilinx/xilinx_axienet_main.c
+@@ -1531,7 +1531,7 @@ static int axienet_open(struct net_device *ndev)
+ 		} else if (lp->phy_mode == XAE_PHY_TYPE_RGMII_2_0) {
+ 			phydev = of_phy_connect(lp->ndev, lp->phy_node,
+ 						axienet_adjust_link, 0,
+-						PHY_INTERFACE_MODE_RGMII_ID);
++						lp->phy_interface);
+ 		} else if ((lp->axienet_config->mactype == XAXIENET_1G) ||
+ 			     (lp->axienet_config->mactype == XAXIENET_2_5G)) {
+ 			phydev = of_phy_connect(lp->ndev, lp->phy_node,
