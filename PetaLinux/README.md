@@ -36,14 +36,13 @@ to the Unix format.
 The PetaLinux directory contains a `build-petalinux` shell script which can be run in Linux to automatically
 generate a PetaLinux project for each of the generated/exported Vivado projects in the Vivado directory.
 
-When executed, the build script searches the Vivado directory for all projects containing `*.sdk` sub-directories.
-This locates all projects that have been exported to SDK. Then for every exported project, the script
-does the following:
+When executed, the build script searches the Vivado directory for all projects containing a `.xsa` exported
+hardware design file. Then for every exported project, the script does the following:
 
-1. Verifies that the `.hdf` and the `.bit` files exist.
+1. Verifies that the `.bit` file exists.
 2. Determines the CPU type: Zynq or ZynqMP. It currently does this
 by looking at the first 3 letters of the project name.
-3. Creates a PetaLinux project, referencing the exported hardware design (.hdf).
+3. Creates a PetaLinux project, referencing the exported hardware design (.xsa).
 4. Copies the relevant configuration files from the `src` directory into the created
 PetaLinux project.
 5. Builds the PetaLinux project.
@@ -117,20 +116,53 @@ The included patch handles this modification - you do not need to manually modif
 
 ### Port configurations
 
-#### AC701, KC705, KCU105, VC707, VC709, ZCU102
+All designs will try to automatically configure the eth0 device on boot, so it can be
+useful to connect the eth0 device to a DHCP router before the hardware is powered-up.
+Note that on Zynq and ZynqMP designs, the eth0 device is connected to the development board's
+Ethernet port and not the Ethernet FMC.
+
+#### AC701, KC705
+
+* eth0: Ethernet FMC Port 0
+* eth1: Ethernet FMC Port 1
+* eth2: Ethernet FMC Port 2
+* eth3: Ethernet FMC Port 3
+* eth4: Ethernet port of the dev board
+
+#### KCU105 HPC, VC707, VC709
 
 * eth0: Ethernet FMC Port 0
 * eth1: Ethernet FMC Port 1
 * eth2: Ethernet FMC Port 2
 * eth3: Ethernet FMC Port 3
 
-#### MicroZed, PicoZed, ZC702, ZC706, ZedBoard
+#### KCU105 LPC
+
+* eth0: Ethernet FMC Port 0
+* eth1: Ethernet FMC Port 1
+* eth2: Ethernet FMC Port 3
+
+Ethernet FMC Port 2 is unusable in this design.
+
+#### MicroZed, PicoZed, ZC702, ZC706, ZedBoard, ZCU102
 
 * eth0: GEM0 to Ethernet port of the dev board
 * eth1: Ethernet FMC Port 0
 * eth2: Ethernet FMC Port 1
 * eth3: Ethernet FMC Port 2
 * eth4: Ethernet FMC Port 3
+
+#### KCU105 Dual design
+
+* eth0: HPC Ethernet FMC Port 0 (AXI Ethernet)
+* eth1: HPC Ethernet FMC Port 1 (AXI Ethernet)
+* eth2: HPC Ethernet FMC Port 2 (AXI Ethernet)
+* eth3: HPC Ethernet FMC Port 3 (AXI Ethernet)
+* eth4: LPC Ethernet FMC Port 0 (AXI Ethernet)
+* eth5: LPC Ethernet FMC Port 1 (AXI Ethernet)
+* eth6: LPC Ethernet FMC Port 3 (AXI Ethernet)
+
+Ethernet FMC Port 2 on the LPC is unusable in this design.
 
 #### VC707 Dual design
 
@@ -145,13 +177,5 @@ The included patch handles this modification - you do not need to manually modif
 
 #### ZC702 Dual design
 
-* eth0: Ethernet port of the dev board (GEM0)
-* eth1: LPC2 Ethernet FMC Port 0 (AXI Ethernet)
-* eth2: LPC2 Ethernet FMC Port 1 (AXI Ethernet)
-* eth3: LPC2 Ethernet FMC Port 2 (AXI Ethernet)
-* eth4: LPC2 Ethernet FMC Port 3 (AXI Ethernet)
-* eth5: LPC1 Ethernet FMC Port 0 (AXI Ethernet)
-* eth6: LPC1 Ethernet FMC Port 1 (AXI Ethernet)
-* eth7: LPC1 Ethernet FMC Port 2 (AXI Ethernet)
-* eth8: LPC1 Ethernet FMC Port 3 (AXI Ethernet)
-
+Note that the ZC702 dual design will not produce a working PetaLinux project because it's Ethernet
+MACs are connected to FIFOs and not AXI DMAs. We are working on a solution to this.

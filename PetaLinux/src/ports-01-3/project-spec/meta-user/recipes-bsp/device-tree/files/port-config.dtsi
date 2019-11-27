@@ -1,13 +1,13 @@
 
     &axi_ethernet_0 {  
         local-mac-address = [00 0a 35 00 01 22];  
-        phy-handle = <&phy0>;  
+        phy-handle = <&extphy0>;  
         xlnx,has-mdio = <0x1>;  
         phy-mode = "rgmii-rxid";  
         mdio {  
             #address-cells = <1>;  
             #size-cells = <0>;  
-            phy0: phy@0 {  
+            extphy0: phy@0 {  
                 compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
@@ -17,13 +17,13 @@
       
     &axi_ethernet_1 {  
         local-mac-address = [00 0a 35 00 01 23];  
-        phy-handle = <&phy1>;  
+        phy-handle = <&extphy1>;  
         xlnx,has-mdio = <0x1>;  
         phy-mode = "rgmii-rxid";  
         mdio {  
             #address-cells = <1>;  
             #size-cells = <0>;  
-            phy1: phy@0 {  
+            extphy1: phy@0 {  
                 compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
@@ -33,13 +33,13 @@
       
     &axi_ethernet_3 {  
         local-mac-address = [00 0a 35 00 01 25];  
-        phy-handle = <&phy3>;  
+        phy-handle = <&extphy3>;  
         xlnx,has-mdio = <0x1>;  
         phy-mode = "rgmii-rxid";  
         mdio {  
             #address-cells = <1>;  
             #size-cells = <0>;  
-            phy3: phy@0 {  
+            extphy3: phy@0 {  
                 compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
