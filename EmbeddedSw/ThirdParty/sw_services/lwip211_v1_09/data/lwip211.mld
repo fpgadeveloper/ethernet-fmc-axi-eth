@@ -1,14 +1,42 @@
+###############################################################################
+#
+# Copyright (C) 2007 - 2019 Xilinx, Inc.  All rights reserved.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# XILINX BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+# OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+# Except as contained in this notice, the name of the Xilinx shall not be used
+# in advertising or otherwise to promote the sale, use or other dealings in
+# this Software without prior written authorization from Xilinx.
+#
+###############################################################################
+
 OPTION psf_version = 2.1;
 
-BEGIN LIBRARY lwip141
+BEGIN LIBRARY lwip211
 
   OPTION drc = lwip_drc;
   OPTION copyfiles = all;
-  OPTION desc = "lwIP TCP/IP Stack library: lwIP v1.4.1";
+  OPTION desc = "lwip211 library: lwIP (light weight IP) is an open source TCP/IP stack configured for Xilinx hard and soft Ethernet MACs";
   OPTION app_linker_flags = "-Wl,--start-group,-lxil,-llwip4,-lgcc,-lc,--end-group";
-  OPTION requires_os = (standalone xilkernel freertos901_xilinx);
-  OPTION VERSION = 1.89;
-  OPTION NAME = lwip141;
+  OPTION requires_os = (standalone xilkernel freertos10_xilinx);
+  OPTION VERSION = 1.09;
+  OPTION NAME = lwip211;
 
   PARAM name = api_mode, desc = "Mode of operation for lwIP (RAW API/Sockets API)", type = enum, values = ("RAW API" = RAW_API, "SOCKET API" = SOCKET_API), default = RAW_API;
   PARAM name = no_sys_no_timers, desc = "Drops support for sys_timeout when NO_SYS==1", type = bool, default = true;
@@ -56,6 +84,15 @@ BEGIN LIBRARY lwip141
 	PARAM name = pbuf_link_hlen, desc = "Number of bytes that should be allocated for a link level header.", type = int, default = 16, permit = none;
   END CATEGORY
 
+  BEGIN CATEGORY mbox_options
+	PROPERTY desc = "Mbox Related Options";
+	PARAM name = mbox_options, desc = "Mbox Options", type = bool, default = true, permit = none;
+	PARAM name = lwip_tcpip_core_locking_input, desc = "TCPIP input core locking", type = bool, default = false;
+	PARAM name = tcpip_mbox_size, desc = "Size of TCPIP mbox queue.", type = int, default = 200;
+	PARAM name = default_tcp_recvmbox_size, desc = "Size of TCP receive mbox queue.", type = int, default = 200;
+	PARAM name = default_udp_recvmbox_size, desc = "Size of UDP receive mbox queue.", type = int, default = 100;
+  END CATEGORY
+
   BEGIN CATEGORY arp_options
 	PROPERTY desc = "ARP Options";
 	PARAM name = arp_options, desc = "ARP Options", type = bool, default = true, permit = none;
@@ -79,6 +116,12 @@ BEGIN LIBRARY lwip141
 	PROPERTY desc = "ICMP Options";
 	PARAM name = icmp_options, desc = "ICMP Options", type = bool, default = true, permit = none;
 	PARAM name = icmp_ttl, desc = "ICMP TTL value", type = int, default = 255;
+  END CATEGORY
+
+  BEGIN CATEGORY lwip_ipv6_options
+	PROPERTY desc = "IPv6 Options";
+	PARAM name = ipv6_options, desc = "IPv6 Options", type = bool, default = true, permit = none;
+	PARAM name = ipv6_enable, desc = "IPv6 enable value", type = bool, default = false;
   END CATEGORY
 
   BEGIN CATEGORY igmp_options

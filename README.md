@@ -5,9 +5,9 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 
 ## Requirements
 
-This project is designed for Vivado 2019.2. If you are using an older version of Vivado, then you *MUST* use an older version
-of this repository. Refer to the [list of commits](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/commits/master "list of commits")
-to find links to the older versions of this repository.
+This project is designed for version 2019.2 of the Xilinx tools (Vivado/SDK/PetaLinux). If you are using an older version of the 
+Xilinx tools, then refer to the [release tags](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/releases "releases")
+to find the version of this repository that matches your version of the tools.
 
 * Vivado 2019.2
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
@@ -80,6 +80,8 @@ The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 To use the sources in this repository, please follow these steps:
 
+### Windows users
+
 1. Download the repo as a zip file and extract the files to a directory
    on your hard drive --OR-- Git users: clone the repo to your hard drive
 2. Open Windows Explorer, browse to the repo files on your hard drive.
@@ -102,10 +104,38 @@ To use the sources in this repository, please follow these steps:
 13. In the SDK, select `Xilinx Tools->Program FPGA`.
 14. Right-click on the application and select `Run As->Launch on Hardware (System Debugger)`
 
+### Linux users
+
+1. Download the repo as a zip file and extract the files to a directory
+   on your hard drive --OR-- Git users: clone the repo to your hard drive
+2. Launch the Vivado GUI.
+3. Open the Tcl console from the Vivado welcome page. In the console, `cd` to the repo files
+   on your hard drive and into the Vivado subdirectory. For example: `cd /media/projects/ethernet-fmc-axi-eth/Vivado`.
+3. In the Vivado subdirectory, you will find multiple Tcl files. To list them, type `exec ls {*}[glob *.tcl]`.
+   Determine the Tcl script for the example project that you would like to generate (for example: `build-zedboard.tcl`), 
+   then `source` the script in the Tcl console: For example: `source build-zedboard.tcl`
+4. Vivado will run the script and generate the project. When it's finished, click Generate bitstream.
+5. When the bitstream is successfully generated, select `File->Export->Export Hardware`.
+   In the window that opens, tick "Include bitstream" and "Local to project".
+6. To build the SDK workspace, open a Linux command terminal and `cd` to the SDK directory in the repo.
+7. The SDK directory contains the `build-sdk.tcl` script that will build the SDK workspace containing the hardware design and
+   the software application. Run the build script by typing the following command: 
+   `<path-of-xilinx-sdk>/bin/xsdk -batch -source build-sdk.tcl`. Note that you must replace `<path-of-xilinx-sdk>` with the 
+   actual path to your Xilinx SDK installation.
+8. Run Xilinx SDK (DO NOT use the Launch SDK option from Vivado) and select the workspace to be the SDK subdirectory of the 
+   repo.
+10. Select `Project->Build automatically`.
+11. Connect and power up the hardware.
+12. Open a Putty terminal to view the UART output.
+13. In the SDK, select `Xilinx Tools->Program FPGA`.
+14. Right-click on the application and select `Run As->Launch on Hardware (System Debugger)`
+
+## Stand-alone software application
+
 The software application used to test these projects is the lwIP Echo Server example that is built into
 Xilinx SDK. The application relies on the lwIP library (also built into Xilinx SDK) but with a few modifications.
 The modified version of the lwIP library is contained in the `EmbeddedSw` directory, which is added as a
-local SDK repository to the SDK workspace. See the readme in the SDK directory for more information.
+local SDK repository to the SDK workspace. See the "README.md" file in the SDK directory for more information.
 
 ## Single port limit
 
@@ -120,6 +150,16 @@ to one of the following values depending on the port you want to target:
 * Ethernet FMC Port 3: `XPAR_AXIETHERNET_3_BASEADDR`
 
 ## Board specific notes
+
+### AC701
+
+* The AC701's on-board Ethernet port is not connected in this design.
+* This design includes a reset GPIO so that the MicroBlaze can reset itself from PetaLinux.
+
+### KC705
+
+* The KC705's on-board Ethernet port is connected to AXI EthernetLite IP in these designs.
+* This design includes a reset GPIO so that the MicroBlaze can reset itself from PetaLinux.
 
 ### VC707 & VC709
 
