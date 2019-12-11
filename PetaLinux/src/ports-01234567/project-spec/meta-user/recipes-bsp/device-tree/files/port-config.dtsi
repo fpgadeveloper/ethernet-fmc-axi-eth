@@ -8,7 +8,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy0: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -24,7 +23,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy1: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -40,7 +38,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy2: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -56,7 +53,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy3: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -72,7 +68,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy4: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -88,7 +83,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy5: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -104,7 +98,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy6: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
@@ -120,7 +113,6 @@
             #address-cells = <1>;  
             #size-cells = <0>;  
             extphy7: phy@0 {  
-                compatible = "marvell,88e1510";  
                 device_type = "ethernet-phy";  
                 reg = <0>;  
             };  
