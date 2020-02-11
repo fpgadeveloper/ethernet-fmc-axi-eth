@@ -1,0 +1,31 @@
+
+    &axi_ethernet_0 {  
+        local-mac-address = [00 0a 35 00 01 22];  
+        phy-handle = <&extphy0>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            extphy0: phy@0 {  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
+    &axi_ethernet_1 {  
+        local-mac-address = [00 0a 35 00 01 23];  
+        phy-handle = <&extphy1>;  
+        xlnx,has-mdio = <0x1>;  
+        phy-mode = "rgmii-rxid";  
+        mdio {  
+            #address-cells = <1>;  
+            #size-cells = <0>;  
+            extphy1: phy@0 {  
+                device_type = "ethernet-phy";  
+                reg = <0>;  
+            };  
+        };  
+    };  
+      
