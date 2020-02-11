@@ -40,8 +40,9 @@ to find the version of this repository that matches your version of the tools.
   * LPC connector 2
 * Zynq-7000 [ZC706 Evaluation board](http://www.xilinx.com/products/boards-and-kits/ek-z7-zc706-g.html "ZC706 Evaluation board") (LPC only)
   * LPC connector
-* Zynq UltraScale+ ZCU102 Evaluation board Rev 1.0
+* Zynq UltraScale+ ZCU102 Evaluation board
   * HPC0 connector
+  * HPC1 connector (design limited to 2 ports only)
   
 ## 8-port Support (2 x Ethernet FMCs)
 
@@ -183,10 +184,11 @@ is no such problem with the HPC for this board.
 
 ### ZCU102
 
-* This design supports the ZCU102 Rev 1.0 board. Use a commit before 2016-02-13 for the older Rev-D board design.
+* These designs support the ZCU102 Rev 1.0 and newer boards. Use a commit before 2016-02-13 for the older Rev-D board design.
 Note that the FMC pinouts differ between Rev 1.0 and Rev D: https://www.xilinx.com/support/answers/68050.html
 * This board can only support the 1.8V version Ethernet FMC. The device on this board has only HP (high-performance)
 I/Os which do not support 2.5V levels.
+* The HPC1 design only supports 2 ports due to the HPC1 pin assignment to the Zynq US+ (see constraints file for more details).
 
 ### PicoZed
 

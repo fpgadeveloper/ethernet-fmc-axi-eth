@@ -1,5 +1,5 @@
 #
-# build.tcl: Tcl script for re-creating project 'zcu102_hpc0_axieth'
+# build.tcl: Tcl script for re-creating project 'zcu102_hpc1_axieth'
 #
 #*****************************************************************************************
 
@@ -17,7 +17,7 @@ if {![string equal $ver $version_required]} {
   return
 }
 
-set design_name zcu102_hpc0_axieth
+set design_name zcu102_hpc1_axieth
 
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
@@ -59,17 +59,17 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 set obj [get_filesets constrs_1]
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/src/constraints/zcu102-hpc0.xdc"]"
+set file "[file normalize "$origin_dir/src/constraints/zcu102-hpc1.xdc"]"
 set file_added [add_files -norecurse -fileset $obj $file]
-set file "$origin_dir/src/constraints/zcu102-hpc0.xdc"
+set file "$origin_dir/src/constraints/zcu102-hpc1.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property "file_type" "XDC" $file_obj
 
 # Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/src/constraints/rgmii-0123.xdc"]"
+set file "[file normalize "$origin_dir/src/constraints/rgmii-01--.xdc"]"
 set file_added [add_files -norecurse -fileset $obj $file]
-set file "$origin_dir/src/constraints/rgmii-0123.xdc"
+set file "$origin_dir/src/constraints/rgmii-01--.xdc"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
 set_property "file_type" "XDC" $file_obj
@@ -77,7 +77,7 @@ set_property "processing_order" "LATE" $file_obj
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
-set_property "target_constrs_file" "[file normalize "$origin_dir/src/constraints/zcu102-hpc0.xdc"]" $obj
+set_property "target_constrs_file" "[file normalize "$origin_dir/src/constraints/zcu102-hpc1.xdc"]" $obj
 
 # Create 'sim_1' fileset (if not found)
 if {[string equal [get_filesets -quiet sim_1] ""]} {
@@ -121,8 +121,8 @@ current_run -implementation [get_runs impl_1]
 puts "INFO: Project created:${design_name}"
 
 # Create block design
-set ports {0 1 2 3}
-set shared_logic_port 2
+set ports {0 1}
+set shared_logic_port 0
 source $origin_dir/src/bd/design_1-zcu102.tcl
 
 # Generate the wrapper
