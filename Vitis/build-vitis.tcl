@@ -2,14 +2,14 @@
 
 # Description
 # -----------
-# This Tcl script will create an SDK workspace with software applications for each of the
+# This Tcl script will create Vitis workspace with software applications for each of the
 # exported hardware designs in the ../Vivado directory.
 
 # lwIP modifications
 # ------------------
 # These applications use a modified version of the lwIP library contained in the
 # ../EmbeddedSw directory. The original lwIP library can be found here:
-# C:\Xilinx\SDK\<version>\data\embeddedsw\ThirdParty\sw_services
+# C:\Xilinx\Vitis\<version>\data\embeddedsw\ThirdParty\sw_services
 # This script will copy the original lwIP library sources into the ../EmbeddedSw directory,
 # except for the modified files already contained in that directory. The ../EmbeddedSw
 # directory then serves as a remote SDK repository for the software applications.
@@ -59,13 +59,13 @@ proc copy-r {{dir .} target_dir} {
 
 # Fill in the local libraries with original sources without overwriting existing code
 proc fill_local_libraries {} {
-  # Xilinx SDK install directory
-  set sdk_dir $::env(XILINX_SDK)
+  # Xilinx Vitis install directory
+  set vitis_dir $::env(XILINX_VITIS)
   # For each of the custom lwIP versions in our local repo
   foreach lwip_dir [glob -type d "../EmbeddedSw/ThirdParty/sw_services/*"] {
     # Work out the original version library directory name by removing the appended "9"
     set lib_name [string range [lindex [split $lwip_dir /] end] 0 end-1]
-    set orig_dir "$sdk_dir/data/embeddedsw/ThirdParty/sw_services/$lib_name"
+    set orig_dir "$vitis_dir/data/embeddedsw/ThirdParty/sw_services/$lib_name"
     puts "Copying files from $orig_dir to $lwip_dir"
     # Copy the original files to local repo, without overwriting existing code
     copy-r $orig_dir $lwip_dir
@@ -74,25 +74,11 @@ proc fill_local_libraries {} {
   foreach driver_dir [glob -type d "../EmbeddedSw/XilinxProcessorIPLib/drivers/*"] {
     # Work out the original version library directory name by removing the appended "9"
     set lib_name [string range [lindex [split $driver_dir /] end] 0 end-1]
-    set orig_dir "$sdk_dir/data/embeddedsw/XilinxProcessorIPLib/drivers/$lib_name"
+    set orig_dir "$vitis_dir/data/embeddedsw/XilinxProcessorIPLib/drivers/$lib_name"
     puts "Copying files from $orig_dir to $driver_dir"
     # Copy the original files to local repo, without overwriting existing code
     copy-r $orig_dir $driver_dir
   }
-}
-
-# Add a hardware design to the SDK workspace
-proc add_hw_to_sdk {vivado_folder} {
-  global vivado_dir
-  set hdf_filename [lindex [glob -dir $vivado_dir/$vivado_folder/$vivado_folder.sdk *.hdf] 0]
-  set hdf_filename_only [lindex [split $hdf_filename /] end]
-  set top_module_name [lindex [split $hdf_filename_only .] 0]
-  set hw_project_name ${top_module_name}_hw_platform_0
-  # If the hw project does not already exist in the SDK workspace, then create it
-  if {[file exists "$hw_project_name"] == 0} {
-    createhw -name ${hw_project_name} -hwspec $hdf_filename
-  }
-  return $hw_project_name
 }
 
 # Get the first processor name from a hardware design
@@ -135,68 +121,6 @@ proc get_processor_name {hw_project_name} {
   return ""
 }
 
-proc design_contains_ip {hw_project_name ip_type} {
-  set periphs [getperipherals $hw_project_name]
-  # For each line of the peripherals table
-  foreach line [split $periphs "\n"] {
-    set values [regexp -all -inline {\S+} $line]
-    # If we find the IP type in this design, then return 1
-    if {[lindex $values 2] == $ip_type} {
-      return 1
-    }
-  }
-  return 0
-}
-
-# Creates the .bif file for a Zynq board
-proc create_zynq_bif {board_name app_name vivado_name target_dir sdk_dir} {
-  set full_sdk_dir [file normalize $sdk_dir]
-  set fsbl_elf_filename "${full_sdk_dir}/${board_name}_fsbl/Debug/${board_name}_fsbl.elf"
-  set bitstream_filename "${full_sdk_dir}/${vivado_name}_wrapper_hw_platform_0/${vivado_name}_wrapper.bit"
-  set app_elf_filename "${full_sdk_dir}/${app_name}/Debug/${app_name}.elf"
-  # Swap forward slashes for back slashes on Windows systems
-  set OS [lindex $::tcl_platform(os) 0]
-  if { $OS == "Windows" } {
-    regsub -all {/} $fsbl_elf_filename {\\} fsbl_elf_filename
-    regsub -all {/} $bitstream_filename {\\} bitstream_filename
-    regsub -all {/} $app_elf_filename {\\} app_elf_filename
-  }
-  set fd [open "${target_dir}/${board_name}.bif" "w"]
-  puts $fd "//arch = zynq; split = false; format = BIN"
-  puts $fd "the_ROM_image:"
-  puts $fd "\{"
-  puts $fd "	\[bootloader\]${fsbl_elf_filename}"
-  puts $fd "	${bitstream_filename}"
-  puts $fd "	${app_elf_filename}"
-  puts $fd "\}"
-  close $fd
-}
-
-# Creates the .bif file for a Zynq MP board
-proc create_zynqmp_bif {board_name app_name vivado_name target_dir sdk_dir} {
-  set full_sdk_dir [file normalize $sdk_dir]
-  set fsbl_elf_filename "${full_sdk_dir}/${board_name}_fsbl/Debug/${board_name}_fsbl.elf"
-  set bitstream_filename "${full_sdk_dir}/${vivado_name}_wrapper_hw_platform_0/${vivado_name}_wrapper.bit"
-  set app_elf_filename "${full_sdk_dir}/${app_name}/Debug/${app_name}.elf"
-  # Swap forward slashes for back slashes on Windows systems
-  set OS [lindex $::tcl_platform(os) 0]
-  if { $OS == "Windows" } {
-    regsub -all {/} $fsbl_elf_filename {\\} fsbl_elf_filename
-    regsub -all {/} $bitstream_filename {\\} bitstream_filename
-    regsub -all {/} $app_elf_filename {\\} app_elf_filename
-  }
-  set fd [open "${target_dir}/${board_name}.bif" "w"]
-  puts $fd "//arch = zynqmp; split = false; format = BIN"
-  puts $fd "the_ROM_image:"
-  puts $fd "\{"
-  puts $fd "	\[fsbl_config\]a53_x64"
-  puts $fd "	\[bootloader\]${fsbl_elf_filename}"
-  puts $fd "	\[destination_device = pl\]${bitstream_filename}"
-  puts $fd "	\[destination_cpu = a53-0\]${app_elf_filename}"
-  puts $fd "\}"
-  close $fd
-}
-
 # Returns list of Vivado projects in the given directory
 proc get_vivado_projects {vivado_dir} {
   # Create the empty list
@@ -215,8 +139,8 @@ proc get_vivado_projects {vivado_dir} {
   return $vivado_proj_list
 }
 
-# Creates SDK workspace for a project
-proc create_sdk_ws {} {
+# Creates Vitis workspace for a project
+proc create_vitis_ws {} {
   global vivado_dir
   global app_postfix
   # First make sure there is at least one exported Vivado project
@@ -225,8 +149,8 @@ proc create_sdk_ws {} {
   set vivado_proj_list [get_vivado_projects $vivado_dir]
   # Check each Vivado project for export files
   foreach {vivado_folder} $vivado_proj_list {
-    # If the hardware has been exported for SDK
-    if {[file exists "$vivado_dir/$vivado_folder/${vivado_folder}.sdk"] == 1} {
+    # If the hardware has been exported for Vitis
+    if {[file exists "$vivado_dir/$vivado_folder/${vivado_folder}_wrapper.xsa"] == 1} {
       set exported_projects [expr {$exported_projects+1}]
     }
   }
@@ -234,112 +158,95 @@ proc create_sdk_ws {} {
   # If no projects then exit
   if {$exported_projects == 0} {
     puts "### There are no exported Vivado projects in the $vivado_dir directory ###"
-    puts "You must build and export a Vivado project before building the SDK workspace."
+    puts "You must build and export a Vivado project before building the Vitis workspace."
     exit
   }
 
   puts "There were $exported_projects exported project(s) found in the $vivado_dir directory."
-  puts "Creating SDK workspace."
-  
-  # Set the workspace directory
-  setws [pwd]
-  
-  # Add local SDK repo
-  # Now when we create an application, SDK will automatically use the lwIP library from the local repo
-  puts "Adding SDK repo to the workspace."
-  repo -set "../EmbeddedSw"
-
-  # Add each Vivado project to SDK workspace
-  foreach {vivado_folder} $vivado_proj_list {
-    # Get the name of the board
-    set board_name [string replace $vivado_folder [string last _ $vivado_folder end] end ""]
-    # Create the application name
-    set app_name "${board_name}$app_postfix"
-    # If the application has already been created, then skip
-    if {[file exists "$app_name"] == 1} {
-      puts "Application already exists for Vivado project $vivado_folder."
-    # If the hardware has been exported for SDK, then create an application for it
-    } elseif {[file exists "$vivado_dir/$vivado_folder/${vivado_folder}.sdk"] == 1} {
-      puts "Creating application for Vivado project $vivado_folder."
-      set hw_project_name [add_hw_to_sdk $vivado_folder]
-      set proc_instance [get_processor_name $hw_project_name]
-      # Generate the echo server example application
-      createapp -name $app_name \
-        -app {lwIP Echo Server} \
-        -proc $proc_instance \
-        -hwproject ${hw_project_name} \
-        -os standalone
-      # Generate the FSBL for Zynq and Zynq MP designs
-      # For Zynq MP designs
-      if {[str_contains $proc_instance "psu_cortexa53_"]} {
-        createapp -name ${board_name}_fsbl \
-          -app {Zynq MP FSBL} \
-          -proc $proc_instance \
-          -hwproject ${hw_project_name} \
-          -os standalone
-	  # For Zynq designs
-      } elseif {[str_contains $proc_instance "ps7_cortexa9_"]} {
-        createapp -name ${board_name}_fsbl \
-          -app {Zynq FSBL} \
-          -proc $proc_instance \
-          -hwproject ${hw_project_name} \
-          -os standalone
-      }
-    } else {
-      puts "Vivado project $vivado_folder not exported."
-    }
-  }
-}
-  
-# Builds all applications
-proc build_projects {} {
-  # Set the workspace directory
-  setws [pwd]
-  # Build all
-  puts "Building all applications."
-  projects -build
-}
-  
-# Creates boot files for all applications
-proc create_boot_files {} {
-  global vivado_dir
-  global app_postfix
-  # Set the workspace directory
-  setws [pwd]
+  puts "Creating Vitis workspace."
   
   # Create "boot" directory if it doesn't already exist
   if {[file exists "./boot"] == 0} {
     file mkdir "./boot"
   }
   
-  # Get list of Vivado projects
-  set vivado_proj_list [get_vivado_projects $vivado_dir]
+  # Set the workspace directory
+  set vitis_dir [pwd]
+  setws $vitis_dir
   
-  # Generate boot files for all projects
+  # Add local Vitis repo
+  # Now when we create an application, SDK will automatically use the lwIP library from the local repo
+  puts "Adding Vitis repo to the workspace."
+  set embsw [file normalize "${vitis_dir}/../EmbeddedSw"]
+  repo -set [list $embsw]
+
+  # Add each Vivado project to Vitis workspace
   foreach {vivado_folder} $vivado_proj_list {
     # Get the name of the board
-    set board_name [string replace $vivado_folder [string last _ $vivado_folder end] end ""]
-    # Create the application name
-    set app_name "${board_name}$app_postfix"
-    # Make sure the application has been compiled
-    if {[file exists "./${app_name}/Debug/${app_name}.elf"] == 0} {
-      puts "ELF does not exist for ${app_name}"
+    set board_name [string map {"_axieth" ""} $vivado_folder]
+    # Path of the XSA file
+    set xsa_file "$vivado_dir/$vivado_folder/${vivado_folder}_wrapper.xsa"
+    set xsa_filename_only [lindex [split $xsa_file /] end]
+    set hw_project_name [lindex [split $xsa_filename_only .] 0]
+    # Make sure that the Vivado project has been exported
+    if {[file exists $xsa_file] == 0} {
+      puts "Vivado project $vivado_folder has not been exported."
       continue
     }
-	
-    # Get the processor type
-    set proc_instance [get_processor_name "${vivado_folder}_wrapper_hw_platform_0"]
-    # For Zynq and Zynq MP designs, make sure that the FSBL exists
-    if {[str_contains $proc_instance "microblaze_"] == 0} {
-      if {[file exists "./${board_name}_fsbl/Debug/${board_name}_fsbl.elf"] == 0} {
-        puts "ELF does not exist for ${board_name}_fsbl"
-        continue
-      }
-      if {[str_contains $proc_instance "psu_cortexa53_"]} {
-        set arch_type "zynqmp"
-      } else {
-        set arch_type "zynq"
-      }
+    # Create the application name
+    set app_name "${board_name}$app_postfix"
+    # If the application has already been created, then skip
+    if {[file exists "$app_name"] == 1} {
+      puts "Application already exists for Vivado project $vivado_folder."
+      continue
+    }
+    # Create the platform for this Vivado project
+    puts "Creating Platform for $vivado_folder."
+    platform create -name ${hw_project_name} -hw ${xsa_file}
+    platform write
+    set proc_instance [get_processor_name ${xsa_file}]
+    # Microblaze and Zynq ARM are 32-bit, ZynqMP ARM are 64-bit processors
+    if {[str_contains $proc_instance "psu_cortex"]} {
+      set arch_bit "64-bit"
+    } else {
+      set arch_bit "32-bit"
+    }
+    # Create a standalone domain
+    domain create -name {standalone_domain} \
+      -display-name "standalone on $proc_instance" \
+      -os {standalone} \
+      -proc $proc_instance \
+      -runtime {cpp} \
+      -arch $arch_bit \
+      -support-app {lwip_echo_server}
+    platform write
+    platform active ${hw_project_name}
+    # Enable the FSBL for Zynq
+    if {[str_contains $proc_instance "ps7_cortex"]} {
+      domain active {zynq_fsbl}
+    # Enable the FSBL for ZynqMP
+    } elseif {[str_contains $proc_instance "psu_cortex"]} {
+      domain active {zynqmp_fsbl}
+    }
+    domain active {standalone_domain}
+    platform generate
+    # Generate the example application
+    puts "Creating application $app_name."
+    app create -name $app_name \
+      -template {lwIP Echo Server} \
+      -platform ${hw_project_name} \
+      -domain {standalone_domain}
+    # Build the application
+    puts "Building application $app_name."
+    app build -name $app_name
+    puts "Building system ${app_name}_system."
+    sysproj build -name ${app_name}_system
+    
+    # Create or copy the boot file
+    # Make sure the application has been compiled
+    if {[file exists "./${app_name}/Debug/${app_name}.elf"] == 0} {
+      puts "Application ${app_name} FAILED to compile."
+      continue
     }
     
     # If all required files exist, then generate boot files
@@ -357,25 +264,18 @@ proc create_boot_files {} {
       file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.mmi" "./boot/${board_name}"
     # For Zynq and Zynq MP designs
     } else {
-      # Generate the .bif file
-      if { $arch_type == "zynqmp" } {
-        puts "Generating BOOT.bin file for Zynq MP $board_name project."
-        create_zynqmp_bif $board_name $app_name $vivado_folder "./boot" "."
+      puts "Copying the BOOT.BIN file to the ./boot/${board_name} directory."
+      # Copy the already generated BOOT.bin file
+      set bootbin_file "./${app_name}_system/Debug/sd_card/BOOT.bin"
+      if {[file exists $bootbin_file] == 1} {
+        file copy -force $bootbin_file "./boot/${board_name}"
       } else {
-        puts "Generating BOOT.bin file for Zynq $board_name project."
-        create_zynq_bif $board_name $app_name $vivado_folder "./boot" "."
+        puts "No BOOT.bin file for ${app_name}."
       }
-      set bootgen_cmd "bootgen -image ./boot/${board_name}.bif -arch ${arch_type} -o ./boot/${board_name}/BOOT.bin -w on"
-      # Swap forward slashes for back slashes on Windows systems
-      set OS [lindex $::tcl_platform(os) 0]
-      if { $OS == "Windows" } {
-        regsub -all {/} $bootgen_cmd {\\\\} bootgen_cmd
-      }
-      exec {*}$bootgen_cmd
     }
   }
 }
-
+  
 # Checks all applications
 proc check_apps {} {
   global app_postfix
@@ -386,25 +286,21 @@ proc check_apps {} {
   foreach {app_dir} [glob -type d "./*$app_postfix"] {
     # Get the app name
     set app_name [lindex [split $app_dir /] end]
-	if {[file exists "$app_dir/Debug/${app_name}.elf"] == 1} {
+    if {[file exists "$app_dir/Debug/${app_name}.elf"] == 1} {
       puts "  ${app_name} was built successfully"
-	} else {
+    } else {
       puts "  ERROR: ${app_name} failed to build"
-	}
+    }
   }
 }
   
-
-# Copy original lwIP library sources into the local SDK repo
-puts "Building the local SDK repo from original sources"
+# Copy original lwIP library sources into the local Vitis repo
+puts "Building the local Vitis repo from original sources"
 fill_local_libraries
 
-# Create the SDK workspace
-puts "Creating the SDK workspace"
-create_sdk_ws
-build_projects
-create_boot_files
+# Create the Vitis workspace
+puts "Creating the Vitis workspace"
+create_vitis_ws
 check_apps
-
 
 exit
