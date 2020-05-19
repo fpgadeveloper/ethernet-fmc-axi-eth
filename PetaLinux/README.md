@@ -123,11 +123,11 @@ Ethernet port and not the Ethernet FMC.
 
 #### AC701, KC705
 
-* eth0: Ethernet FMC Port 0
-* eth1: Ethernet FMC Port 1
-* eth2: Ethernet FMC Port 2
-* eth3: Ethernet FMC Port 3
-* eth4: Ethernet port of the dev board
+* eth0: Ethernet port of the dev board
+* eth1: Ethernet FMC Port 0
+* eth2: Ethernet FMC Port 1
+* eth3: Ethernet FMC Port 2
+* eth4: Ethernet FMC Port 3
 
 #### KCU105 HPC, VC707, VC709
 

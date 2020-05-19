@@ -141,3 +141,20 @@ set_property PACKAGE_PIN AA30 [get_ports reset_port_3]
 
 create_clock -period 8.000 -name ref_clk_clk_p -waveform {0.000 4.000} [get_ports ref_clk_clk_p]
 
+# Configuration via Quad SPI settings for KC705
+#set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+#set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
+#set_property CONFIG_VOLTAGE 2.8 [current_design]
+#set_property CFGBVS GND [current_design]
+#set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]
+#set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]
+
+# Configuration via BPI flash for KC705
+set_property BITSTREAM.CONFIG.BPI_SYNC_MODE DISABLE [current_design]
+set_property BITSTREAM.CONFIG.EXTMASTERCCLK_EN DISABLE [current_design]
+set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+set_property BITSTREAM.CONFIG.UNUSEDPIN Pullup [current_design]
+set_property CONFIG_MODE BPI16 [current_design]
+set_property CFGBVS VCCO [current_design]
+set_property CONFIG_VOLTAGE 2.5 [current_design]
+
