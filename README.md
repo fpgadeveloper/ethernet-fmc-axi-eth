@@ -48,6 +48,10 @@ In order to test this design on hardware, you will need the following:
 * Zynq UltraScale+ ZCU102 Evaluation board
   * HPC0 connector
   * HPC1 connector (design limited to 2 ports only)
+* Zynq UltraScale+ [UltraZed EV Carrier Card] (http://zedboard.org/product/ultrazed-ev-carrier-card "UltraZed EV Carrier Card")
+  * HPC connector
+* Virtex Ultrascale+ [VCU118 Evaluation board] (https://www.xilinx.com/products/boards-and-kits/vcu118.html "VCU118 Evaluation board")
+  * HPC1 connector
   
 ## 8-port Support (2 x Ethernet FMCs)
 
@@ -209,14 +213,14 @@ The main differences between the designs are described below:
 * 7Z015: We use 4x AXI Ethernet IPs. The constraints file uses the 2.5V IO standards.
 * 7Z030: We use 4x AXI Ethernet IPs. The constraints file uses the 1.8V IO standards because this device has HP I/Os.
 
-#### Installation of MicroZed and PicoZed board definition files
+#### Installation of MicroZed, PicoZed and UltraZed board definition files
 
-To use the projects for the MicroZed and PicoZed, you must first install the board definition files
+To use the projects for the MicroZed, PicoZed and UltraZed, you must first install the board definition files
 for those boards into your Vivado and Vitis installation.
 
 The following folders contain the board definition files and can be found in this project repository at this location:
 
-https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/board_files
+https://github.com/Avnet/bdf
 
 * `microzed_7010`
 * `microzed_7020`
@@ -224,6 +228,7 @@ https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tree/master/Vivado/boards/
 * `picozed_7015_fmc2`
 * `picozed_7020_fmc2`
 * `picozed_7030_fmc2`
+* `ultrazed_7ev_cc`
 
 Copy those folders and their contents into the `C:\Xilinx\Vivado\2019.2\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory). You also need to make a copy into the

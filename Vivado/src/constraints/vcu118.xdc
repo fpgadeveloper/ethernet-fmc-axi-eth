@@ -1,5 +1,5 @@
-# These constraints are suitable for VCU118 (engineering sample silicon)
-# ----------------------------------------------------------------------
+# These constraints are suitable for VCU118
+# -----------------------------------------
 # These constraints are for the vcu118-axieth design which
 # uses 4x AXI Ethernet Subsystem IPs
 
@@ -218,3 +218,9 @@ set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii
 set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
 set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
 set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl}]
+
+# For timing closure on port 2
+
+set_property DELAY_VALUE 1000 [get_cells vcu118_axieth_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/delay_rgmii_tx_clk]
+
+

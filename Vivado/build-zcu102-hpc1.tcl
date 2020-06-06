@@ -123,7 +123,7 @@ puts "INFO: Project created:${design_name}"
 # Create block design
 set ports {0 1}
 set shared_logic_port 0
-source $origin_dir/src/bd/design_1-zcu102.tcl
+source $origin_dir/src/bd/design_1-zynqmp.tcl
 
 # Generate the wrapper
 make_wrapper -files [get_files *${design_name}.bd] -top
