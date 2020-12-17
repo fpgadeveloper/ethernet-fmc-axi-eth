@@ -5,16 +5,16 @@ Example design for the [Quad Gigabit Ethernet FMC](http://ethernetfmc.com "Ether
 
 ## Requirements
 
-This project is designed for version 2019.2 of the Xilinx tools (Vivado/Vitis/PetaLinux). 
+This project is designed for version 2020.2 of the Xilinx tools (Vivado/Vitis/PetaLinux). 
 If you are using an older version of the Xilinx tools, then refer to the 
 [release tags](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/releases "releases")
 to find the version of this repository that matches your version of the tools.
 
 In order to test this design on hardware, you will need the following:
 
-* Vivado 2019.2
-* Vitis 2019.2
-* PetaLinux SDK 2019.2
+* Vivado 2020.2
+* Vitis 2020.2
+* PetaLinux SDK 2020.2
 * [Ethernet FMC](http://ethernetfmc.com "Ethernet FMC")
 * One of the below listed evaluation boards
 * [Xilinx Soft TEMAC license](http://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -230,9 +230,9 @@ https://github.com/Avnet/bdf
 * `picozed_7030_fmc2`
 * `ultrazed_7ev_cc`
 
-Copy those folders and their contents into the `C:\Xilinx\Vivado\2019.2\data\boards\board_files` folder (this may
+Copy those folders and their contents into the `C:\Xilinx\Vivado\2020.2\data\boards\board_files` folder (this may
 be different on your machine, depending on your Vivado installation directory). You also need to make a copy into the
-Vitis installation at this location: `C:\Xilinx\Vitis\2019.2\data\boards\board_files`.
+Vitis installation at this location: `C:\Xilinx\Vitis\2020.2\data\boards\board_files`.
 
 ## Microblaze design differences
 
