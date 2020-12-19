@@ -32,7 +32,7 @@ create_project $design_name $origin_dir/$design_name -part xcku040-ffva1156-2-e
 set proj_dir [get_property directory [current_project]]
 
 # Set project properties
-set obj [get_projects $design_name]
+set obj [current_project]
 set_property -name "board_part" -value "xilinx.com:kcu105:part0:1.7" -objects $obj
 set_property -name "default_lib" -value "xil_defaultlib" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
@@ -94,7 +94,7 @@ set_property "top" "${design_name}_wrapper" $obj
 
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
-  create_run -name synth_1 -part xcku040-ffva1156-2-e -flow {Vivado Synthesis 2020} -strategy "Vivado Synthesis Defaults" -constrset constrs_1
+  create_run -name synth_1 -part xcku040-ffva1156-2-e -flow {Vivado Synthesis 2020} -strategy "Vivado Synthesis Defaults" -report_strategy {No Reports} -constrset constrs_1
 } else {
   set_property strategy "Vivado Synthesis Defaults" [get_runs synth_1]
   set_property flow "Vivado Synthesis 2020" [get_runs synth_1]
@@ -106,7 +106,7 @@ current_run -synthesis [get_runs synth_1]
 
 # Create 'impl_1' run (if not found)
 if {[string equal [get_runs -quiet impl_1] ""]} {
-  create_run -name impl_1 -part xcku040-ffva1156-2-e -flow {Vivado Implementation 2020} -strategy "Performance_Explore" -constrset constrs_1 -parent_run synth_1
+  create_run -name impl_1 -part xcku040-ffva1156-2-e -flow {Vivado Implementation 2020} -strategy "Performance_Explore" -report_strategy {No Reports} -constrset constrs_1 -parent_run synth_1
 } else {
   set_property strategy "Performance_Explore" [get_runs impl_1]
   set_property flow "Vivado Implementation 2020" [get_runs impl_1]
@@ -126,7 +126,8 @@ current_run -implementation [get_runs impl_1]
 puts "INFO: Project created:${design_name}"
 
 # Create block design
-source $origin_dir/src/bd/design_1-kcu105-dual.tcl
+set ports {0 1 3 4 5 6 7}
+source $origin_dir/src/bd/design_1-mb-us.tcl
 
 # Generate the wrapper
 make_wrapper -files [get_files *${design_name}.bd] -top

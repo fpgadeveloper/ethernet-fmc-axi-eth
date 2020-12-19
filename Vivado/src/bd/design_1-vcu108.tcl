@@ -41,8 +41,8 @@ current_bd_instance $parentObj
 create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
 
 # Connect MIG external interfaces
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "ddr4_sdram_c1 ( DDR4 SDRAM C1 ) " }  [get_bd_intf_pins ddr4_0/C0_DDR4]
-apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins ddr4_0/sys_rst]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {ddr4_sdram_c1_062 ( DDR4 SDRAM C1 ) } Manual_Source {Auto}}  [get_bd_intf_pins ddr4_0/C0_DDR4]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {New External Port (ACTIVE_HIGH)}}  [get_bd_pins ddr4_0/sys_rst]
 
 # DDR4 clock buffer (see https://www.xilinx.com/support/answers/65263.html)
 create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf util_ds_buf_0
@@ -54,7 +54,7 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 
 # Use 100MHz additional MIG clock
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config {local_mem "64KB" ecc "None" cache "8KB" debug_module "Debug Only" axi_periph "Enabled" axi_intc "1" clk "/ddr4_0/addn_ui_clkout1 (100 MHz)" }  [get_bd_cells microblaze_0]
-apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Cached)" Clk "Auto" }  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {Auto} Master {/microblaze_0 (Cached)} Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins ddr4_0/C0_DDR4_S_AXI]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config {Board_Interface "reset ( FPGA Reset ) " }  [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
 
 # Configure MicroBlaze for Linux

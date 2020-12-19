@@ -197,12 +197,10 @@ foreach port $ports {
 }
 
 # Connect ports for the Ethernet FMC 125MHz clock
-create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_p
+create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_p
 connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_p] [get_bd_ports ref_clk_p]
-set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_p]
-create_bd_port -dir I -from 0 -to 0 -type clk ref_clk_n
+create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_n
 connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_n]
-set_property CONFIG.FREQ_HZ 125000000 [get_bd_ports ref_clk_n]
 
 # Create Ethernet FMC reference clock output enable and frequency select
 
