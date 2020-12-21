@@ -121,6 +121,7 @@ current_run -implementation [get_runs impl_1]
 puts "INFO: Project created:${design_name}"
 
 # Create block design
+set ports {0 1 2 3}
 source $origin_dir/src/bd/design_1-zynq.tcl
 
 # Generate the wrapper

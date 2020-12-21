@@ -1,7 +1,7 @@
-set_property PACKAGE_PIN H23 [get_ports spi_rtl_sck_io]
+#set_property PACKAGE_PIN H23 [get_ports spi_flash_sck_io]
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM_ADV TERM_100 [get_ports {ref_clk_p[0]}]
-set_property DIFF_TERM_ADV TERM_100 [get_ports {ref_clk_n[0]}]
+set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_clk_p]
+set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[0]}]
@@ -44,8 +44,8 @@ set_property IOSTANDARD LVCMOS18 [get_ports mdio_io_port_2_mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS [get_ports {ref_clk_p[0]}]
-set_property IOSTANDARD LVDS [get_ports {ref_clk_n[0]}]
+set_property IOSTANDARD LVDS [get_ports ref_clk_clk_p]
+set_property IOSTANDARD LVDS [get_ports ref_clk_clk_n]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_td[0]}]
@@ -109,8 +109,8 @@ set_property PACKAGE_PIN D21 [get_ports mdio_io_port_2_mdio_io]
 set_property PACKAGE_PIN A20 [get_ports {rgmii_port_3_td[0]}]
 set_property PACKAGE_PIN B25 [get_ports {rgmii_port_3_td[2]}]
 set_property PACKAGE_PIN A25 [get_ports {rgmii_port_3_td[3]}]
-set_property PACKAGE_PIN H12 [get_ports {ref_clk_p[0]}]
-set_property PACKAGE_PIN G12 [get_ports {ref_clk_n[0]}]
+set_property PACKAGE_PIN H12 [get_ports ref_clk_clk_p]
+set_property PACKAGE_PIN G12 [get_ports ref_clk_clk_n]
 set_property PACKAGE_PIN K10 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN J10 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN L12 [get_ports {rgmii_port_0_td[0]}]
@@ -148,23 +148,23 @@ set_property PACKAGE_PIN D26 [get_ports {reset_port_3[0]}]
 set_property UNAVAILABLE_DURING_CALIBRATION true [get_ports mdio_io_port_3_mdio_io]
 
 #QSPI
-set_property PACKAGE_PIN M20 [get_ports spi_rtl_io0_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_rtl_io0_io]
+set_property PACKAGE_PIN M20 [get_ports spi_flash_io0_io]
+set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io0_io]
 
-set_property PACKAGE_PIN L20 [get_ports spi_rtl_io1_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_rtl_io1_io]
+set_property PACKAGE_PIN L20 [get_ports spi_flash_io1_io]
+set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io1_io]
 
-set_property PACKAGE_PIN R22 [get_ports spi_rtl_io2_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_rtl_io2_io]
+set_property PACKAGE_PIN R22 [get_ports spi_flash_io2_io]
+set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io2_io]
 
-set_property PACKAGE_PIN R21 [get_ports spi_rtl_io3_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_rtl_io3_io]
+set_property PACKAGE_PIN R21 [get_ports spi_flash_io3_io]
+set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io3_io]
 
-set_property PACKAGE_PIN G26 [get_ports {spi_rtl_ss_io[0]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {spi_rtl_ss_io[0]}]
+set_property PACKAGE_PIN G26 [get_ports {spi_flash_ss_io[0]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {spi_flash_ss_io[0]}]
 
 # SCK not used - loc it to unused pin: GPIO_LED_1_LS
-set_property IOSTANDARD LVCMOS18 [get_ports spi_rtl_sck_io]
+set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_sck_io]
 
 # In Vivado 2018.2, auto-placement of some of the BUFGCEs for RGMII RX CLK is not ideal and we don't achieve
 # timing closure. The following constraints change the placement of these BUFGCEs to replicate the same

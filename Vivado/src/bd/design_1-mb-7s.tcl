@@ -68,6 +68,10 @@ if {[string match "vc709*" $design_name]} {
 # Board FPGA reset
 apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {New External Port (ACTIVE_HIGH)}}  [get_bd_pins mig_0/sys_rst]
 
+# Create ports
+set mmcm_lock [ create_bd_port -dir O mmcm_lock ]
+set init_calib_complete [ create_bd_port -dir O init_calib_complete ]
+
 # Add the Microblaze
 create_bd_cell -type ip -vlnv xilinx.com:ip:microblaze microblaze_0
 apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} axi_periph {Enabled} cache {64KB} clk {/mig_0/ui_addn_clk_0 (100 MHz)} cores {1} debug_module {Debug Only} ecc {None} local_mem {64KB} preset {None}}  [get_bd_cells microblaze_0]
@@ -168,16 +172,14 @@ if {$dual_design} {
   CONFIG.CLKOUT2_PHASE_ERROR {96.948}] [get_bd_cells clk_wiz_1]
 
   # Create the ports for the external ref clock input (1st Ethernet FMC)
-  create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_0_p
-  connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_p] [get_bd_ports ref_clk_0_p]
-  create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_0_n
-  connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_0_n]
+  create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 ref_clk_0
+  set_property -dict [list CONFIG.FREQ_HZ {125000000}] [get_bd_intf_ports ref_clk_0]
+  connect_bd_intf_net [get_bd_intf_ports ref_clk_0] [get_bd_intf_pins clk_wiz_0/CLK_IN1_D]
 
   # Create the ports for the external ref clock input (2nd Ethernet FMC)
-  create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_1_p
-  connect_bd_net [get_bd_pins /clk_wiz_1/clk_in1_p] [get_bd_ports ref_clk_1_p]
-  create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_1_n
-  connect_bd_net [get_bd_pins /clk_wiz_1/clk_in1_n] [get_bd_ports ref_clk_1_n]
+  create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 ref_clk_1
+  set_property -dict [list CONFIG.FREQ_HZ {125000000}] [get_bd_intf_ports ref_clk_1]
+  connect_bd_intf_net [get_bd_intf_ports ref_clk_1] [get_bd_intf_pins clk_wiz_1/CLK_IN1_D]
 
   # Processor system reset for 125MHz clock
   create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_125M_1
@@ -226,10 +228,9 @@ if {$dual_design} {
 } else {
 
   # Create the ports for the external ref clock input (1st Ethernet FMC only)
-  create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_p
-  connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_p] [get_bd_ports ref_clk_p]
-  create_bd_port -dir I -from 0 -to 0 -type clk -freq_hz 125000000 ref_clk_n
-  connect_bd_net [get_bd_pins /clk_wiz_0/clk_in1_n] [get_bd_ports ref_clk_n]
+  create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 ref_clk
+  set_property -dict [list CONFIG.FREQ_HZ {125000000}] [get_bd_intf_ports ref_clk]
+  connect_bd_intf_net [get_bd_intf_ports ref_clk] [get_bd_intf_pins clk_wiz_0/CLK_IN1_D]
 
   # Create Ethernet FMC reference clock output enable and frequency select
   create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe

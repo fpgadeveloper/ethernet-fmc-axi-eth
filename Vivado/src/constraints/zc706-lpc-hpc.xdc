@@ -12,8 +12,8 @@
 # Ports are numbered 0 to 3
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports ref_clk_0_p]
-set_property DIFF_TERM TRUE [get_ports ref_clk_0_n]
+set_property DIFF_TERM TRUE [get_ports ref_clk_0_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_0_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_1_rd[0]}]
@@ -56,8 +56,8 @@ set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_2_mdio_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[2]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_p]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_n]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_clk_p]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_0_clk_n]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_0_td[0]}]
@@ -121,8 +121,8 @@ set_property PACKAGE_PIN AG29 [get_ports mdio_io_port_2_mdio_io]
 set_property PACKAGE_PIN AF25 [get_ports {rgmii_port_3_td[0]}]
 set_property PACKAGE_PIN AC29 [get_ports {rgmii_port_3_td[2]}]
 set_property PACKAGE_PIN AD29 [get_ports {rgmii_port_3_td[3]}]
-set_property PACKAGE_PIN AG17 [get_ports ref_clk_0_p]
-set_property PACKAGE_PIN AG16 [get_ports ref_clk_0_n]
+set_property PACKAGE_PIN AG17 [get_ports ref_clk_0_clk_p]
+set_property PACKAGE_PIN AG16 [get_ports ref_clk_0_clk_n]
 set_property PACKAGE_PIN AE12 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN AF12 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN AJ15 [get_ports {rgmii_port_0_td[0]}]
@@ -146,14 +146,14 @@ set_property PACKAGE_PIN AB30 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN Y26 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN Y27 [get_ports reset_port_3]
 
-create_clock -period 8.000 -name ref_clk_0_p -waveform {0.000 4.000} [get_ports ref_clk_0_p]
+create_clock -period 8.000 -name ref_clk_0_clk_p -waveform {0.000 4.000} [get_ports ref_clk_0_clk_p]
 
 # Constraints for second Ethernet FMC plugged onto the HPC connector
 # Ports are numbered 4 to 7
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports ref_clk_1_p]
-set_property DIFF_TERM TRUE [get_ports ref_clk_1_n]
+set_property DIFF_TERM TRUE [get_ports ref_clk_1_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_1_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_5_rd[0]}]
@@ -196,8 +196,8 @@ set_property IOSTANDARD LVCMOS25 [get_ports mdio_io_port_6_mdio_io]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_7_td[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_7_td[2]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_7_td[3]}]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_p]
-set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_n]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_clk_p]
+set_property IOSTANDARD LVDS_25 [get_ports ref_clk_1_clk_n]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_4_rd[0]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_4_rd[1]}]
 set_property IOSTANDARD LVCMOS25 [get_ports {rgmii_port_4_td[0]}]
@@ -261,8 +261,8 @@ set_property PACKAGE_PIN U29 [get_ports mdio_io_port_6_mdio_io]
 set_property PACKAGE_PIN R26 [get_ports {rgmii_port_7_td[0]}]
 set_property PACKAGE_PIN N29 [get_ports {rgmii_port_7_td[2]}]
 set_property PACKAGE_PIN P29 [get_ports {rgmii_port_7_td[3]}]
-set_property PACKAGE_PIN AE22 [get_ports ref_clk_1_p]
-set_property PACKAGE_PIN AF22 [get_ports ref_clk_1_n]
+set_property PACKAGE_PIN AE22 [get_ports ref_clk_1_clk_p]
+set_property PACKAGE_PIN AF22 [get_ports ref_clk_1_clk_n]
 set_property PACKAGE_PIN AK17 [get_ports {rgmii_port_4_rd[0]}]
 set_property PACKAGE_PIN AK18 [get_ports {rgmii_port_4_rd[1]}]
 set_property PACKAGE_PIN AJ20 [get_ports {rgmii_port_4_td[0]}]
@@ -286,5 +286,5 @@ set_property PACKAGE_PIN P24 [get_ports mdio_io_port_7_mdc]
 set_property PACKAGE_PIN P21 [get_ports mdio_io_port_7_mdio_io]
 set_property PACKAGE_PIN R21 [get_ports reset_port_7]
 
-create_clock -period 8.000 -name ref_clk_1_p -waveform {0.000 4.000} [get_ports ref_clk_1_p]
+create_clock -period 8.000 -name ref_clk_1_clk_p -waveform {0.000 4.000} [get_ports ref_clk_1_clk_p]
 

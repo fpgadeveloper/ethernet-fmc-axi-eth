@@ -7,8 +7,8 @@
 # Ports are numbered 0 to 3
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_0_p]
-set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_0_n]
+set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_0_clk_p]
+set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_0_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[0]}]
@@ -51,8 +51,8 @@ set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_td[3]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS [get_ports ref_clk_0_p]
-set_property IOSTANDARD LVDS [get_ports ref_clk_0_n]
+set_property IOSTANDARD LVDS [get_ports ref_clk_0_clk_p]
+set_property IOSTANDARD LVDS [get_ports ref_clk_0_clk_n]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_td[0]}]
@@ -116,8 +116,8 @@ set_property PACKAGE_PIN AC21 [get_ports {rgmii_port_1_td[3]}]
 set_property PACKAGE_PIN V34 [get_ports {rgmii_port_3_td[0]}]
 set_property PACKAGE_PIN V33 [get_ports {rgmii_port_3_td[2]}]
 set_property PACKAGE_PIN W34 [get_ports {rgmii_port_3_td[3]}]
-set_property PACKAGE_PIN AA24 [get_ports ref_clk_0_p]
-set_property PACKAGE_PIN AA25 [get_ports ref_clk_0_n]
+set_property PACKAGE_PIN AA24 [get_ports ref_clk_0_clk_p]
+set_property PACKAGE_PIN AA25 [get_ports ref_clk_0_clk_n]
 set_property PACKAGE_PIN AA22 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN AB22 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN U26 [get_ports {rgmii_port_0_td[0]}]
@@ -177,8 +177,8 @@ connect_debug_port dbg_hub/clk [get_nets clk]
 # Ports are numbered 4 to 7
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_1_p]
-set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_1_n]
+set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_1_clk_p]
+set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_1_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_5_rd[0]}]
@@ -221,8 +221,8 @@ set_property IOSTANDARD LVCMOS18 [get_ports mdio_io_port_6_mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_7_td[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_7_td[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_7_td[3]}]
-set_property IOSTANDARD LVDS [get_ports ref_clk_1_p]
-set_property IOSTANDARD LVDS [get_ports ref_clk_1_n]
+set_property IOSTANDARD LVDS [get_ports ref_clk_1_clk_p]
+set_property IOSTANDARD LVDS [get_ports ref_clk_1_clk_n]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_4_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_4_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_4_td[0]}]
@@ -286,8 +286,8 @@ set_property PACKAGE_PIN D21 [get_ports mdio_io_port_6_mdio_io]
 set_property PACKAGE_PIN A20 [get_ports {rgmii_port_7_td[0]}]
 set_property PACKAGE_PIN B25 [get_ports {rgmii_port_7_td[2]}]
 set_property PACKAGE_PIN A25 [get_ports {rgmii_port_7_td[3]}]
-set_property PACKAGE_PIN H12 [get_ports ref_clk_1_p]
-set_property PACKAGE_PIN G12 [get_ports ref_clk_1_n]
+set_property PACKAGE_PIN H12 [get_ports ref_clk_1_clk_p]
+set_property PACKAGE_PIN G12 [get_ports ref_clk_1_clk_n]
 set_property PACKAGE_PIN K10 [get_ports {rgmii_port_4_rd[0]}]
 set_property PACKAGE_PIN J10 [get_ports {rgmii_port_4_rd[1]}]
 set_property PACKAGE_PIN L12 [get_ports {rgmii_port_4_td[0]}]
@@ -386,24 +386,24 @@ set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells *_i/axi
 set_property UNAVAILABLE_DURING_CALIBRATION TRUE [get_ports mdio_io_port_7_mdio_io]
 
 #QSPI
-set_property PACKAGE_PIN M20 [ get_ports spi_rtl_io0_io]
-set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io0_io]
+set_property PACKAGE_PIN M20 [ get_ports spi_flash_io0_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_flash_io0_io]
 
-set_property PACKAGE_PIN L20 [ get_ports spi_rtl_io1_io]
-set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io1_io]
+set_property PACKAGE_PIN L20 [ get_ports spi_flash_io1_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_flash_io1_io]
 
-set_property PACKAGE_PIN R22 [ get_ports spi_rtl_io2_io]
-set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io2_io]
+set_property PACKAGE_PIN R22 [ get_ports spi_flash_io2_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_flash_io2_io]
 
-set_property PACKAGE_PIN R21 [ get_ports spi_rtl_io3_io]
-set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_io3_io]
+set_property PACKAGE_PIN R21 [ get_ports spi_flash_io3_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_flash_io3_io]
 
-set_property PACKAGE_PIN G26 [ get_ports spi_rtl_ss_io]
-set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_ss_io]
+set_property PACKAGE_PIN G26 [ get_ports spi_flash_ss_io]
+set_property IOSTANDARD LVCMOS18 [ get_ports spi_flash_ss_io]
 
 # SCK not used - loc it to unused pin: GPIO_LED_1_LS
-set_property PACKAGE_PIN H23 [ get_ports spi_rtl_sck_io]
-set_property IOSTANDARD LVCMOS18 [ get_ports spi_rtl_sck_io]
+#set_property PACKAGE_PIN H23 [ get_ports spi_flash_sck_io]
+#set_property IOSTANDARD LVCMOS18 [ get_ports spi_flash_sck_io]
 
 # Configuration via Quad SPI settings for KCU105
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
