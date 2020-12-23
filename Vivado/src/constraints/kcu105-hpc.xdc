@@ -1,4 +1,3 @@
-#set_property PACKAGE_PIN H23 [get_ports spi_flash_sck_io]
 # Enable internal termination resistor on LVDS 125MHz ref_clk
 set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_clk_p]
 set_property DIFF_TERM_ADV TERM_100 [get_ports ref_clk_clk_n]
@@ -146,50 +145,6 @@ set_property PACKAGE_PIN D26 [get_ports {reset_port_3[0]}]
 # layout, this DRC can be bypassed by acknowledging the condition and setting the following
 # XDC constraint:
 set_property UNAVAILABLE_DURING_CALIBRATION true [get_ports mdio_io_port_3_mdio_io]
-
-#QSPI
-set_property PACKAGE_PIN M20 [get_ports spi_flash_io0_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io0_io]
-
-set_property PACKAGE_PIN L20 [get_ports spi_flash_io1_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io1_io]
-
-set_property PACKAGE_PIN R22 [get_ports spi_flash_io2_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io2_io]
-
-set_property PACKAGE_PIN R21 [get_ports spi_flash_io3_io]
-set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_io3_io]
-
-set_property PACKAGE_PIN G26 [get_ports {spi_flash_ss_io[0]}]
-set_property IOSTANDARD LVCMOS18 [get_ports {spi_flash_ss_io[0]}]
-
-# SCK not used - loc it to unused pin: GPIO_LED_1_LS
-set_property IOSTANDARD LVCMOS18 [get_ports spi_flash_sck_io]
-
-# In Vivado 2018.2, auto-placement of some of the BUFGCEs for RGMII RX CLK is not ideal and we don't achieve
-# timing closure. The following constraints change the placement of these BUFGCEs to replicate the same
-# placement used by the older Vivado 2017.3 tools in which the timing did close. The constraints were auto-generated in
-# Vivado 2018.2 by modifying the implemented design.
-
-current_instance kcu105_hpc_axieth_i/ddr4_0/inst
-set_property LOC MMCME3_ADV_X0Y1 [get_cells -hier -filter {NAME =~ */u_ddr4_infrastructure/gen_mmcme*.u_mmcme_adv_inst}]
-current_instance -quiet
-set_property INTERNAL_VREF 0.84 [get_iobanks 46]
-set_property INTERNAL_VREF 0.84 [get_iobanks 44]
-set_property BEL BUFCE [get_cells kcu105_hpc_axieth_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y52 [get_cells kcu105_hpc_axieth_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
-set_property BEL BUFCE [get_cells kcu105_hpc_axieth_i/clk_wiz_0/inst/clkout1_buf]
-set_property LOC BUFGCE_X1Y60 [get_cells kcu105_hpc_axieth_i/clk_wiz_0/inst/clkout1_buf]
-set_property BEL BUFCE [get_cells kcu105_hpc_axieth_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y54 [get_cells kcu105_hpc_axieth_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property BEL BUFCE [get_cells kcu105_hpc_axieth_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y79 [get_cells kcu105_hpc_axieth_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property BEL BUFCE [get_cells kcu105_hpc_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y81 [get_cells kcu105_hpc_axieth_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets clk]
 
 # Configuration via Quad SPI settings for KCU105
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]

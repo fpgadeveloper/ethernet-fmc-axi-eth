@@ -119,7 +119,6 @@ if {$dual_design} {
   CONFIG.CLKIN1_JITTER_PS {80.0} \
   CONFIG.MMCM_DIVCLK_DIVIDE {1} \
   CONFIG.MMCM_CLKFBOUT_MULT_F {8.000} \
-  CONFIG.MMCM_CLKIN1_PERIOD {8.000} \
   CONFIG.MMCM_CLKOUT0_DIVIDE_F {8.000} \
   CONFIG.MMCM_CLKOUT1_DIVIDE {5} \
   CONFIG.NUM_OUT_CLKS {2} \
@@ -241,10 +240,19 @@ foreach port $ports {
   # Add the AXI Ethernet IPs
   create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_$port
 
-  # Configure all ports for full checksum hardware offload
-  set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_$port]
+  # Configure all ports for full checksum hardware offload except ZC702 dual design
+  if {$design_name == "zc702_lpc2_lpc1_axieth"} {
+    set_property -dict [list CONFIG.TXCSUM {None} CONFIG.RXCSUM {None}] [get_bd_cells axi_ethernet_$port]
+  } else {
+    set_property -dict [list CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}] [get_bd_cells axi_ethernet_$port]
+  }
 
-  # PicoZed 7015: Disable frame filter and stats counters to free LUTs
+  # ZC702 dual: Reduce TX and RX memory size to the lowest value (2k) to save LUTs
+  if {$design_name == "zc702_lpc2_lpc1_axieth"} {
+    set_property -dict [list CONFIG.RXMEM {2k} CONFIG.TXMEM {2k}] [get_bd_cells axi_ethernet_$port]
+  }
+
+  # PicoZed 7015 and ZC702 dual: Disable frame filter and stats counters to free LUTs
   if {$design_name == "pz_7z015_axieth" || $design_name == "zc702_lpc2_lpc1_axieth"} {
     set_property -dict [list CONFIG.Frame_Filter {false} CONFIG.Statistics_Counters {false}] [get_bd_cells axi_ethernet_$port]
   }

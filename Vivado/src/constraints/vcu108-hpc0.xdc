@@ -133,23 +133,3 @@ set_property PACKAGE_PIN AL12 [get_ports mdio_io_port_3_mdc]
 set_property PACKAGE_PIN AU11 [get_ports mdio_io_port_3_mdio_io]
 set_property PACKAGE_PIN AV11 [get_ports {reset_port_3[0]}]
 
-# In Vivado 2018.2, auto-placement of some of the BUFGCEs for RGMII RX CLK is not ideal and we don't achieve
-# timing closure. The following constraints change the placement of these BUFGCEs to replicate the same
-# placement used by the older Vivado 2017.3 tools in which the timing did close. The constraints were auto-generated in
-# Vivado 2018.2 by modifying the implemented design.
-
-set_property BEL BUFCE [get_cells *_i/clk_wiz_0/inst/clkout1_buf]
-set_property LOC BUFGCE_X1Y60 [get_cells *_i/clk_wiz_0/inst/clkout1_buf]
-set_property BEL BUFCE [get_cells *_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y54 [get_cells *_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/bufg_rgmii_rx_clk]
-set_property BEL BUFCE [get_cells *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y62 [get_cells *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property BEL BUFCE [get_cells *_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y79 [get_cells *_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property BEL BUFCE [get_cells *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property LOC BUFGCE_X1Y76 [get_cells *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/bufg_rgmii_rx_clk]
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets clk]
-
