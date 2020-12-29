@@ -1,0 +1,22 @@
+###############################################################################
+# Copyright (C) 2010 - 2020 Xilinx, Inc.  All rights reserved.
+# SPDX-License-Identifier: MIT
+#
+# MODIFICATION HISTORY:
+#
+# 05/12/10 asa First Release
+# 02/01/13 srt Added support for IPI designs (CR 698249)
+#
+###############################################################################
+
+OPTION psf_version = 2.1;
+
+BEGIN driver axiethernet
+
+  OPTION supported_peripherals = axi_ethernet_v[3-9]_[0-9];
+  OPTION driver_state = ACTIVE;
+  OPTION copyfiles = all;
+  OPTION VERSION = 5.119;
+  OPTION NAME = axiethernet;
+
+END driver

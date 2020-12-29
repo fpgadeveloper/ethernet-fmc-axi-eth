@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 - 2019 Xilinx, Inc.
+ * Copyright (C) 2010 - 2020 Xilinx, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -263,7 +263,7 @@ unsigned int get_phy_negotiated_speed (XAxiEthernet *xaxiemacp, u32 phy_addr)
 	else if((temp & 0x0C00) == 0x0000) {
 		return 10;
 	} else {
-		xil_printf("get_IEEE_phy_speed(): Invalid speed bit value, Deafulting to Speed = 10 Mbps\r\n");
+		xil_printf("get_IEEE_phy_speed(): Invalid speed bit value, Defaulting to Speed = 10 Mbps\r\n");
 		XAxiEthernet_PhyRead(xaxiemacp, phy_addr, IEEE_CONTROL_REG_OFFSET, &temp);
 		XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, IEEE_CONTROL_REG_OFFSET, 0x0100);
 		return 10;
@@ -665,7 +665,7 @@ unsigned get_IEEE_phy_speed(XAxiEthernet *xaxiemacp)
 		} else if (phy_model == MARVEL_PHY_88E1111_MODEL) {
 			return get_phy_speed_88E1111(xaxiemacp, phy_addr);
 		} else if (phy_model == MARVEL_PHY_88E1510_MODEL) {
-            return get_phy_speed_88E1510(xaxiemacp, phy_addr);
+			return get_phy_speed_88E1510(xaxiemacp, phy_addr);
 		}
 	} else if (phy_identifier == TI_PHY_IDENTIFIER) {
 		phy_model = phy_model & TI_PHY_DP83867_MODEL;
@@ -719,11 +719,11 @@ unsigned configure_IEEE_phy_speed(XAxiEthernet *xaxiemacp, unsigned speed)
 
 	else if (speed == 100) {
 		control |= IEEE_CTRL_LINKSPEED_100M;
-		/* Dont advertise PHY speed of 1000 Mbps */
+		/* Don't advertise PHY speed of 1000 Mbps */
 		XAxiEthernet_PhyWrite(xaxiemacp, phy_addr,
 					IEEE_1000_ADVERTISE_REG_OFFSET,
 					0);
-		/* Dont advertise PHY speed of 10 Mbps */
+		/* Don't advertise PHY speed of 10 Mbps */
 		XAxiEthernet_PhyWrite(xaxiemacp, phy_addr,
 				IEEE_AUTONEGO_ADVERTISE_REG,
 				ADVERTISE_100);
@@ -731,11 +731,11 @@ unsigned configure_IEEE_phy_speed(XAxiEthernet *xaxiemacp, unsigned speed)
 	}
 	else if (speed == 10) {
 		control |= IEEE_CTRL_LINKSPEED_10M;
-		/* Dont advertise PHY speed of 1000 Mbps */
+		/* Don't advertise PHY speed of 1000 Mbps */
 		XAxiEthernet_PhyWrite(xaxiemacp, phy_addr,
 				IEEE_1000_ADVERTISE_REG_OFFSET,
 					0);
-		/* Dont advertise PHY speed of 100 Mbps */
+		/* Don't advertise PHY speed of 100 Mbps */
 		XAxiEthernet_PhyWrite(xaxiemacp, phy_addr,
 				IEEE_AUTONEGO_ADVERTISE_REG,
 				ADVERTISE_10);
@@ -835,4 +835,34 @@ static void __attribute__ ((noinline)) AxiEthernetUtilPhyDelay(unsigned int Seco
 #else
     sleep(Seconds);
 #endif
+}
+
+void enable_sgmii_clock(XAxiEthernet *xaxiemacp)
+{
+	u16 phy_identifier;
+	u16 phy_model;
+	u8 phytype;
+
+	XAxiEthernet_PhySetMdioDivisor(xaxiemacp, XAE_MDIO_DIV_DFT);
+	u32 phy_addr = detect_phy(xaxiemacp);
+	/* Get the PHY Identifier and Model number */
+	XAxiEthernet_PhyRead(xaxiemacp, phy_addr, PHY_IDENTIFIER_1_REG, &phy_identifier);
+	XAxiEthernet_PhyRead(xaxiemacp, phy_addr, PHY_IDENTIFIER_2_REG, &phy_model);
+
+	if (phy_identifier == TI_PHY_IDENTIFIER) {
+		phy_model = phy_model & TI_PHY_DP83867_MODEL;
+		phytype = XAxiEthernet_GetPhysicalInterface(xaxiemacp);
+
+		if (phy_model == TI_PHY_DP83867_MODEL && phytype == XAE_PHY_TYPE_SGMII) {
+			/* Enable SGMII Clock by switching to 6-wire mode */
+			XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, TI_PHY_REGCR,
+					      TI_PHY_REGCR_DEVAD_EN);
+			XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, TI_PHY_ADDDR,
+					      TI_PHY_SGMIITYPE);
+			XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, TI_PHY_REGCR,
+					      TI_PHY_REGCR_DEVAD_EN | TI_PHY_REGCR_DEVAD_DATAEN);
+			XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, TI_PHY_ADDDR,
+					      TI_PHY_SGMIICLK_EN);
+		}
+	}
 }

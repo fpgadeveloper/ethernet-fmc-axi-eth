@@ -144,21 +144,20 @@ foreach port $ports {
   connect_bd_net [get_bd_pins axi_ethernet_${port}_dma/s2mm_sts_reset_out_n] [get_bd_pins axi_ethernet_${port}/axi_rxs_arstn]
 
   # Use connection automation to connect AXI lite interfaces
-  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_${port}/s_axi]
-  set_property range 256K [get_bd_addr_segs "zynq_ultra_ps_e_0/Data/SEG_axi_ethernet_${port}_Reg0"]
-  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD" intc_ip "New AXI Interconnect" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_${port}_dma/S_AXI_LITE]
-
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD} Slave "/axi_ethernet_${port}/s_axi" ddr_seg {Auto} intc_ip {Auto} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}/s_axi]
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/zynq_ultra_ps_e_0/M_AXI_HPM0_FPD} Slave "/axi_ethernet_${port}_dma/S_AXI_LITE" ddr_seg {Auto} intc_ip {Auto} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/S_AXI_LITE]
+  
   # Use connection automation to connect AXI MM interfaces of the DMA
   if { [ip_exists "axi_smc"] == 0 } {
-    #apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config [list Master "/axi_ethernet_${port}_dma/M_AXI_SG" intc_ip "Auto" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" ]  [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP0_FPD]
     create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect axi_smc
     connect_bd_intf_net [get_bd_intf_pins axi_smc/M00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP0_FPD]
     connect_bd_net [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins axi_smc/aclk]
     connect_bd_net [get_bd_pins rst_ps8_0_99M/peripheral_aresetn] [get_bd_pins axi_smc/aresetn]
   }
-  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_SG]
-  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_MM2S]
-  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Slave "/zynq_ultra_ps_e_0/S_AXI_HP0_FPD" intc_ip "/axi_smc" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_S2MM]
+  
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master "/axi_ethernet_${port}_dma/M_AXI_MM2S" Slave {/zynq_ultra_ps_e_0/S_AXI_HP0_FPD} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_MM2S]
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master "/axi_ethernet_${port}_dma/M_AXI_S2MM" Slave {/zynq_ultra_ps_e_0/S_AXI_HP0_FPD} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_S2MM]
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master "/axi_ethernet_${port}_dma/M_AXI_SG" Slave {/zynq_ultra_ps_e_0/S_AXI_HP0_FPD} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_SG]
 
   # Make AXI Ethernet ports external: MDIO, RGMII and RESET
   # MDIO
