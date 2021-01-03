@@ -74,8 +74,7 @@ do
   if [[ -f "configdone.txt" ]]; then
     echo "> PetaLinux config files already transferred"
   else
-    echo "> Transferring PetaLinux config files"
-    cp -R ../src/common/* .
+    echo "> Transferring PetaLinux BSPs and config files"
     if [[ $portconfig != "ports-" ]]; then
       cp -R ../src/$portconfig/* .
     fi
