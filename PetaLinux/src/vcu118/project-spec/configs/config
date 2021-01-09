@@ -210,3 +210,11 @@ CONFIG_YOCTO_NETWORK_SSTATE_FEEDS_URL="http://petalinux.xilinx.com/sswreleases/r
 #
 CONFIG_USER_LAYER_0=""
 CONFIG_SUBSYSTEM_BOOTARGS_GENERATED="console=ttyUL0,115200 earlycon root=/dev/ram0 rw"
+
+# Ethernet FMC configs
+
+# We use the template because the board dtsi expects axi_ethernet_0 to be 
+# the on-board Ethernet, and axi_iic_0 to be the I2C. We define the I2C
+# device tree for iic_main in the system-user.dtsi in this BSP.
+CONFIG_SUBSYSTEM_MACHINE_NAME="template"
+
