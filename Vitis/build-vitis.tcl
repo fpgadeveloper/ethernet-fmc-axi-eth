@@ -21,7 +21,8 @@
 # For each exported hardware design, the script will generate the echo server software application.
 
 # Set the Vivado directory containing the Vivado projects
-set vivado_dir "../Vivado"
+set vivado_dir [file join [pwd] "../Vivado"]
+set vivado_dir [file normalize $vivado_dir]
 # Set the application postfix
 set app_postfix "_echo_server"
 
@@ -261,12 +262,11 @@ proc create_vitis_ws {} {
       # Copy the bitstream and elf file to the boot folder
       file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.bit" "./boot/${board_name}"
       file copy "./${app_name}/Debug/${app_name}.elf" "./boot/${board_name}"
-      file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.mmi" "./boot/${board_name}"
     # For Zynq and Zynq MP designs
     } else {
       puts "Copying the BOOT.BIN file to the ./boot/${board_name} directory."
       # Copy the already generated BOOT.bin file
-      set bootbin_file "./${app_name}_system/Debug/sd_card/BOOT.bin"
+      set bootbin_file "./${app_name}_system/Debug/sd_card/BOOT.BIN"
       if {[file exists $bootbin_file] == 1} {
         file copy -force $bootbin_file "./boot/${board_name}"
       } else {

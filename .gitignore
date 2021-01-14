@@ -1,4 +1,19 @@
-Vivado/.Xil/
+git Vivado/.Xil/
 Vivado/*.log
 Vivado/*.jou
 Vivado/*_axieth/
+Vitis/*_echo_*/
+Vitis/*_axieth_*/
+Vitis/.*/
+Vitis/.*
+Vitis/*.log
+Vitis/boot/
+PetaLinux/*_axieth/
+EmbeddedSw/ThirdParty/sw_services/*/doc/
+EmbeddedSw/ThirdParty/sw_services/*/examples/
+EmbeddedSw/ThirdParty/sw_services/*/src/lwip*/
+EmbeddedSw/ThirdParty/sw_services/*/src/ChangeLog
+EmbeddedSw/ThirdParty/sw_services/*/src/Make*
+EmbeddedSw/XilinxProcessorIPLib/drivers/*/doc/
+EmbeddedSw/XilinxProcessorIPLib/drivers/*/examples/
+
