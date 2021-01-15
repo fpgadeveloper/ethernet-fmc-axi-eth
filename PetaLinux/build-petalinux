@@ -15,12 +15,6 @@ do
   echo "INFO: Exported Vivado project found: $proj"
   echo "> Exported hardware spec [$f]"
 
-  if [[ $proj == "uzev_axieth" ]]; then
-    echo "THE RIGHT PROJECT!!!"
-  else
-    continue
-  fi
-  
   # No PetaLinux for ZC702 dual design (FIFO based design)
   if [[ $proj == "zc702_lpc2_lpc1_axieth" ]]; then
     continue

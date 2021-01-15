@@ -7,12 +7,13 @@
 
 # lwIP modifications
 # ------------------
-# These applications use a modified version of the lwIP library contained in the
-# ../EmbeddedSw directory. The original lwIP library can be found here:
+# These applications use a modified version of the lwIP library, the sources to which are
+# contained in the ../EmbeddedSw directory of this Git repository. The original lwIP library 
+# can be found here:
 # C:\Xilinx\Vitis\<version>\data\embeddedsw\ThirdParty\sw_services
-# This script will copy the original lwIP library sources into the ../EmbeddedSw directory,
-# except for the modified files already contained in that directory. The ../EmbeddedSw
-# directory then serves as a remote SDK repository for the software applications.
+# This script will create a local software repository called embeddedsw in the Vitis 
+# workspace (Vitis\embeddedsw\). It will copy the original lwIP library sources into 
+# embeddedsw as well as the modified sources contained in the ../EmbeddedSw directory.
 
 # Echo server applications
 # ------------------------
@@ -58,12 +59,15 @@ proc copy-r {{dir .} target_dir} {
   }
 } ;# RS
 
-# Fill in the local libraries with original sources without overwriting existing code
-proc fill_local_libraries {} {
+# Create the local software repository (embeddedsw) for the modified drivers
+proc create_local_embeddedsw {} {
   # Xilinx Vitis install directory
   set vitis_dir $::env(XILINX_VITIS)
+  # Copy the EmbeddedSw folder into the Vitis workspace
+  file mkdir "embeddedsw"
+  copy-r "../EmbeddedSw" "embeddedsw"
   # For each of the custom lwIP versions in our local repo
-  foreach lwip_dir [glob -type d "../EmbeddedSw/ThirdParty/sw_services/*"] {
+  foreach lwip_dir [glob -type d "embeddedsw/ThirdParty/sw_services/*"] {
     # Work out the original version library directory name by removing the appended "9"
     set lib_name [string range [lindex [split $lwip_dir /] end] 0 end-1]
     set orig_dir "$vitis_dir/data/embeddedsw/ThirdParty/sw_services/$lib_name"
@@ -72,7 +76,7 @@ proc fill_local_libraries {} {
     copy-r $orig_dir $lwip_dir
   }
   # For each of the custom axi_ethernet driver versions in our local repo
-  foreach driver_dir [glob -type d "../EmbeddedSw/XilinxProcessorIPLib/drivers/*"] {
+  foreach driver_dir [glob -type d "embeddedsw/XilinxProcessorIPLib/drivers/*"] {
     # Work out the original version library directory name by removing the appended "9"
     set lib_name [string range [lindex [split $driver_dir /] end] 0 end-1]
     set orig_dir "$vitis_dir/data/embeddedsw/XilinxProcessorIPLib/drivers/$lib_name"
@@ -178,7 +182,7 @@ proc create_vitis_ws {} {
   # Add local Vitis repo
   # Now when we create an application, SDK will automatically use the lwIP library from the local repo
   puts "Adding Vitis repo to the workspace."
-  set embsw [file normalize "${vitis_dir}/../EmbeddedSw"]
+  set embsw [file normalize "${vitis_dir}/embeddedsw"]
   repo -set [list $embsw]
 
   # Add each Vivado project to Vitis workspace
@@ -252,25 +256,25 @@ proc create_vitis_ws {} {
     
     # If all required files exist, then generate boot files
     # Create directory for the boot file if it doesn't already exist
-    if {[file exists "./boot/$board_name"] == 0} {
-      file mkdir "./boot/$board_name"
+    if {[file exists "./boot/$vivado_folder"] == 0} {
+      file mkdir "./boot/$vivado_folder"
     }
 	
     # For Microblaze designs
     if {[str_contains $proc_instance "microblaze"]} {
-      puts "Copying bitstream and elf for $board_name project."
+      puts "Copying bitstream and elf for $vivado_folder project."
       # Copy the bitstream and elf file to the boot folder
-      file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.bit" "./boot/${board_name}"
-      file copy "./${app_name}/Debug/${app_name}.elf" "./boot/${board_name}"
+      file copy "../Vivado/${vivado_folder}/${vivado_folder}.runs/impl_1/${vivado_folder}_wrapper.bit" "./boot/${vivado_folder}"
+      file copy "./${app_name}/Debug/${app_name}.elf" "./boot/${vivado_folder}"
     # For Zynq and Zynq MP designs
     } else {
-      puts "Copying the BOOT.BIN file to the ./boot/${board_name} directory."
+      puts "Copying the BOOT.BIN file to the ./boot/${vivado_folder} directory."
       # Copy the already generated BOOT.bin file
       set bootbin_file "./${app_name}_system/Debug/sd_card/BOOT.BIN"
       if {[file exists $bootbin_file] == 1} {
-        file copy -force $bootbin_file "./boot/${board_name}"
+        file copy -force $bootbin_file "./boot/${vivado_folder}"
       } else {
-        puts "No BOOT.bin file for ${app_name}."
+        puts "No BOOT.BIN file for ${app_name}."
       }
     }
   }
@@ -294,9 +298,9 @@ proc check_apps {} {
   }
 }
   
-# Copy original lwIP library sources into the local Vitis repo
-puts "Building the local Vitis repo from original sources"
-fill_local_libraries
+# Copy original lwIP library sources into the local Vitis software repo (embeddedsw)
+puts "Building the local Vitis software repo (embeddedsw) from original sources"
+create_local_embeddedsw
 
 # Create the Vitis workspace
 puts "Creating the Vitis workspace"
