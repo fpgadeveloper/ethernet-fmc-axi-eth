@@ -218,3 +218,6 @@ CONFIG_SUBSYSTEM_BOOTARGS_GENERATED="console=ttyUL0,115200 earlycon root=/dev/ra
 # device tree for iic_main in the system-user.dtsi in this BSP.
 CONFIG_SUBSYSTEM_MACHINE_NAME="template"
 
+CONFIG_SUBSYSTEM_HOSTNAME="vcu118_axieth_2020_2"
+CONFIG_SUBSYSTEM_PRODUCT="vcu118_axieth_2020_2"
+
