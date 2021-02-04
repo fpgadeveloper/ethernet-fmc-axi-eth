@@ -45,6 +45,9 @@ if {$highest_port > 3} {
   set dual_design 0
 }
 
+# Create the list of interrupts
+set ints {}
+
 # Add the Memory controller (MIG) for the DDR4
 create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
 
@@ -52,6 +55,8 @@ create_bd_cell -type ip -vlnv xilinx.com:ip:ddr4 ddr4_0
 if {[string match "kcu105*" $design_name]} {
   apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {default_sysclk_300 ( 300 MHz System differential clock ) } Manual_Source {Auto}}  [get_bd_intf_pins ddr4_0/C0_SYS_CLK]
   apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {ddr4_sdram_062 ( DDR4 SDRAM ) } Manual_Source {Auto}}  [get_bd_intf_pins ddr4_0/C0_DDR4]
+  # Add the 50MHz additional clock output for Quad SPI clock
+  set_property -dict [list CONFIG.ADDN_UI_CLKOUT2_FREQ_HZ {50}] [get_bd_cells ddr4_0]
 }
 if {[string match "vcu108*" $design_name]} {
   apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {ddr4_sdram_c1_062 ( DDR4 SDRAM C1 ) } Manual_Source {Auto}}  [get_bd_intf_pins ddr4_0/C0_DDR4]
@@ -98,11 +103,6 @@ CONFIG.C_MMU_ZONES {2}] [get_bd_cells microblaze_0]
 
 # Connect 100MHz processor system reset external reset to the reset port
 connect_bd_net [get_bd_ports reset] [get_bd_pins rst_ddr4_0_100M/ext_reset_in]
-
-# Configure the interrupt concat
-set num_ints [expr {3 * [llength $ports]}]
-set num_ints [expr {4 + $num_ints}]
-set_property -dict [list CONFIG.NUM_PORTS $num_ints] [get_bd_cells microblaze_0_xlconcat]
 
 # Create the clock wizard to generate 300MHz, 125MHz and 250MHz from Ethernet FMC 125MHz ref clock (LPC)
 create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0
@@ -242,9 +242,6 @@ if {$dual_design} {
 # Ports with shared logic
 set shared_logic_ports {0 4}
 
-# Interrupt index starts from 0, increments each time through loop
-set int_index 0
-
 # AXI SmartConnect slave interface index, starts from 2 because 1st two ports taken by MicroBlaze
 set smc_index 2
 set smc_name axi_smc
@@ -308,11 +305,6 @@ foreach port $ports {
   set_property range 256K [get_bd_addr_segs "microblaze_0/Data/SEG_axi_ethernet_${port}_Reg0"]
   apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config {Master "/microblaze_0 (Periph)" intc_ip "/microblaze_0_axi_periph" Clk_xbar "Auto" Clk_master "Auto" Clk_slave "Auto" }  [get_bd_intf_pins axi_ethernet_${port}_dma/S_AXI_LITE]
 
-  # Automation for DMA interfaces
-  #apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_$clk_wiz_index/clk_out3 (250 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Master "/axi_ethernet_${port}_dma/M_AXI_MM2S" Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_MM2S]
-  #apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_$clk_wiz_index/clk_out3 (250 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Master "/axi_ethernet_${port}_dma/M_AXI_S2MM" Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_S2MM]
-  #apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/clk_wiz_$clk_wiz_index/clk_out3 (250 MHz)} Clk_slave {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Clk_xbar {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Master "/axi_ethernet_${port}_dma/M_AXI_SG" Slave {/ddr4_0/C0_DDR4_S_AXI} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_ethernet_${port}_dma/M_AXI_SG]
-
   # Manually connect DMA interfaces
   foreach dma_int {MM2S S2MM SG} {
     set interface_name S[format "%02d" $smc_index]_AXI
@@ -338,33 +330,27 @@ foreach port $ports {
   connect_bd_net [get_bd_pins /axi_ethernet_${port}/phy_rst_n] [get_bd_ports reset_port_${port}]
 
   # Connect interrupts (Note: we sacrifice "mac_irq" to fit up to 8 ports without using cascaded int controllers)
-  connect_bd_net [get_bd_pins axi_ethernet_${port}_dma/mm2s_introut] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-  set int_index [expr {$int_index + 1}]
-  connect_bd_net [get_bd_pins axi_ethernet_${port}_dma/s2mm_introut] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-  set int_index [expr {$int_index + 1}]
-  connect_bd_net [get_bd_pins axi_ethernet_${port}/interrupt] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-  set int_index [expr {$int_index + 1}]
+  append ints "axi_ethernet_${port}_dma/mm2s_introut "
+  append ints "axi_ethernet_${port}_dma/s2mm_introut "
+  append ints "axi_ethernet_${port}/interrupt "
 }
 
 # Add UART for the Echo server example application
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uart16550 axi_uart16550_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/axi_uart16550_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_uart16550_0/S_AXI]
 apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {rs232_uart ( UART ) } Manual_Source {Auto}}  [get_bd_intf_pins axi_uart16550_0/UART]
-connect_bd_net [get_bd_pins axi_uart16550_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-set int_index [expr {$int_index + 1}]
+append ints "axi_uart16550_0/ip2intc_irpt "
 
 # Add Timer for the Echo server example application
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_timer axi_timer_0
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/axi_timer_0/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_timer_0/S_AXI]
-connect_bd_net [get_bd_pins axi_timer_0/interrupt] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-set int_index [expr {$int_index + 1}]
+append ints "axi_timer_0/interrupt "
 
 # Add IIC
 create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic iic_main
 apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {iic_main ( IIC ) } Manual_Source {Auto}}  [get_bd_intf_pins iic_main/IIC]
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/iic_main/S_AXI} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins iic_main/S_AXI]
-connect_bd_net [get_bd_pins iic_main/iic2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-set int_index [expr {$int_index + 1}]
+append ints "iic_main/iic2intc_irpt "
 
 # Add the AXI Quad SPI for flash memory (KCU105 only)
 if {[string match "kcu105*" $design_name]} {
@@ -372,13 +358,17 @@ if {[string match "kcu105*" $design_name]} {
   set_property -dict [list CONFIG.C_SPI_MEMORY {2} CONFIG.C_USE_STARTUP {1} CONFIG.C_USE_STARTUP_INT {1} CONFIG.C_SPI_MODE {2} CONFIG.C_DUAL_QUAD_MODE {1} CONFIG.C_NUM_SS_BITS {2} CONFIG.C_SCK_RATIO {2} CONFIG.C_FIFO_DEPTH {256} CONFIG.QSPI_BOARD_INTERFACE {spi_flash}] [get_bd_cells axi_quad_spi_0]
   apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {/ddr4_0/addn_ui_clkout1 (100 MHz)} Master {/microblaze_0 (Periph)} Slave {/axi_quad_spi_0/AXI_LITE} ddr_seg {Auto} intc_ip {/microblaze_0_axi_periph} master_apm {0}}  [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
   apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {spi_flash ( QSPI flash ) } Manual_Source {Auto}}  [get_bd_intf_pins axi_quad_spi_0/SPI_1]
-  connect_bd_net [get_bd_pins axi_quad_spi_0/ext_spi_clk] [get_bd_pins ddr4_0/addn_ui_clkout1]
-  connect_bd_net [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins microblaze_0_xlconcat/In${int_index}]
-  set int_index [expr {$int_index + 1}]
-} else {
-  # Remove unneeded interrupt
-  set num_ints [expr {$num_ints - 1}]
-  set_property -dict [list CONFIG.NUM_PORTS $num_ints] [get_bd_cells microblaze_0_xlconcat]
+  connect_bd_net [get_bd_pins axi_quad_spi_0/ext_spi_clk] [get_bd_pins ddr4_0/addn_ui_clkout2]
+  append ints "axi_quad_spi_0/ip2intc_irpt "
+}
+
+# Configure Microblaze interrupt concat
+set num_ints [llength $ints]
+set_property -dict [list CONFIG.NUM_PORTS $num_ints] [get_bd_cells microblaze_0_xlconcat]
+set input_index -1
+foreach interrupt_pin $ints {
+  incr input_index
+  connect_bd_net [get_bd_pins ${interrupt_pin}] [get_bd_pins microblaze_0_xlconcat/In${input_index}]
 }
 
 # Reset GPIO

@@ -205,7 +205,16 @@ proc xdefine_axi_target_params {periphs file_handle} {
                                 continue
                         }
 			set intc_name [get_property IP_NAME $intc_periph_type]
-		       if { $intc_name != [format "ps7_scugic"] } {
+			if { [llength $intc_name] > 1 } {
+				if {[lsearch -exact $intc_name "psu_acpu_gic"] >= 0} {
+					set intc_name "psu_acpu_gic"
+				} else {
+				  set intc_name [lindex $intc_name 0]
+				}
+			}
+			set proc  [hsi::get_sw_processor];
+			set proc_type [common::get_property IP_NAME [hsi::get_cells -hier $proc]]
+			if { $intc_name != [format "ps7_scugic"] && $intc_name != [format "psu_acpu_gic"] || $proc_type == "psu_pmu"} {
 				set int_id [::hsi::utils::get_port_intr_id [get_cells -hier $tartget_per_name] $int_pin]
 				set canonical_name [format "XPAR_%s_CONNECTED_FIFO_INTR" $canonical_tag]
 				puts $file_handle [format "#define $canonical_name %d$uSuffix" $int_id]
