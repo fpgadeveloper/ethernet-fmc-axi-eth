@@ -141,3 +141,11 @@ set_property PACKAGE_PIN G26 [get_ports reset_port_3]
 
 create_clock -period 8.000 -name ref_clk_clk_p -waveform {0.000 4.000} [get_ports ref_clk_clk_p]
 
+# Configuration via Quad SPI settings for AC701
+set_property CONFIG_MODE SPIx4 [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
+set_property CONFIG_VOLTAGE 3.3 [current_design]
+set_property CFGBVS VCCO [current_design]
+set_property BITSTREAM.CONFIG.SPI_32BIT_ADDR YES [current_design]
+set_property BITSTREAM.CONFIG.SPI_FALL_EDGE YES [current_design]
