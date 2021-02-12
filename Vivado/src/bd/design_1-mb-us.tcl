@@ -362,6 +362,52 @@ if {[string match "kcu105*" $design_name]} {
   append ints "axi_quad_spi_0/ip2intc_irpt "
 }
 
+# VCU108 and VCU118 have linear flash needing AXI EMC
+# Vivado 2020.2 doesn't yet support auto-connect for the linear flash on these boards, so we must do it manually
+if {[string match "vcu*" $design_name]} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:axi_emc axi_emc_0
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_xbar {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Master {/microblaze_0 (Cached)} Slave {/axi_emc_0/S_AXI_MEM} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_emc_0/S_AXI_MEM]
+  connect_bd_net [get_bd_pins ddr4_0/addn_ui_clkout1] [get_bd_pins axi_emc_0/rdclk]
+  set_property -dict [list CONFIG.C_USE_STARTUP {1} CONFIG.C_USE_STARTUP_INT {1}] [get_bd_cells axi_emc_0]
+  set_property -dict [ list CONFIG.C_INCLUDE_DATAWIDTH_MATCHING_0 {1} \
+    CONFIG.C_MAX_MEM_WIDTH {16} \
+    CONFIG.C_MEM0_TYPE {2} \
+    CONFIG.C_MEM0_WIDTH {16} \
+    CONFIG.C_TAVDV_PS_MEM_0 {96000} \
+    CONFIG.C_TCEDV_PS_MEM_0 {96000} \
+    CONFIG.C_THZCE_PS_MEM_0 {9000} \
+    CONFIG.C_THZOE_PS_MEM_0 {9000} \
+    CONFIG.C_TLZWE_PS_MEM_0 {20000} \
+    CONFIG.C_TWC_PS_MEM_0 {40000} \
+    CONFIG.C_TWPH_PS_MEM_0 {20000} \
+    CONFIG.C_TWP_PS_MEM_0 {40000} \
+    CONFIG.C_WR_REC_TIME_MEM_0 {200000}  ] [get_bd_cells axi_emc_0]
+  # Create ports
+  set Linear_Flash_address [ create_bd_port -dir O -from 25 -to 0 Linear_Flash_address ]
+  set Linear_Flash_adv_ldn [ create_bd_port -dir O Linear_Flash_adv_ldn ]
+  set Linear_Flash_oe_n [ create_bd_port -dir O -from 0 -to 0 Linear_Flash_oe_n ]
+  set Linear_Flash_wait [ create_bd_port -dir I -from 0 -to 0 Linear_Flash_wait ]
+  set Linear_Flash_we_n [ create_bd_port -dir O Linear_Flash_we_n ]
+  set Linear_Flash_dq_io [ create_bd_port -dir IO -from 15 -to 4 -type data Linear_Flash_dq_io ]
+  # Create IOBUF
+  create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf axi_emc_iobuf
+  set_property -dict [list CONFIG.C_SIZE {12} CONFIG.C_BUF_TYPE {IOBUF}] [get_bd_cells axi_emc_iobuf]
+  connect_bd_net [get_bd_pins axi_emc_iobuf/IOBUF_IO_O] [get_bd_pins axi_emc_0/mem_dq_i]
+  connect_bd_net [get_bd_pins axi_emc_0/mem_dq_o] [get_bd_pins axi_emc_iobuf/IOBUF_IO_I]
+  connect_bd_net [get_bd_pins axi_emc_0/mem_dq_t] [get_bd_pins axi_emc_iobuf/IOBUF_IO_T]
+  # Create instance: axi_emc_slice, and set properties
+  set axi_emc_slice [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice axi_emc_slice ]
+  set_property -dict [ list CONFIG.DIN_FROM {26} CONFIG.DIN_TO {1}  ] $axi_emc_slice
+  # Create port connections
+  connect_bd_net [get_bd_pins axi_emc_0/mem_a] [get_bd_pins axi_emc_slice/Din]
+  connect_bd_net [get_bd_ports Linear_Flash_adv_ldn] [get_bd_pins axi_emc_0/mem_adv_ldn]
+  connect_bd_net [get_bd_ports Linear_Flash_oe_n] [get_bd_pins axi_emc_0/mem_oen]
+  connect_bd_net [get_bd_ports Linear_Flash_we_n] [get_bd_pins axi_emc_0/mem_wen]
+  connect_bd_net [get_bd_ports Linear_Flash_dq_io] [get_bd_pins axi_emc_iobuf/IOBUF_IO_IO]
+  connect_bd_net [get_bd_ports Linear_Flash_wait] [get_bd_pins axi_emc_0/mem_wait]
+  connect_bd_net [get_bd_ports Linear_Flash_address] [get_bd_pins axi_emc_slice/Dout]
+}
+
 # Configure Microblaze interrupt concat
 set num_ints [llength $ints]
 set_property -dict [list CONFIG.NUM_PORTS $num_ints] [get_bd_cells microblaze_0_xlconcat]
