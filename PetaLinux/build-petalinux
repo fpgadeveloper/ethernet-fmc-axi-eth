@@ -15,6 +15,11 @@ do
   echo "INFO: Exported Vivado project found: $proj"
   echo "> Exported hardware spec [$f]"
 
+  # No PetaLinux for ZC702 dual design (FIFO based design)
+  if [[ $proj == "zc702_lpc2_lpc1_axieth" ]]; then
+    continue
+  fi
+
   # Name of the BIT file
   runs=$(echo $f | sed -e "s/_wrapper.xsa/.runs/g")
   bit="$runs/impl_1/${proj}_wrapper.bit"
@@ -32,16 +37,13 @@ do
   portconfig=$(grep -Po -m 1 '(?<=src/constraints/rgmii-)[^.]+' $vivadoprj)
   portconfig="ports-$portconfig"
 
-  # Get CPU type from first letters of project name
-  type=$(echo $proj | cut -c1-3)
-  if [[ $type == *z* ]]; then
-    if [[ $type == "zcu" ]]; then
-      cpu_type="zynqMP"
-      fsbl_option="--fsbl ./images/linux/zynqmp_fsbl.elf"
-    else
-      cpu_type="zynq"
-      fsbl_option="--fsbl ./images/linux/zynq_fsbl.elf"
-    fi
+  # Get CPU type from Vivado project file
+  if grep -q Part=\"xczu "$vivadoprj"; then
+    cpu_type="zynqMP"
+    fsbl_option="--fsbl ./images/linux/zynqmp_fsbl.elf"
+  elif grep -q Part=\"xc7z "$vivadoprj"; then
+    cpu_type="zynq"
+    fsbl_option="--fsbl ./images/linux/zynq_fsbl.elf"
   else
     cpu_type="microblaze"
     fsbl_option="--fsbl ./images/linux/fs-boot.elf"
@@ -74,26 +76,13 @@ do
   if [[ -f "configdone.txt" ]]; then
     echo "> PetaLinux config files already transferred"
   else
-    echo "> Transferring PetaLinux config files"
-    cp -R ../src/common/* .
+    echo "> Transferring PetaLinux BSPs and config files"
     if [[ $portconfig != "ports-" ]]; then
       cp -R ../src/$portconfig/* .
     fi
     if [ -d "../src/$board" ]; then
       cp -R ../src/$board/* .
     fi
-    # Append mods to config file
-    config_mod_list=(`find ./project-spec/configs/ -name "config_*.append"`)
-    for f in ${config_mod_list[*]}
-    do
-      cat $f >> ./project-spec/configs/config
-    done
-    # Append mods to rootfs_config file
-    rootfs_config_mod_list=(`find ./project-spec/configs/ -name "rootfs_config_*.append"`)
-    for f in ${rootfs_config_mod_list[*]}
-    do
-      cat $f >> ./project-spec/configs/rootfs_config
-    done
     # File to indicate that config files have been transferred
     touch configdone.txt
     # Run petalinux-config again to register the config files
@@ -109,34 +98,20 @@ do
   fi
 
   # Package PetaLinux project if not packaged
-  if [[ $board == kcu105 ]]; then
+  if [ $board == "kcu105" ] || [ $board == "ac701" ]; then
     if [ -f "./images/linux/boot.mcs" ]; then
       echo "> PetaLinux project already packaged"
     else
       echo "> Packaging PetaLinux project"
       petalinux-package --boot --force --fpga ./images/linux/system.bit --u-boot --kernel --flash-size 32 --flash-intf SPIx4
     fi
-  elif [[ $board == kc705 ]]; then
+  elif [[ $cpu_type == microblaze ]]; then
     if [ -f "./images/linux/boot.mcs" ]; then
       echo "> PetaLinux project already packaged"
     else
       echo "> Packaging PetaLinux project"
       petalinux-package --boot --force --fpga ./images/linux/system.bit --u-boot --kernel --flash-size 128 --flash-intf BPIx16
     fi
-  elif [[ $cpu_type == microblaze ]]; then
-    # Do nothing for now
-    :
-    # if [ -f "./images/linux/boot.mcs" ]; then
-    #   echo "> PetaLinux project already packaged"
-    # else
-    #   echo "> Packaging PetaLinux project"
-    #   petalinux-package --boot --force \
-    #   --fpga ../$bit --offset 0x000000 \
-    #   $fsbl_option --u-boot --offset 0x1400000 \
-    #   --kernel --offset 0x1600000 \
-    #   --flash-size 128 \
-    #   --flash-intf BPIx16
-    # fi
   else
     if [[ -f "./images/linux/BOOT.BIN" && -f "./images/linux/image.ub" ]]; then
       echo "> PetaLinux project already packaged"

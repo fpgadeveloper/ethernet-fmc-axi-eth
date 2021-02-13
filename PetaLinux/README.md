@@ -40,8 +40,8 @@ When executed, the build script searches the Vivado directory for all projects c
 hardware design file. Then for every exported project, the script does the following:
 
 1. Verifies that the `.bit` file exists.
-2. Determines the CPU type: Zynq or ZynqMP. It currently does this
-by looking at the first 3 letters of the project name.
+2. Determines the CPU type: Zynq, ZynqMP or Microblaze. It does this
+by reading the Vivado project file.
 3. Creates a PetaLinux project, referencing the exported hardware design (.xsa).
 4. Copies the relevant configuration files from the `src` directory into the created
 PetaLinux project.
@@ -179,3 +179,20 @@ Ethernet FMC Port 2 on the LPC is unusable in this design.
 
 Note that the ZC702 dual design will not produce a working PetaLinux project because it's Ethernet
 MACs are connected to FIFOs and not AXI DMAs. We are working on a solution to this.
+
+### AXI Ethernet issue on Zynq designs 2020.2
+
+There is an issue in the PetaLinux 2020.2 release that affects the **AXI Ethernet** connected ports on
+**Zynq** based designs. On these ports, it seems to be necessary to use the following procedure to bring 
+up a port. Note that the interface and IP address were chosen as examples, but this procedure applies to 
+all AXI Ethernet connected ports (eth0, eth1, eth2 and eth3) on the Zynq based designs (MicroZed, PicoZed, 
+ZedBoard, ZC702 and ZC706).
+```
+ifconfig eth0 up
+ifconfig eth0 down
+ifconfig eth0 192.168.1.10 up
+```
+In earlier releases, it was only necessary to run the last command to bring up a port. This issue
+does not affect the Zynq Ultrascale+ based designs. We have not yet determined the cause of this issue
+but if you have any information, please let us know.
+

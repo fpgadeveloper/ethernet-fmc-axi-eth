@@ -47,8 +47,8 @@
 # zcu102_hpc1_axieth_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_tx_clk_casc.
 
 # Enable internal termination resistor on LVDS 125MHz ref_clk
-set_property DIFF_TERM TRUE [get_ports {ref_clk_p[0]}]
-set_property DIFF_TERM TRUE [get_ports {ref_clk_n[0]}]
+set_property DIFF_TERM TRUE [get_ports ref_clk_clk_p]
+set_property DIFF_TERM TRUE [get_ports ref_clk_clk_n]
 
 # Define I/O standards
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_rd[0]}]
@@ -91,8 +91,8 @@ set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_1_td[3]}]
 #set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[0]}]
 #set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[2]}]
 #set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_3_td[3]}]
-set_property IOSTANDARD LVDS [get_ports {ref_clk_p[0]}]
-set_property IOSTANDARD LVDS [get_ports {ref_clk_n[0]}]
+set_property IOSTANDARD LVDS [get_ports ref_clk_clk_p]
+set_property IOSTANDARD LVDS [get_ports ref_clk_clk_n]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_port_0_td[0]}]
@@ -154,8 +154,8 @@ set_property PACKAGE_PIN AG9 [get_ports {rgmii_port_1_td[3]}]
 #set_property PACKAGE_PIN AE10 [get_ports rgmii_port_2_tx_ctl]
 #set_property PACKAGE_PIN AF10 [get_ports mdio_io_port_2_mdio_io]
 #set_property PACKAGE_PIN W11 [get_ports {rgmii_port_3_td[0]}]
-set_property PACKAGE_PIN AE7 [get_ports {ref_clk_p[0]}]
-set_property PACKAGE_PIN AF7 [get_ports {ref_clk_n[0]}]
+set_property PACKAGE_PIN AE7 [get_ports ref_clk_clk_p]
+set_property PACKAGE_PIN AF7 [get_ports ref_clk_clk_n]
 set_property PACKAGE_PIN AD2 [get_ports {rgmii_port_0_rd[0]}]
 set_property PACKAGE_PIN AD1 [get_ports {rgmii_port_0_rd[1]}]
 set_property PACKAGE_PIN AF2 [get_ports {rgmii_port_0_td[0]}]

@@ -8,12 +8,16 @@ PHYs on the Ethernet FMC.
 
 A function is added to `xaxiemacif_physpeed.c` for the initialization of the Marvell 88E1510 Ethernet PHY
 
-### AXI Ethernet driver modifications (applies only to versions 5.6, 5.7, 5.8 and 5.9)
+### AXI Ethernet driver modifications (applies to versions 5.6-5.11)
 
-There is a bug in the TCL script for the AXI Ethernet driver since version 5.6 (released with Xilinx SDK 2017.3).
+For designs using the AXI FIFO (instead of AXI DMA), the `axiethernet.tcl` script requires correcting for the
+following issues:
 
-For designs using the AXI FIFO (instead of AXI DMA), the below script fails at line 234 because variable
-`target_periph_name` is not defined. This repo contains a fix for the bug.
+1. Variable `target_periph_name` is not defined in function `xdefine_axi_target_params`. This causes the script
+to fail for the case when the device is Zynq and FIFO is used.
+2. FIFO interrupt IDs are not correctly defined for the case when the device is ZynqMP and FIFO is used. This
+is because the interrupt controller for ZynqMP is `psu_acpu_gic`, but this is not checked for, hence this case
+is treated as a non-Zynq case.
 
-Location of the original TCL script for Vitis 2019.2:
-`\Xilinx\Vitis\2019.2\data\embeddedsw\XilinxProcessorIPLib\drivers\axiethernet_v5_9\data\axiethernet.tcl`
+Both issues are corrected by the sources in this repo. Location of the original TCL script for Vitis 2020.2:
+`\Xilinx\Vitis\2020.2\data\embeddedsw\XilinxProcessorIPLib\drivers\axiethernet_v5_11\data\axiethernet.tcl`

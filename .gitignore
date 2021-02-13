@@ -1,0 +1,14 @@
+git Vivado/.Xil/
+Vivado/*.log
+Vivado/*.jou
+Vivado/*_axieth/
+Vitis/*_echo_*/
+Vitis/*_axieth_*/
+Vitis/.*/
+Vitis/.*
+Vitis/*.log
+Vitis/*.jou
+Vitis/boot/
+Vitis/embeddedsw/
+PetaLinux/*_axieth/
+
