@@ -13,6 +13,7 @@ This is the documentation for the AXI Ethernet reference designs for the `Ethern
    :maxdepth: 2
    :caption: User Guide
 
+   description
    requirements
    supported_carriers
    build_instructions

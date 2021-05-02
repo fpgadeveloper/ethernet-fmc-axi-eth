@@ -1,4 +1,4 @@
-git Vivado/.Xil/
+Vivado/.Xil/
 Vivado/*.log
 Vivado/*.jou
 Vivado/*_axieth/
@@ -11,4 +11,4 @@ Vitis/*.jou
 Vitis/boot/
 Vitis/embeddedsw/
 PetaLinux/*_axieth/
-
+docs/build/

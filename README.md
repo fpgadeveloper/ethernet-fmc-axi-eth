@@ -28,7 +28,7 @@ In order to test this design on hardware, you will need the following:
 * Vitis 2020.2
 * PetaLinux Tools 2020.2
 * [Ethernet FMC](https://ethernetfmc.com "Ethernet FMC")
-* One of the below listed evaluation boards
+* One of the [supported evaluation boards](https://axieth.ethernetfmc.com/en/latest/supported_carriers.html)
 * [Xilinx Soft TEMAC license](https://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
 ## Contribute
