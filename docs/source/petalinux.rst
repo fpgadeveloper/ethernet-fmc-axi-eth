@@ -168,8 +168,140 @@ ZC702 Dual design
 Note that the ZC702 dual design will not produce a working PetaLinux project because it's Ethernet
 MACs are connected to FIFOs and not AXI DMAs. We are working on a solution to this.
 
+Example Usage
+=============
+
+Enable port
+-----------
+
+This example will bring up a port.
+
+.. code-block::
+
+   root@axieth:~# ifconfig eth1 up
+   [  228.274146] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
+   [  228.282753] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+
+Enable port with fixed IP address
+---------------------------------
+
+This example sets a fixed IP address to a port.
+
+.. code-block::
+
+   root@axieth:~# ifconfig eth1 192.168.2.30 up
+   [  390.080498] net eth1: Promiscuous mode disabled.
+   [  390.085406] net eth1: Promiscuous mode disabled.
+   [  390.091089] xilinx_axienet a0000000.ethernet eth1: Link is Down
+   [  394.175238] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
+   [  394.183769] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+
+Enable port using DHCP
+----------------------
+
+This example enables a port and obtains an IP address for the port via DHCP. Note that the
+port must be connected to a DHCP enabled router.
+
+.. code-block::
+
+   root@axieth:~# udhcpc -i eth1
+   udhcpc: started, v1.31.0
+   [   68.814013] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
+   [   68.822670] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+   udhcpc: sending discover
+   udhcpc: sending select for 192.168.2.23
+   udhcpc: lease of 192.168.2.23 obtained, lease time 259200
+   /etc/udhcpc.d/50default: Adding DNS 192.168.2.1
+
+Check port status
+-----------------
+
+In this example, we use the ``ifconfig`` command with no arguments to check the port status.
+The first interface (eth0) shown below is connected to the on-board Ethernet port and it has not been
+enabled, whereas the second interface (eth1) is connected to the Ethernet FMC port 0 and it has
+been enabled and configured with IP address 192.168.2.30.
+
+.. code-block::
+
+   root@axieth:~# ifconfig
+   eth0      Link encap:Ethernet  HWaddr 00:0A:35:00:22:01
+             UP BROADCAST MULTICAST  MTU:1500  Metric:1
+             RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+             TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+             collisions:0 txqueuelen:1000
+             RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+             Interrupt:30
+   
+   eth1      Link encap:Ethernet  HWaddr 00:0A:35:00:01:22
+             inet addr:192.168.2.30  Bcast:192.168.2.255  Mask:255.255.255.0
+             inet6 addr: fe80::20a:35ff:fe00:122/64 Scope:Link
+             UP BROADCAST RUNNING  MTU:1500  Metric:1
+             RX packets:38 errors:0 dropped:0 overruns:0 frame:0
+             TX packets:26 errors:0 dropped:0 overruns:0 carrier:0
+             collisions:0 txqueuelen:1000
+             RX bytes:6033 (5.8 KiB)  TX bytes:3302 (3.2 KiB)
+   
+   lo        Link encap:Local Loopback
+             inet addr:127.0.0.1  Mask:255.0.0.0
+             inet6 addr: ::1/128 Scope:Host
+             UP LOOPBACK RUNNING  MTU:65536  Metric:1
+             RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+             TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+             collisions:0 txqueuelen:1000
+             RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+We can also use ``ethtool`` to check the port status as follows.
+
+.. code-block::
+
+   root@axieth:~# ethtool eth1
+   Settings for eth1:
+           Supported ports: [ TP MII FIBRE ]
+           Supported link modes:   10baseT/Half 10baseT/Full
+                                   100baseT/Half 100baseT/Full
+                                   1000baseT/Half 1000baseT/Full
+           Supported pause frame use: Symmetric Receive-only
+           Supports auto-negotiation: Yes
+           Supported FEC modes: Not reported
+           Advertised link modes:  10baseT/Half 10baseT/Full
+                                   100baseT/Half 100baseT/Full
+                                   1000baseT/Half 1000baseT/Full
+           Advertised pause frame use: No
+           Advertised auto-negotiation: Yes
+           Advertised FEC modes: Not reported
+           Link partner advertised link modes:  10baseT/Half 10baseT/Full
+                                                100baseT/Half 100baseT/Full
+                                                1000baseT/Full
+           Link partner advertised pause frame use: No
+           Link partner advertised auto-negotiation: Yes
+           Link partner advertised FEC modes: Not reported
+           Speed: 1000Mb/s
+           Duplex: Full
+           Port: MII
+           PHYAD: 0
+           Transceiver: internal
+           Auto-negotiation: on
+           Link detected: yes
+
+Ping link partner using specific port
+-------------------------------------
+
+In this example we ping the link partner at IP address 192.168.2.10 from interface eth1.
+
+.. code-block::
+
+   root@axieth:~# ping -I eth1 192.168.2.10
+   PING 192.168.2.10 (192.168.2.10): 56 data bytes
+   64 bytes from 192.168.2.10: seq=0 ttl=128 time=0.545 ms
+   64 bytes from 192.168.2.10: seq=1 ttl=128 time=0.455 ms
+   64 bytes from 192.168.2.10: seq=2 ttl=128 time=0.380 ms
+   64 bytes from 192.168.2.10: seq=3 ttl=128 time=0.356 ms
+
+Known Issues
+============
+
 AXI Ethernet issue on Zynq designs 2020.2
-=========================================
+-----------------------------------------
 
 There is an issue in the PetaLinux 2020.2 release that affects the **AXI Ethernet** connected ports on
 **Zynq** based designs. On these ports, it seems to be necessary to use the following procedure to bring 
@@ -184,6 +316,7 @@ ZedBoard, ZC702 and ZC706).
   ifconfig eth0 192.168.1.10 up
 
 In earlier releases, it was only necessary to run the last command to bring up a port. This issue
-does not affect the Zynq Ultrascale+ based designs. We have not yet determined the cause of this issue
+does not affect the Zynq Ultrascale+ based designs. This issue does not seem to affect the stand-alone
+echo server operation. We have not yet determined the cause of this issue
 but if you have any information, please let us know.
 

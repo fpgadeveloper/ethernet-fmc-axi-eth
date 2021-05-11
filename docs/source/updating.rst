@@ -53,21 +53,16 @@ For example, the BSP files for the ZedBoard are located in ``PetaLinux/src/zedbo
 1. Download and install the PetaLinux release that you intend to use.
 2. Download and install the BSP for the target platform for the release that you intend to use.
 
-   * AC701 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * KC705 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * KCU105 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * MicroZed BSP is provided by Avnet but we use the 
-   * PicoZed
-   * UltraZed EV
-   * VC707 BSP is not provided by Xilinx so we use the one for KC705 and modify it
-   * VC709 BSP is not provided by Xilinx so we use the one for KC705 and modify it
-   * VCU108 BSP is not provided by Xilinx so we use the one for VCU118 and modify it
-   * VCU118 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * ZC702 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * ZC706 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * ZCU102 BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-   * ZedBoard BSP from the `PetaLinux download page <https://www.xilinx.com/petalinux>`_
-
+   * For AC701, KC705, KCU105, VCU118, ZC702, ZC706, ZCU102 and ZedBoard, download the BSP from the 
+     `PetaLinux download page <https://www.xilinx.com/petalinux>`_
+   * For MicroZed and PicoZed, download the BSP for the **ZedBoard** from the 
+     `PetaLinux download page <https://www.xilinx.com/petalinux>`_
+   * For the UltraZed EV, download the BSP for the **ZCU102** from the 
+     `PetaLinux download page <https://www.xilinx.com/petalinux>`_
+   * For the VC707 and VC709, download the BSP for the **KC705** from the 
+     `PetaLinux download page <https://www.xilinx.com/petalinux>`_
+   * For the VCU108, download the BSP for the **VCU118** from the 
+     `PetaLinux download page <https://www.xilinx.com/petalinux>`_
 
 3. Update the BSP files for the target platform in the ``PetaLinux/src/<platform>`` directory. 
    These are the specific directories to update:
