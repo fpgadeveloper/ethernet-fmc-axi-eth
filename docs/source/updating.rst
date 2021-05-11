@@ -12,22 +12,13 @@ Vivado projects
 ===============
 
 1. Download and install the Vivado release that you intend to use.
-2. Download and install the latest board files for the target platform (if required).
+2. If you are using one of the following boards, you will have to download and install the latest 
+   board files for that target platform. Other boards are already built into Vivado and require no
+   extra installation.
 
-   * AC701 board files are built into Vivado
-   * KC705 board files are built into Vivado
-   * KCU105 board files are built into Vivado
    * MicroZed board files can be downloaded `here <https://github.com/Avnet/bdf>`_
    * PicoZed board files can be downloaded `here <https://github.com/Avnet/bdf>`_
    * UltraZed EV board files can be downloaded `here <https://github.com/Avnet/bdf>`_
-   * VC707 board files are built into Vivado
-   * VC709 board files are built into Vivado
-   * VCU108 board files are built into Vivado
-   * VCU118 board files are built into Vivado
-   * ZC702 board files are built into Vivado
-   * ZC706 board files are built into Vivado
-   * ZCU102 board files are built into Vivado
-   * ZedBoard board files are built into Vivado
    
 3. In a text editor, open the ``Vivado/build-<target>.bat`` file for
    the design that you wish to update, and perform the following changes:

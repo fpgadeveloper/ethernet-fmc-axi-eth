@@ -43,7 +43,7 @@ How the script works
 The PetaLinux directory contains a ``build-petalinux`` shell script which can be run in Linux to automatically
 generate a PetaLinux project for each of the generated/exported Vivado projects in the Vivado directory.
 
-When executed, the build script searches the Vivado directory for all projects containing a `.xsa` exported
+When executed, the build script searches the Vivado directory for all projects containing a ``.xsa`` exported
 hardware design file. Then for every exported project, the script does the following:
 
 #. Verifies that the ``.bit`` file exists.
@@ -128,8 +128,8 @@ KCU105 LPC
 
 Ethernet FMC Port 2 is unusable in this design.
 
-MicroZed, PicoZed, ZC702, ZC706, ZedBoard, ZCU102
--------------------------------------------------
+MicroZed, PicoZed, ZC702, ZC706, ZedBoard, ZCU102, UltraZed-EV
+--------------------------------------------------------------
 
 * eth0: GEM0 to Ethernet port of the dev board
 * eth1: Ethernet FMC Port 0
