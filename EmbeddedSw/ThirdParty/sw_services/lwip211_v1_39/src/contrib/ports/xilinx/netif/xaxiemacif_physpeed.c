@@ -592,13 +592,6 @@ unsigned int get_phy_speed_88E1510(XAxiEthernet *xaxiemacp, u32 phy_addr)
     XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, IEEE_1000_ADVERTISE_REG_OFFSET,
                                                                     control);
 
-    XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, IEEE_PAGE_ADDRESS_REGISTER, 0);
-    XAxiEthernet_PhyRead(xaxiemacp, phy_addr, IEEE_COPPER_SPECIFIC_CONTROL_REG,
-                                                                &control);
-    control |= (7 << 12);   /* max number of gigabit attempts */
-    control |= (1 << 11);   /* enable downshift */
-    XAxiEthernet_PhyWrite(xaxiemacp, phy_addr, IEEE_COPPER_SPECIFIC_CONTROL_REG,
-                                                                control);
     XAxiEthernet_PhyRead(xaxiemacp, phy_addr, IEEE_CONTROL_REG_OFFSET, &control);
     control |= IEEE_CTRL_AUTONEGOTIATE_ENABLE;
     control |= IEEE_STAT_AUTONEGOTIATE_RESTART;
