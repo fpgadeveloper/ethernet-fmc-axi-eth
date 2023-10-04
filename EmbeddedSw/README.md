@@ -8,7 +8,7 @@ PHYs on the Ethernet FMC.
 
 A function is added to `xaxiemacif_physpeed.c` for the initialization of the Marvell 88E1510 Ethernet PHY
 
-### AXI Ethernet driver modifications (applies to versions 5.6-5.11)
+### AXI Ethernet driver modifications (applies to versions 5.6-5.14)
 
 For designs using the AXI FIFO (instead of AXI DMA), the `axiethernet.tcl` script requires correcting for the
 following issues:
@@ -20,4 +20,4 @@ is because the interrupt controller for ZynqMP is `psu_acpu_gic`, but this is no
 is treated as a non-Zynq case.
 
 Both issues are corrected by the sources in this repo. Location of the original TCL script for Vitis 2020.2:
-`\Xilinx\Vitis\2020.2\data\embeddedsw\XilinxProcessorIPLib\drivers\axiethernet_v5_11\data\axiethernet.tcl`
+`\Xilinx\Vitis\2022.1\data\embeddedsw\XilinxProcessorIPLib\drivers\axiethernet_v5_14\data\axiethernet.tcl`
