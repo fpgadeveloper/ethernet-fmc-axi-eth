@@ -36,7 +36,6 @@ dict set target_dict kc705_lpc_hpc { kc705 }
 dict set target_dict kcu105_dual { kcu105 }
 dict set target_dict kcu105_hpc { kcu105 }
 dict set target_dict kcu105_lpc { kcu105 }
-dict set target_dict mz_7020 { mz }
 dict set target_dict pz_7015 { pz }
 dict set target_dict pz_7020 { pz }
 dict set target_dict pz_7030 { pz }

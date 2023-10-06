@@ -219,11 +219,11 @@ set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_0/inst/mac/inst/rgmii
 set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_0/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
 set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_0/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
 
-set_property DELAY_VALUE 1000 [get_cells *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[1].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells *_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[1].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
 
 set_property DELAY_VALUE 1000 [get_cells *_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx_ctl]
 set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
@@ -231,9 +231,9 @@ set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/tri_m
 set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
 set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
 
-set_property DELAY_VALUE 1000 [get_cells *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[1].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
-set_property DELAY_VALUE 1000 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells *_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[0].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[1].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[2].delay_rgmii_rxd}]
+set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[3].delay_rgmii_rxd}]
 

@@ -221,7 +221,7 @@ set_property DELAY_VALUE 1100 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii
 
 # For timing closure on port 2
 
-set_property DELAY_VALUE 1000 [get_cells vcu118_axieth_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/delay_rgmii_tx_clk]
+set_property DELAY_VALUE 1000 [get_cells *_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/delay_rgmii_tx_clk]
 
 # BPI flash physical constraints for VCU118
 

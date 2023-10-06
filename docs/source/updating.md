@@ -39,7 +39,7 @@ The BSP files for each supported target platform are contained in the `PetaLinux
 
    * For AC701, KC705, KCU105, VCU118, ZC702, ZC706 and ZCU102 download the BSP from the 
      [Xilinx downloads] page
-   * For MicroZed, PicoZed, ZedBoard, and UltraZed-EV contact your [Avnet rep](https://www.avnet.com)
+   * For PicoZed, ZedBoard, and UltraZed-EV contact your [Avnet rep](https://www.avnet.com)
 
 3. Update the BSP files for the target platform in the `PetaLinux/bsp/<platform>` directory. 
    These are the specific directories to update:

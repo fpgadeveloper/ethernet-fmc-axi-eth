@@ -1,5 +1,4 @@
-AXI Ethernet Reference Designs for Ethernet FMC
-===============================================
+# AXI Ethernet Reference Designs for Ethernet FMC
 
 ## Description
 
@@ -17,24 +16,28 @@ Important links:
 
 ## Requirements
 
-This project is designed for version 2020.2 of the Xilinx tools (Vivado/Vitis/PetaLinux). 
+This project is designed for version 2022.1 of the Xilinx tools (Vivado/Vitis/PetaLinux). 
 If you are using an older version of the Xilinx tools, then refer to the 
-[release tags](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/releases "releases")
+[release tags](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/tags "releases")
 to find the version of this repository that matches your version of the tools.
 
 In order to test this design on hardware, you will need the following:
 
-* Vivado 2020.2
-* Vitis 2020.2
-* PetaLinux Tools 2020.2
+* Vivado 2022.1
+* Vitis 2022.1
+* PetaLinux Tools 2022.1
 * [Ethernet FMC](https://ethernetfmc.com "Ethernet FMC")
 * One of the [supported evaluation boards](https://axieth.ethernetfmc.com/en/latest/supported_carriers.html)
 * [Xilinx Soft TEMAC license](https://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
 ## Contribute
 
-We encourage contribution to these projects. If you spot issues or you want to add designs for other platforms, please
-make a pull request.
+We strongly encourage community contribution to these projects. Please make a pull request if you
+would like to share your work:
+* if you've spotted and fixed any issues
+* if you've added designs for other target platforms
+
+Thank you to everyone who supports us!
 
 ## About us
 
@@ -42,3 +45,4 @@ This project was developed by [Opsero Inc.](https://opsero.com "Opsero Inc."),
 a tight-knit team of FPGA experts delivering FPGA products and design services to start-ups and tech companies. 
 Follow our blog, [FPGA Developer](https://www.fpgadeveloper.com "FPGA Developer"), for news, tutorials and
 updates on the awesome projects we work on.
+

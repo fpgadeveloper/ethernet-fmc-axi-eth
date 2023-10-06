@@ -19,7 +19,6 @@ kc705_lpc_hpc_target := microblaze both
 kcu105_dual_target := microblaze both
 kcu105_hpc_target := microblaze both
 kcu105_lpc_target := microblaze both
-mz_7020_target := zynq both
 pz_7015_target := zynq both
 pz_7020_target := zynq both
 pz_7030_target := zynq both

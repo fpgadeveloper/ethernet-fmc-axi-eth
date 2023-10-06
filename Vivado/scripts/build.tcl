@@ -41,7 +41,6 @@ dict set target_dict kc705_lpc_hpc { xilinx.com kc705 mb-7s rgmii-01234567 {0 1 
 dict set target_dict kcu105_dual { xilinx.com kcu105 mb-us rgmii-01-34567 {0 1 3 4 5 6 7} 0 }
 dict set target_dict kcu105_hpc { xilinx.com kcu105 mb-us rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict kcu105_lpc { xilinx.com kcu105 mb-us rgmii-01-3 {0 1 3} 0 }
-dict set target_dict mz_7020 { avnet.com microzed_7020 zynq rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict pz_7015 { avnet.com picozed_7015_fmc2 zynq rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict pz_7020 { avnet.com picozed_7020_fmc2 zynq rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict pz_7030 { avnet.com picozed_7030_fmc2 zynq rgmii-0123 {0 1 2 3} 0 }
@@ -52,12 +51,12 @@ dict set target_dict vc707_hpc2_hpc1 { xilinx.com vc707 mb-7s rgmii-01234567 {0 
 dict set target_dict vc709 { xilinx.com vc709 mb-7s rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict vcu108_hpc0 { xilinx.com vcu108 mb-us rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict vcu108_hpc1 { xilinx.com vcu108 mb-us rgmii-0123 {0 1 2 3} 0 }
-dict set target_dict vcu118 { xilinx.com vcu118 mb-us rgmii-0123 {0 1 2 3} 0 }
+dict set target_dict vcu118 { xilinx.com vcu118 mb-us rgmii-0123-vcu118 {0 1 2 3} 0 }
 dict set target_dict zc702_lpc1 { xilinx.com zc702 zynq rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict zc702_lpc2 { xilinx.com zc702 zynq rgmii-0123 {0 1 2 3} 0 }
 dict set target_dict zc702_lpc2_lpc1 { xilinx.com zc702 zc702-dual rgmii-01234567 {0 1 2 3 4 5 6 7} 0 }
 dict set target_dict zc706_lpc { xilinx.com zc706 zynq rgmii-0123 {0 1 2 3} 0 }
-dict set target_dict zcu102_hpc0 { xilinx.com zcu102 zynqmp rgmii-0123 {0 1 2 3} 2 }
+dict set target_dict zcu102_hpc0 { xilinx.com zcu102 zynqmp rgmii-0123-zcu10x {0 1 2 3} 2 }
 dict set target_dict zcu102_hpc1 { xilinx.com zcu102 zynqmp rgmii-01-- {0 1 } 0 }
 dict set target_dict zedboard { avnet.com zedboard zynq rgmii-0123 {0 1 2 3} 0 }
 

@@ -30,7 +30,6 @@ The designs for all of the remaining [target boards](supported_carriers) can be 
 Edition **without a license**. That includes the following boards:
 
 * [AC701]
-* [MicroZed 7020 FMC Carrier]
 * [PicoZed FMC Carrier v2]
 * [ZedBoard]
 * [UltraZed EV carrier]
@@ -51,7 +50,6 @@ the FMC connector on which to connect the mezzanine card.
 | `kcu105_dual`     | PORT0,1,2,3                 | [KCU105], HPC+LPC connector |
 | `kcu105_hpc`      | PORT0,1,2,3                 | [KCU105], HPC connector     |
 | `kcu105_lpc`      | PORT0,1,2,3                 | [KCU105], LPC connector     |
-| `mz_7020`         | PORT0,1,2,3                 | [MicroZed 7020 FMC Carrier] |
 | `pz_7015`         | PORT0,1,2,3                 | [PicoZed FMC Carrier v2]    |
 | `pz_7020`         | PORT0,1,2,3                 | [PicoZed FMC Carrier v2]    |
 | `pz_7030`         | PORT0,1,2,3                 | [PicoZed FMC Carrier v2]    |
@@ -137,7 +135,6 @@ to build the Vivado and PetaLinux projects with a single command.
    `kcu105_dual`,
    `kcu105_hpc`,
    `kcu105_lpc`,
-   `mz_7020`,
    `pz_7015`,
    `pz_7020`,
    `pz_7030`,
@@ -212,7 +209,6 @@ design if it has not already been done.
    `kcu105_dual`,
    `kcu105_hpc`,
    `kcu105_lpc`,
-   `mz_7020`,
    `pz_7015`,
    `pz_7020`,
    `pz_7030`,
@@ -273,7 +269,6 @@ Now when you use `make` to build the PetaLinux projects, they will be configured
 [ZCU111]: https://www.xilinx.com/zcu111
 [ZCU208]: https://www.xilinx.com/zcu208
 [Trenz TEBF0808]: https://shop.trenz-electronic.de/en/TEBF0808-04A-UltraITX-Baseboard-for-Trenz-Electronic-TE080X-UltraSOM
-[MicroZed 7020 FMC Carrier]: https://www.avnet.com/opasdata/d120001/medias/docus/187/PB-AES-MBCC-FMC-G-V2-Product-Brief.pdf
 [PicoZed FMC Carrier v2]: https://www.avnet.com/wps/portal/silica/products/product-highlights/2016/xilinx-picozed-fmc-carrier-card-v2/
 [ZedBoard]: https://digilent.com/reference/programmable-logic/zedboard/start
 [UltraZed EG PCIe Carrier]: https://www.xilinx.com/products/boards-and-kits/1-mb9rqb.html

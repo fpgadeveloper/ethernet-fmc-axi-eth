@@ -19,7 +19,6 @@ kc705_lpc_hpc_target := microblaze 128 BPIx16 ports-0123
 kcu105_dual_target := microblaze 32 SPIx4 ports-01-34567
 kcu105_hpc_target := microblaze 32 SPIx4 ports-0123
 kcu105_lpc_target := microblaze 32 SPIx4 ports-01-3
-mz_7020_target := zynq 0 0 ports-0123
 pz_7015_target := zynq 0 0 ports-0123
 pz_7020_target := zynq 0 0 ports-0123
 pz_7030_target := zynq 0 0 ports-0123

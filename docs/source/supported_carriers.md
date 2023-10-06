@@ -7,7 +7,6 @@
 | Carrier board                                                    | FMC  |
 |------------------------------------------------------------------|------|
 | Zynq-7000 [ZedBoard]                                             | LPC  |
-| Zynq-7000 [MicroZed FMC Carrier] with [MicroZed 7020]            | LPC  |
 | Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7015]      | LPC  |
 | Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7020]      | LPC  |
 | Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7030]      | LPC  |
@@ -145,8 +144,6 @@ have some specific differences when compared to the Zynq based designs:
 [compatibility list]: https://ethernetfmc.com/documentation/compatiblility.html
 [Ethernet FMC]: https://ethernetfmc.com
 [ZedBoard]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/zedboard/zedboard-board-family
-[MicroZed FMC Carrier]: https://www.avnet.com/opasdata/d120001/medias/docus/187/PB-AES-MBCC-FMC-G-V2-Product-Brief.pdf
-[MicroZed 7020]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/microzed/
 [PicoZed FMC Carrier Card V2]: https://www.avnet.com/wps/portal/silica/products/product-highlights/2016/xilinx-picozed-fmc-carrier-card-v2/
 [PicoZed 7030]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/picozed/
 [UltraZed EV Carrier Card]: https://www.xilinx.com/products/boards-and-kits/1-1s78dxb.html

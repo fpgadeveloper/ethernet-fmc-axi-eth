@@ -22,7 +22,6 @@ kc705_lpc_hpc_target := 0
 kcu105_dual_target := 0
 kcu105_hpc_target := 0
 kcu105_lpc_target := 0
-mz_7020_target := 0
 pz_7015_target := 0
 pz_7020_target := 0
 pz_7030_target := 0
