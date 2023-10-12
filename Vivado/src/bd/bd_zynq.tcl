@@ -222,9 +222,6 @@ if {$target == "zedboard"} {
   connect_bd_intf_net [get_bd_intf_pins processing_system7_0/IIC_0] [get_bd_intf_ports iic_fmc]
 }
 
-# Ports with shared logic
-set shared_logic_ports {0 4}
-
 # Interrupt index starts from 0, increments each time through loop
 set int_index 0
 

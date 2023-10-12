@@ -10,8 +10,7 @@
 | Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7015]      | LPC  |
 | Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7020]      | LPC  |
 | Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7030]      | LPC  |
-| Zynq-7000 [ZC702 Evaluation board]                               | LPC1 |
-|                                                                  | LPC2 |
+| Zynq-7000 [ZC702 Evaluation board]                               | LPC1, LPC2 |
 | Zynq-7000 [ZC706 Evaluation board]                               | LPC  |
 
 ### Zynq UltraScale+ boards
@@ -19,28 +18,23 @@
 | Carrier board                                                    | FMC  |
 |------------------------------------------------------------------|------|
 | Zynq UltraScale+ [UltraZed EV Carrier Card]                      | HPC  |
-| Zynq UltraScale+ [ZCU102 Evaluation board]                       | HPC0 |
-|                                                                  | HPC1 |
+| Zynq UltraScale+ [ZCU102 Evaluation board]                       | HPC0, HPC1 |
 
 ### Series-7 FPGA boards
 
 | Carrier board                                                    | FMC  |
 |------------------------------------------------------------------|------|
 | Artix-7 [AC701 Evaluation board]                                 | HPC  |
-| Kintex-7 [KC705 Evaluation board]                                | LPC  |
-|                                                                  | HPC  |
-| Virtex-7 [VC707 Evaluation board]                                | HPC1 |
-|                                                                  | HPC2 |
+| Kintex-7 [KC705 Evaluation board]                                | LPC, HPC  |
+| Virtex-7 [VC707 Evaluation board]                                | HPC1, HPC2 |
 | Virtex-7 [VC709 Evaluation board]                                | HPC  |
 
 ### UltraScale/UltraScale+ boards
 
 | Carrier board                                                    | FMC  |
 |------------------------------------------------------------------|------|
-| Kintex UltraScale [KCU105 Evaluation board]                      | LPC  |
-|                                                                  | HPC  |
-| Virtex UltraScale+ [VCU108 Evaluation board]                     | HPC0 |
-|                                                                  | HPC1 |
+| Kintex UltraScale [KCU105 Evaluation board]                      | LPC, HPC  |
+| Virtex UltraScale+ [VCU108 Evaluation board]                     | HPC0, HPC1 |
 | Virtex UltraScale+ [VCU118 Evaluation board]                     | HPC1 |
 
 ## Unlisted boards

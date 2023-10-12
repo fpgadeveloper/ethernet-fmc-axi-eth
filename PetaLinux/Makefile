@@ -31,7 +31,7 @@ zcu102_hpc0_target := zynqMP 0 0 ports-0123
 zcu102_hpc1_target := zynqMP 0 0 ports-01--
 zedboard_target := zynq 0 0 ports-0123
 
-TARGET_LIST := $(patsubst %_target,%,$(filter %_target,$(.VARIABLES)))
+TARGET_LIST := $(sort $(patsubst %_target,%,$(filter %_target,$(.VARIABLES))))
 
 # target board (the first word in the target name, before the first underscore)
 TARGET_BOARD=$(word 1,$(subst _, ,$(TARGET)))
@@ -84,10 +84,16 @@ SSTATE_PATH ?= $(shell test -e $(PETL_OFFLINE) && head -n 1 $(PETL_OFFLINE))
 
 ifeq ($(call get_template_name,$(TARGET)), microblaze)
 	SSTATE_ARCH = microblaze
+	BUILD_PRODUCTS = $(PETL_FSBOOT_ELF) $(PETL_UBOOT_ELF) $(PETL_DTB)
+	PKG_PRODUCTS = $(PETL_BOOT_MCS)
 else ifeq ($(call get_template_name,$(TARGET)), zynq)
 	SSTATE_ARCH = arm
+	BUILD_PRODUCTS = $(PETL_ZYNQ_FSBL_ELF) $(PETL_DTB)
+	PKG_PRODUCTS = $(PETL_BOOT_BIN)
 else ifeq ($(call get_template_name,$(TARGET)), zynqMP)
 	SSTATE_ARCH = arch64
+	BUILD_PRODUCTS = $(PETL_BL31_ELF) $(PETL_PMUFW_ELF) $(PETL_ZYNQMP_FSBL_ELF) $(PETL_DTB)
+	PKG_PRODUCTS = $(PETL_BOOT_BIN)
 endif
 
 ifneq ($(SSTATE_PATH),)
@@ -111,10 +117,16 @@ help:
 	@echo '  make clean_all'
 	@echo '    Delete PetaLinux projects of all targets.'
 	@echo ''
+	@echo '  make status TARGET=<val>'
+	@echo '    Print the status (built,packaged) of the PetaLinux project of specified target.'
+	@echo ''
+	@echo '  make status_all'
+	@echo '    Print status of the PetaLinux projects of all targets.'
+	@echo ''
 	@echo 'Parameters:'
 	@echo ''
 	@echo '  TARGET: Name of the target design, must be one of the following:'
-	@$(foreach targ,$(sort $(TARGET_LIST)),echo "    - $(targ)";)
+	@$(foreach targ,$(TARGET_LIST),echo "    - $(targ)";)
 	@echo ''
 	@echo '  JOBS: Optional param to set number of synthesis jobs (default 8)'
 	@echo ''
@@ -136,22 +148,22 @@ petalinux_locked: package
 
 # Package rule for microblaze designs
 ifeq ($(call get_template_name,$(TARGET)), microblaze)
-package: $(PETL_BOOT_MCS)
-$(PETL_BOOT_MCS): $(PETL_FSBOOT_ELF) $(PETL_UBOOT_ELF) $(PETL_DTB)
+package: $(PKG_PRODUCTS)
+$(PKG_PRODUCTS): $(BUILD_PRODUCTS)
 	@echo 'Packaging PetaLinux project for $(TARGET)'
 	cd $(TARGET) && petalinux-package --boot --force --fpga $(VIV_BIT) --u-boot --kernel --flash-size $(call get_flash_size,$(TARGET)) --flash-intf $(call get_flash_intf,$(TARGET))
 	
 # Package rule for zynq designs
 else ifeq ($(call get_template_name,$(TARGET)), zynq)
-package: $(PETL_BOOT_BIN)
-$(PETL_BOOT_BIN): $(PETL_ZYNQ_FSBL_ELF) $(PETL_DTB)
+package: $(PKG_PRODUCTS)
+$(PKG_PRODUCTS): $(BUILD_PRODUCTS)
 	@echo 'Packaging PetaLinux project for $(TARGET)'
 	cd $(TARGET) && petalinux-package --boot --fsbl ./images/linux/zynq_fsbl.elf --fpga $(VIV_BIT) --u-boot
 	
 # Package rule for zynqMP designs
 else ifeq ($(call get_template_name,$(TARGET)), zynqMP)
-package: $(PETL_BOOT_BIN)
-$(PETL_BOOT_BIN): $(PETL_BL31_ELF) $(PETL_PMUFW_ELF) $(PETL_ZYNQMP_FSBL_ELF) $(PETL_DTB)
+package: $(PKG_PRODUCTS)
+$(PKG_PRODUCTS): $(BUILD_PRODUCTS)
 	@echo 'Packaging PetaLinux project for $(TARGET)'
 	cd $(TARGET) && petalinux-package --boot --fsbl ./images/linux/zynqmp_fsbl.elf --fpga $(VIV_BIT) --u-boot
 	
@@ -187,7 +199,7 @@ $(VIV_XSA):
 .PHONY: all
 all:
 	for targ in $(TARGET_LIST); do \
-		$(MAKE) petalinux TARGET=$${targ} JOBS=$(JOBS); \
+		$(MAKE) --no-print-directory petalinux TARGET=$${targ} JOBS=$(JOBS); \
 	done
 
 .PHONY: clean
@@ -197,8 +209,43 @@ clean: check_target
 .PHONY: clean_all
 clean_all:
 	for targ in $(TARGET_LIST); do \
-		$(MAKE) clean TARGET=$$targ; \
+		$(MAKE) --no-print-directory clean TARGET=$$targ; \
 	done
+
+.PHONY: status
+status: check_target
+	@{ \
+	all_built=true; \
+	for file in $(BUILD_PRODUCTS); do \
+		if [ ! -e $$file ]; then \
+			printf 'Target %-20s: **NOT BUILT** & ' "$(TARGET)"; \
+			all_built=false; \
+			break; \
+		fi; \
+	done; \
+	if $$all_built; then \
+		printf 'Target %-20s: BUILT & ' "$(TARGET)"; \
+	fi; \
+	all_built=true; \
+	for file in $(PKG_PRODUCTS); do \
+		if [ ! -e $$file ]; then \
+			printf '**NOT PACKAGED**\n'; \
+			all_built=false; \
+			break; \
+		fi; \
+	done; \
+	if $$all_built; then \
+		printf 'PACKAGED\n'; \
+	fi; \
+	}
+
+.PHONY: status_all
+status_all:
+	@{ \
+	for targ in $(TARGET_LIST); do \
+		$(MAKE) --no-print-directory status TARGET=$$targ; \
+	done; \
+	}
 
 check_target:
 ifndef $(TARGET)_target

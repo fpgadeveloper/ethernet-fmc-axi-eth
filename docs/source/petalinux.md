@@ -415,4 +415,5 @@ echo server operation. We have not yet determined the cause of this issue
 but if you have any information, please let us know.
 
 [Ethernet FMC]: https://ethernetfmc.com
+[supported Linux distributions]: https://docs.xilinx.com/r/2022.1-English/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
 

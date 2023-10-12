@@ -247,10 +247,6 @@ if {$dual_design} {
   connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_smc/aclk2]
 }
 
-# Ports with shared logic
-# Warning: We are assuming that these ports are included in the ports list
-set shared_logic_ports {0 4}
-
 # AXI SmartConnect slave interface index
 set smc_index $mig_slaves
 

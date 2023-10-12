@@ -239,9 +239,6 @@ if {$dual_design} {
   connect_bd_net [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins axi_smc/aclk2]
 }
 
-# Ports with shared logic
-set shared_logic_ports {0 4}
-
 # AXI SmartConnect slave interface index, starts from 2 because 1st two ports taken by MicroBlaze
 set smc_index 2
 set smc_name axi_smc
@@ -362,9 +359,8 @@ if {[string match "kcu105*" $target]} {
   append ints "axi_quad_spi_0/ip2intc_irpt "
 }
 
-# VCU108 and VCU118 have linear flash needing AXI EMC
-# Vivado 2020.2 doesn't yet support auto-connect for the linear flash on these boards, so we must do it manually
-if {[string match "vcu*" $target]} {
+# VCU108 has linear flash needing AXI EMC
+if {[string match "vcu108*" $target]} {
   create_bd_cell -type ip -vlnv xilinx.com:ip:axi_emc axi_emc_0
   apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_xbar {/ddr4_0/c0_ddr4_ui_clk (300 MHz)} Master {/microblaze_0 (Cached)} Slave {/axi_emc_0/S_AXI_MEM} ddr_seg {Auto} intc_ip {/axi_smc} master_apm {0}}  [get_bd_intf_pins axi_emc_0/S_AXI_MEM]
   connect_bd_net [get_bd_pins ddr4_0/addn_ui_clkout1] [get_bd_pins axi_emc_0/rdclk]
@@ -406,6 +402,16 @@ if {[string match "vcu*" $target]} {
   connect_bd_net [get_bd_ports Linear_Flash_dq_io] [get_bd_pins axi_emc_iobuf/IOBUF_IO_IO]
   connect_bd_net [get_bd_ports Linear_Flash_wait] [get_bd_pins axi_emc_0/mem_wait]
   connect_bd_net [get_bd_ports Linear_Flash_address] [get_bd_pins axi_emc_slice/Dout]
+}
+
+# VCU118 has Quad SPI flash
+if {[string match "vcu118*" $target]} {
+  create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi axi_quad_spi_0
+  set_property -dict [list CONFIG.C_SPI_MEMORY {2} CONFIG.QSPI_BOARD_INTERFACE {spi_flash}] [get_bd_cells axi_quad_spi_0]
+  apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/ddr4_0/addn_ui_clkout1 (100 MHz)} Clk_slave {Auto} Clk_xbar {Auto} Master {/microblaze_0 (Periph)} Slave {/axi_quad_spi_0/AXI_LITE} ddr_seg {Auto} intc_ip {New AXI Interconnect} master_apm {0}}  [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
+  apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {spi_flash ( QSPI flash ) } Manual_Source {Auto}}  [get_bd_intf_pins axi_quad_spi_0/SPI_1]
+  connect_bd_net [get_bd_pins axi_quad_spi_0/ext_spi_clk] [get_bd_pins ddr4_0/addn_ui_clkout1]
+  append ints "axi_quad_spi_0/ip2intc_irpt "
 }
 
 # Configure Microblaze interrupt concat

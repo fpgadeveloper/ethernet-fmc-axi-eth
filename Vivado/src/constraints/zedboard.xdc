@@ -138,13 +138,13 @@ set_property PACKAGE_PIN U7  [get_ports iic_fmc_sda_io]
 create_clock -period 8.000 -name ref_clk_clk_p -waveform {0.000 4.000} [get_ports ref_clk_clk_p]
 
 # For timing closure with the proper set_input_delay constraints
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/rxdata_bus[*].delay_rgmii_rxd}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_i/rgmii_interface/delay_rgmii_rx_ctl}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rxd}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_1/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rxd}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_2/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/rxdata_bus[*].delay_rgmii_rxd}]
-set_property IDELAY_VALUE 12 [get_cells {*_i/axi_ethernet_3/inst/mac/inst/rgmii_interface/delay_rgmii_rx_ctl}]
 
+set port_0_iodelay [get_cells -hierarchical -filter { PRIMITIVE_TYPE == IO.IODELAY.IDELAYE2 && NAME =~  "*/axi_ethernet_0/*delay_rgmii_rx*" } ]
+set_property IDELAY_VALUE 13 $port_0_iodelay
+set port_1_iodelay [get_cells -hierarchical -filter { PRIMITIVE_TYPE == IO.IODELAY.IDELAYE2 && NAME =~  "*/axi_ethernet_1/*delay_rgmii_rx*" } ] 
+set_property IDELAY_VALUE 12 $port_1_iodelay
+set port_2_iodelay [get_cells -hierarchical -filter { PRIMITIVE_TYPE == IO.IODELAY.IDELAYE2 && NAME =~  "*/axi_ethernet_2/*delay_rgmii_rx*" } ] 
+set_property IDELAY_VALUE 12 $port_2_iodelay
+set port_3_iodelay [get_cells -hierarchical -filter { PRIMITIVE_TYPE == IO.IODELAY.IDELAYE2 && NAME =~  "*/axi_ethernet_3/*delay_rgmii_rx*" } ] 
+set_property IDELAY_VALUE 12 $port_3_iodelay
 

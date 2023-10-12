@@ -105,8 +105,8 @@ foreach port $ports {
   # Add the AXI Ethernet IPs
   create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_$port
   
-  # Configure for "Don't include shared logic" except the one specified by $shared_logic_port
-  if { $shared_logic_port == $port } {
+  # Configure for "Don't include shared logic" except the ports listed in $shared_logic_ports
+  if {[lsearch -exact $shared_logic_ports $port] >= 0} {
     set_property -dict [list CONFIG.PHY_TYPE {RGMII} CONFIG.SupportLevel {1}] [get_bd_cells axi_ethernet_$port]
     connect_bd_net [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins axi_ethernet_$port/gtx_clk]
     connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_ethernet_$port/ref_clk]

@@ -41,33 +41,33 @@ This repo contains several designs that target the various supported development
 FMC connectors. The table below lists the target design name, the Ethernet ports supported by the design and 
 the FMC connector on which to connect the mezzanine card.
 
-| Target design     | Eth ports                   | Target board and connector  |
-|-------------------|-----------------------------|-----------------------------|
-| `ac701`           | PORT0,1,2,3                 | [AC701]                     |
-| `kc705_hpc`       | PORT0,1,2,3                 | [KC705], HPC connector      |
-| `kc705_lpc`       | PORT0,1,2,3                 | [KC705], LPC connector      |
-| `kc705_lpc_hpc`   | PORT0,1,2,3                 | [KC705], HPC+LPC connector  |
-| `kcu105_dual`     | PORT0,1,2,3                 | [KCU105], HPC+LPC connector |
-| `kcu105_hpc`      | PORT0,1,2,3                 | [KCU105], HPC connector     |
-| `kcu105_lpc`      | PORT0,1,2,3                 | [KCU105], LPC connector     |
-| `pz_7015`         | PORT0,1,2,3                 | [PicoZed FMC Carrier v2]    |
-| `pz_7020`         | PORT0,1,2,3                 | [PicoZed FMC Carrier v2]    |
-| `pz_7030`         | PORT0,1,2,3                 | [PicoZed FMC Carrier v2]    |
-| `uzev`            | PORT0,1,2,3                 | [UltraZed EV carrier]       |
-| `vc707_hpc1`      | PORT0,1,2,3                 | [VC707], HPC1 connector     |
-| `vc707_hpc2`      | PORT0,1,2,3                 | [VC707], HPC2 connector     |
-| `vc707_hpc2_hpc1` | PORT0,1,2,3                 | [VC707], HPC2+HPC1 connector |
-| `vc709`           | PORT0,1,2,3                 | [VC709]                     |
-| `vcu108_hpc0`     | PORT0,1,2,3                 | [VCU108], HPC0 connector    |
-| `vcu108_hpc1`     | PORT0,1,2,3                 | [VCU108], HPC1 connector    |
-| `vcu118`          | PORT0,1,2,3                 | [VCU118]                    |
-| `zc702_lpc1`      | PORT0,1,2,3                 | [ZC702], LPC1 connector     |
-| `zc702_lpc2`      | PORT0,1,2,3                 | [ZC702], LPC2 connector     |
-| `zc702_lpc2_lpc1` | PORT0,1,2,3                 | [ZC702], LPC2+LPC1 connector |
-| `zc706_lpc`       | PORT0,1,2,3                 | [ZC706], LPC connector      |
-| `zcu102_hpc0`     | PORT0,1,2,3                 | [ZCU102], HPC0 connector    |
-| `zcu102_hpc1`     | PORT0,1,2,3                 | [ZCU102], HPC1 connector    |
-| `zedboard`        | PORT0,1,2,3                 | [ZedBoard]                  |
+| Target design     | Standalone app | PetaLinux | Eth ports           | Target board and connector  |
+|-------------------|----------------|-----------|---------------------|-----------------------------|
+| `ac701`           | YES            | YES       | PORT0,1,2,3         | [AC701]                     |
+| `kc705_hpc`       | YES            | YES       | PORT0,1,2,3         | [KC705], HPC connector      |
+| `kc705_lpc`       | YES            | YES       | PORT0,1,2,3         | [KC705], LPC connector      |
+| `kc705_lpc_hpc`   | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [KC705], HPC+LPC connector  |
+| `kcu105_dual`     | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [KCU105], HPC+LPC connector |
+| `kcu105_hpc`      | YES            | YES       | PORT0,1,2,3         | [KCU105], HPC connector     |
+| `kcu105_lpc`      | YES            | YES       | PORT0,1,3           | [KCU105], LPC connector     |
+| `pz_7015`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]    |
+| `pz_7020`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]    |
+| `pz_7030`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]    |
+| `uzev`            | YES            | YES       | PORT0,1,2,3         | [UltraZed EV carrier]       |
+| `vc707_hpc1`      | YES            | NO        | PORT0,1,2,3         | [VC707], HPC1 connector     |
+| `vc707_hpc2`      | YES            | NO        | PORT0,1,2,3         | [VC707], HPC2 connector     |
+| `vc707_hpc2_hpc1` | YES            | NO        | PORT0,1,2,3,4,5,6,7 | [VC707], HPC2+HPC1 connector |
+| `vc709`           | YES            | NO        | PORT0,1,2,3         | [VC709]                     |
+| `vcu108_hpc0`     | YES            | NO        | PORT0,1,2,3         | [VCU108], HPC0 connector    |
+| `vcu108_hpc1`     | YES            | NO        | PORT0,1,2,3         | [VCU108], HPC1 connector    |
+| `vcu118`          | YES            | YES       | PORT0,1,2,3         | [VCU118]                    |
+| `zc702_lpc1`      | YES            | YES       | PORT0,1,2,3         | [ZC702], LPC1 connector     |
+| `zc702_lpc2`      | YES            | YES       | PORT0,1,2,3         | [ZC702], LPC2 connector     |
+| `zc702_lpc2_lpc1` | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [ZC702], LPC2+LPC1 connector |
+| `zc706_lpc`       | YES            | YES       | PORT0,1,2,3         | [ZC706], LPC connector      |
+| `zcu102_hpc0`     | YES            | YES       | PORT0,1,2,3         | [ZCU102], HPC0 connector    |
+| `zcu102_hpc1`     | YES            | YES       | PORT0,1             | [ZCU102], HPC1 connector    |
+| `zedboard`        | YES            | YES       | PORT0,1,2,3         | [ZedBoard]                  |
 
 ## Windows users
 
@@ -170,11 +170,15 @@ skip to the following section if you instead want to use PetaLinux. You are not 
 Vivado design before following these steps, as the Makefile triggers the Vivado build for the corresponding
 design if it has not already been done.
 
-1. Launch the setup scripts for Vitis:
+1. Launch the setup script for Vivado (only if you skipped the Vivado build steps above):
+   ```
+   source <path-to-vivado-install>/2022.1/settings64.sh
+   ```
+2. Launch the setup scripts for Vitis:
    ```
    source <path-to-vitis-install>/2022.1/settings64.sh
    ```
-2. To build the Vitis workspace, `cd` to the Vitis directory in the repo,
+3. To build the Vitis workspace, `cd` to the Vitis directory in the repo,
    then run make to create the Vitis workspace and compile the standalone application:
    ```
    cd ethernet-fmc-axi-eth/Vitis

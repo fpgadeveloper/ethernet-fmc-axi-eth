@@ -31,7 +31,7 @@ operating system:
 
 ## Run the application
 
-You must have followed the build instructions before you can run the application.
+You must follow the build instructions before you can run the application.
 
 1. Launch the Xilinx Vitis GUI.
 2. When asked to select the workspace path, select the `Vitis` directory of the project repository.
@@ -42,7 +42,7 @@ You must have followed the build instructions before you can run the application
 5. Now right click on the application (it should have the postfix "_echo_server") then navigate the
    drop down menu to **Run As->Launch on Hardware (Single Application Debug (GDB)).**.
 
-![Vitis Launch on hardware](images/vitis-launch-on-hardware.png)
+![Vitis Launch on hardware](images/vitis-single-application-debug.png)
 
 The run configuration will first program the FPGA with the bitstream, then load and run the 
 application. You can view the UART output of the application in a console window and it should
@@ -71,7 +71,7 @@ server's IP address will default to 192.168.1.10. To be able to communicate with
 from the PC, the PC should be configured with a fixed IP address on the same subnet, for example:
 192.168.1.20.
 
-## Change the targetted port
+## Change the target port
 
 The echo server example design currently can only target one Ethernet port at a time.
 Selection of the Ethernet port can be changed by modifying the defines contained in the
