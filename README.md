@@ -30,6 +30,35 @@ In order to test this design on hardware, you will need the following:
 * One of the [supported evaluation boards](https://axieth.ethernetfmc.com/en/latest/supported_carriers.html)
 * [Xilinx Soft TEMAC license](https://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
 
+### Target boards
+
+#### FPGA boards
+
+* [AC701](https://www.xilinx.com/ac701)
+* [KC705](https://www.xilinx.com/kc705)
+* [KCU105](https://www.xilinx.com/kcu105)
+* [VC707](https://www.xilinx.com/vc707)
+* [VC709](https://www.xilinx.com/vc709)
+* [VCU108](https://www.xilinx.com/vcu108)
+* [VCU118](https://www.xilinx.com/vcu118)
+
+#### Zynq boards
+
+* [PicoZed FMC Carrier v2](https://www.avnet.com/wps/portal/silica/products/product-highlights/2016/xilinx-picozed-fmc-carrier-card-v2/)
+* [ZC702](https://www.xilinx.com/zc702)
+* [ZC706](https://www.xilinx.com/zc706)
+* [ZedBoard](https://digilent.com/reference/programmable-logic/zedboard/start)
+
+#### Zynq UltraScale+ MPSoC boards
+
+* [ZCU102](https://www.xilinx.com/zcu102)
+* [UltraZed EV carrier](https://www.xilinx.com/products/boards-and-kits/1-y3n9v1.html)
+
+#### Zynq UltraScale+ RFSoC boards
+
+* [ZCU111](https://www.xilinx.com/zcu111)
+* [ZCU208](https://www.xilinx.com/zcu208)
+
 ## Contribute
 
 We strongly encourage community contribution to these projects. Please make a pull request if you

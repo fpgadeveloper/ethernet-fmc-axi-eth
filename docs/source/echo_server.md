@@ -49,7 +49,20 @@ application. You can view the UART output of the application in a console window
 appear as follows:
 
 ```
+-----lwIP TCP echo server ------
+TCP packets sent to port 6001 will be echoed back
+Start PHY autonegotiation 
+Waiting for PHY to complete autonegotiation.
+autonegotiation complete 
+auto-negotiated link speed: 1000
+Board IP: 192.168.1.116
+Netmask : 255.255.255.0
+Gateway : 192.168.1.1
+TCP echo server started @ port 7
 ```
+
+The above output results when the target port is connected to a router with DHCP. The assigned
+board IP can vary.
 
 ## UART settings
 

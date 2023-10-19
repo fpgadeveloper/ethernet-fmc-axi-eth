@@ -23,7 +23,7 @@ pz_7015_target := zynq 0 0 ports-0123
 pz_7020_target := zynq 0 0 ports-0123
 pz_7030_target := zynq 0 0 ports-0123
 uzev_target := zynqMP 0 0 ports-0123
-vcu118_target := microblaze 128 BPIx16 ports-0123
+vcu118_target := microblaze 128 SPIx4 ports-0123
 zc702_lpc1_target := zynq 0 0 ports-0123
 zc702_lpc2_target := zynq 0 0 ports-0123
 zc706_lpc_target := zynq 0 0 ports-0123
@@ -140,7 +140,7 @@ petalinux: check_target
 		echo "$(TARGET) is locked. Skipping..."; \
 	else \
 		touch $(PETL_LOCK); \
-		$(MAKE) petalinux_locked TARGET=$(TARGET) JOBS=$(JOBS); \
+		$(MAKE) --no-print-directory petalinux_locked TARGET=$(TARGET) JOBS=$(JOBS); \
 		rm -f $(PETL_LOCK); \
 	fi
 
@@ -191,6 +191,7 @@ $(PETL_COMP_DIR): | $(PETL_DIR)
 	cd $(TARGET) && petalinux-config --get-hw-description $(VIV_XSA) --silentconfig
 	
 $(PETL_DIR): $(VIV_XSA)
+	@if [ -d $@ ]; then echo "Project $(TARGET) already exists but is outdated. Use 'make clean TARGET=$(TARGET)' to remove it."; exit 1; fi
 	petalinux-create --type project --template $(call get_template_name,$(TARGET)) --name $(TARGET)
 
 $(VIV_XSA):
@@ -198,9 +199,11 @@ $(VIV_XSA):
 
 .PHONY: all
 all:
+	@{ \
 	for targ in $(TARGET_LIST); do \
 		$(MAKE) --no-print-directory petalinux TARGET=$${targ} JOBS=$(JOBS); \
-	done
+	done; \
+	}
 
 .PHONY: clean
 clean: check_target

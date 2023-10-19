@@ -1,5 +1,6 @@
 
     &axi_ethernet_0 {  
+    	/delete-property/ xlnx,phy-type;
         local-mac-address = [00 0a 35 00 01 22];  
         phy-handle = <&extphy0>;  
         xlnx,has-mdio = <0x1>;  
@@ -15,6 +16,7 @@
     };  
       
     &axi_ethernet_1 {  
+    	/delete-property/ xlnx,phy-type;
         local-mac-address = [00 0a 35 00 01 23];  
         phy-handle = <&extphy1>;  
         xlnx,has-mdio = <0x1>;  
@@ -30,6 +32,7 @@
     };  
       
     &axi_ethernet_3 {  
+    	/delete-property/ xlnx,phy-type;
         local-mac-address = [00 0a 35 00 01 25];  
         phy-handle = <&extphy3>;  
         xlnx,has-mdio = <0x1>;  

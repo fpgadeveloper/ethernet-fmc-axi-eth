@@ -41,7 +41,7 @@ zcu102_hpc0_target := 0
 zcu102_hpc1_target := 0
 zedboard_target := 0
 
-TARGET_LIST := $(patsubst %_target,%,$(filter %_target,$(.VARIABLES)))
+TARGET_LIST := $(sort $(patsubst %_target,%,$(filter %_target,$(.VARIABLES))))
 
 # Vivado paths
 VIV_SCRIPT_BD = scripts/build.tcl
@@ -84,7 +84,7 @@ help:
 	@echo 'Parameters:'
 	@echo ''
 	@echo '  TARGET: Name of the target design, must be one of the following:'
-	@$(foreach targ,$(sort $(TARGET_LIST)),echo "    - $(targ)";)
+	@$(foreach targ,$(TARGET_LIST),echo "    - $(targ)";)
 	@echo ''
 	@echo '  JOBS: Optional param to set number of synthesis jobs (default 8)'
 	@echo ''

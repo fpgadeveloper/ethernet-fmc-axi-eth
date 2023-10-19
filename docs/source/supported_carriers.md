@@ -139,6 +139,8 @@ have some specific differences when compared to the Zynq based designs:
 [Ethernet FMC]: https://ethernetfmc.com
 [ZedBoard]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/zedboard/zedboard-board-family
 [PicoZed FMC Carrier Card V2]: https://www.avnet.com/wps/portal/silica/products/product-highlights/2016/xilinx-picozed-fmc-carrier-card-v2/
+[PicoZed 7015]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/picozed/
+[PicoZed 7020]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/picozed/
 [PicoZed 7030]: https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/picozed/
 [UltraZed EV Carrier Card]: https://www.xilinx.com/products/boards-and-kits/1-1s78dxb.html
 [AC701 Evaluation board]: https://www.xilinx.com/ac701

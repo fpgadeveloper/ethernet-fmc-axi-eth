@@ -109,7 +109,6 @@ losing data on one of your hard drives.
 
 1. Plug the SD card into your target board.
 2. Ensure that the target board is configured to boot from SD card:
-   * **MicroZed:** Jumpers JP1,JP2,JP3 (on the SoM) are in positions 1-2,2-3,2-3 respectively
    * **PicoZed:** DIP switch SW1 (on the SoM) is set to 11 (1=ON,2=ON)
    * **ZC702:** DIP switch SW16 must be set to 00110 (1=OFF,2=OFF,3=ON,4=ON,5=OFF)
    * **ZC706:** DIP switch SW11 must be set to 00110 (1=OFF,2=OFF,3=ON,4=ON,5=OFF)
@@ -219,7 +218,7 @@ Ethernet port and not the Ethernet FMC.
 * eth3: Ethernet FMC Port 2
 * eth4: Ethernet FMC Port 3
 
-### KCU105 HPC, VC707, VC709
+### KCU105 HPC
 
 * eth0: Ethernet FMC Port 0
 * eth1: Ethernet FMC Port 1
@@ -234,7 +233,7 @@ Ethernet port and not the Ethernet FMC.
 
 Ethernet FMC Port 2 is unusable in this design.
 
-### MicroZed, PicoZed, ZC702, ZC706, ZedBoard, ZCU102, UltraZed-EV
+### PicoZed, ZC702, ZC706, ZedBoard, ZCU102, UltraZed-EV
 
 * eth0: GEM0 to Ethernet port of the dev board
 * eth1: Ethernet FMC Port 0
@@ -254,22 +253,6 @@ Ethernet FMC Port 2 is unusable in this design.
 
 Ethernet FMC Port 2 on the LPC is unusable in this design.
 
-### VC707 Dual design
-
-* eth0: HPC2 Ethernet FMC Port 0 (AXI Ethernet)
-* eth1: HPC2 Ethernet FMC Port 1 (AXI Ethernet)
-* eth2: HPC2 Ethernet FMC Port 2 (AXI Ethernet)
-* eth3: HPC2 Ethernet FMC Port 3 (AXI Ethernet)
-* eth4: HPC1 Ethernet FMC Port 0 (AXI Ethernet)
-* eth5: HPC1 Ethernet FMC Port 1 (AXI Ethernet)
-* eth6: HPC1 Ethernet FMC Port 2 (AXI Ethernet)
-* eth7: HPC1 Ethernet FMC Port 3 (AXI Ethernet)
-
-### ZC702 Dual design
-
-Note that the ZC702 dual design will not produce a working PetaLinux project because it's Ethernet
-MACs are connected to FIFOs and not AXI DMAs. We are working on a solution to this.
-
 ## Example Usage
 
 ### Enable port
@@ -277,7 +260,7 @@ MACs are connected to FIFOs and not AXI DMAs. We are working on a solution to th
 This example will bring up a port.
 
 ```
-root@axieth:~# ifconfig eth1 up
+root@axieth:~# sudo ifconfig eth1 up
 [  228.274146] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
 [  228.282753] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
 ```
@@ -287,7 +270,7 @@ root@axieth:~# ifconfig eth1 up
 This example sets a fixed IP address to a port.
 
 ```
-root@axieth:~# ifconfig eth1 192.168.2.30 up
+root@axieth:~# sudo ifconfig eth1 192.168.2.30 up
 [  390.080498] net eth1: Promiscuous mode disabled.
 [  390.085406] net eth1: Promiscuous mode disabled.
 [  390.091089] xilinx_axienet a0000000.ethernet eth1: Link is Down
@@ -301,7 +284,7 @@ This example enables a port and obtains an IP address for the port via DHCP. Not
 port must be connected to a DHCP enabled router.
 
 ```
-root@axieth:~# udhcpc -i eth1
+root@axieth:~# sudo udhcpc -i eth1
 udhcpc: started, v1.31.0
 [   68.814013] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
 [   68.822670] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
@@ -395,18 +378,18 @@ PING 192.168.2.10 (192.168.2.10): 56 data bytes
 
 ## Known Issues
 
-### AXI Ethernet issue on Zynq designs 2020.2
+### AXI Ethernet issue on Zynq designs 2022.1
 
-There is an issue in the PetaLinux 2020.2 release that affects the **AXI Ethernet** connected ports on
+There is an issue in the PetaLinux 2022.1 release that affects the **AXI Ethernet** connected ports on
 **Zynq** based designs. On these ports, it seems to be necessary to use the following procedure to bring 
 up a port. Note that the interface and IP address were chosen as examples, but this procedure applies to 
 all AXI Ethernet connected ports (eth0, eth1, eth2 and eth3) on the Zynq based designs (MicroZed, PicoZed, 
 ZedBoard, ZC702 and ZC706).
 
 ```
-ifconfig eth0 up
-ifconfig eth0 down
-ifconfig eth0 192.168.1.10 up
+sudo ifconfig eth0 up
+sudo ifconfig eth0 down
+sudo ifconfig eth0 192.168.1.10 up
 ```
 
 In earlier releases, it was only necessary to run the last command to bring up a port. This issue

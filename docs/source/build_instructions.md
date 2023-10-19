@@ -14,26 +14,10 @@ git clone https://github.com/fpgadeveloper/ethernet-fmc-axi-eth.git
 
 ## License requirements
 
-The designs for the boards listed below **require a license** to build. To build the designs for these boards,
-you will need to either buy a license or download a 30-day evaluation license for Vivado ML Enterprise Edition:
-
-* [KC705]
-* [KCU105]
-* [VC707]
-* [VC709]
-* [VCU108]
-* [VCU118]
-* [ZC706]
-* [ZCU102]
-
-The designs for all of the remaining [target boards](supported_carriers) can be built with the Vivado ML Standard 
-Edition **without a license**. That includes the following boards:
-
-* [AC701]
-* [PicoZed FMC Carrier v2]
-* [ZedBoard]
-* [UltraZed EV carrier]
-* [ZC702]
+Some of the designs in this repository target dev boards for which a license is required to generate a bitstream. 
+Others can be built with the Vivado ML Standard Edition **without a license**. The table of target designs in the 
+following section contains a column specifying which designs require a license, and which can be built without a 
+license.
 
 ## Target designs
 
@@ -41,33 +25,33 @@ This repo contains several designs that target the various supported development
 FMC connectors. The table below lists the target design name, the Ethernet ports supported by the design and 
 the FMC connector on which to connect the mezzanine card.
 
-| Target design     | Standalone app | PetaLinux | Eth ports           | Target board and connector  |
-|-------------------|----------------|-----------|---------------------|-----------------------------|
-| `ac701`           | YES            | YES       | PORT0,1,2,3         | [AC701]                     |
-| `kc705_hpc`       | YES            | YES       | PORT0,1,2,3         | [KC705], HPC connector      |
-| `kc705_lpc`       | YES            | YES       | PORT0,1,2,3         | [KC705], LPC connector      |
-| `kc705_lpc_hpc`   | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [KC705], HPC+LPC connector  |
-| `kcu105_dual`     | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [KCU105], HPC+LPC connector |
-| `kcu105_hpc`      | YES            | YES       | PORT0,1,2,3         | [KCU105], HPC connector     |
-| `kcu105_lpc`      | YES            | YES       | PORT0,1,3           | [KCU105], LPC connector     |
-| `pz_7015`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]    |
-| `pz_7020`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]    |
-| `pz_7030`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]    |
-| `uzev`            | YES            | YES       | PORT0,1,2,3         | [UltraZed EV carrier]       |
-| `vc707_hpc1`      | YES            | NO        | PORT0,1,2,3         | [VC707], HPC1 connector     |
-| `vc707_hpc2`      | YES            | NO        | PORT0,1,2,3         | [VC707], HPC2 connector     |
-| `vc707_hpc2_hpc1` | YES            | NO        | PORT0,1,2,3,4,5,6,7 | [VC707], HPC2+HPC1 connector |
-| `vc709`           | YES            | NO        | PORT0,1,2,3         | [VC709]                     |
-| `vcu108_hpc0`     | YES            | NO        | PORT0,1,2,3         | [VCU108], HPC0 connector    |
-| `vcu108_hpc1`     | YES            | NO        | PORT0,1,2,3         | [VCU108], HPC1 connector    |
-| `vcu118`          | YES            | YES       | PORT0,1,2,3         | [VCU118]                    |
-| `zc702_lpc1`      | YES            | YES       | PORT0,1,2,3         | [ZC702], LPC1 connector     |
-| `zc702_lpc2`      | YES            | YES       | PORT0,1,2,3         | [ZC702], LPC2 connector     |
-| `zc702_lpc2_lpc1` | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [ZC702], LPC2+LPC1 connector |
-| `zc706_lpc`       | YES            | YES       | PORT0,1,2,3         | [ZC706], LPC connector      |
-| `zcu102_hpc0`     | YES            | YES       | PORT0,1,2,3         | [ZCU102], HPC0 connector    |
-| `zcu102_hpc1`     | YES            | YES       | PORT0,1             | [ZCU102], HPC1 connector    |
-| `zedboard`        | YES            | YES       | PORT0,1,2,3         | [ZedBoard]                  |
+| Target design     | Standalone<br> app | PetaLinux | Eth ports           | Target board and connector   | License<br> required |
+|-------------------|----------------|-----------|---------------------|------------------------------|-----|
+| `ac701`           | YES            | YES       | PORT0,1,2,3         | [AC701]                      | NO  |
+| `kc705_hpc`       | YES            | YES       | PORT0,1,2,3         | [KC705], HPC connector       | YES |
+| `kc705_lpc`       | YES            | YES       | PORT0,1,2,3         | [KC705], LPC connector       | YES |
+| `kc705_lpc_hpc`   | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [KC705], HPC+LPC connector   | YES |
+| `kcu105_dual`     | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [KCU105], HPC+LPC connector  | YES |
+| `kcu105_hpc`      | YES            | YES       | PORT0,1,2,3         | [KCU105], HPC connector      | YES |
+| `kcu105_lpc`      | YES            | YES       | PORT0,1,3           | [KCU105], LPC connector      | YES |
+| `pz_7015`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]     | NO  |
+| `pz_7020`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]     | NO  |
+| `pz_7030`         | YES            | YES       | PORT0,1,2,3         | [PicoZed FMC Carrier v2]     | NO  |
+| `uzev`            | YES            | YES       | PORT0,1,2,3         | [UltraZed EV carrier]        | NO  |
+| `vc707_hpc1`      | YES            | NO        | PORT0,1,2,3         | [VC707], HPC1 connector      | YES |
+| `vc707_hpc2`      | YES            | NO        | PORT0,1,2,3         | [VC707], HPC2 connector      | YES |
+| `vc707_hpc2_hpc1` | YES            | NO        | PORT0,1,2,3,4,5,6,7 | [VC707], HPC2+HPC1 connector | YES |
+| `vc709`           | YES            | NO        | PORT0,1,2,3         | [VC709]                      | YES |
+| `vcu108_hpc0`     | YES            | NO        | PORT0,1,2,3         | [VCU108], HPC0 connector     | YES |
+| `vcu108_hpc1`     | YES            | NO        | PORT0,1,2,3         | [VCU108], HPC1 connector     | YES |
+| `vcu118`          | YES            | YES       | PORT0,1,2,3         | [VCU118]                     | YES |
+| `zc702_lpc1`      | YES            | YES       | PORT0,1,2,3         | [ZC702], LPC1 connector      | NO  |
+| `zc702_lpc2`      | YES            | YES       | PORT0,1,2,3         | [ZC702], LPC2 connector      | NO  |
+| `zc702_lpc2_lpc1` | YES            | YES       | PORT0,1,2,3,4,5,6,7 | [ZC702], LPC2+LPC1 connector | NO  |
+| `zc706_lpc`       | YES            | YES       | PORT0,1,2,3         | [ZC706], LPC connector       | YES |
+| `zcu102_hpc0`     | YES            | YES       | PORT0,1,2,3         | [ZCU102], HPC0 connector     | YES |
+| `zcu102_hpc1`     | YES            | YES       | PORT0,1             | [ZCU102], HPC1 connector     | YES |
+| `zedboard`        | YES            | YES       | PORT0,1,2,3         | [ZedBoard]                   | NO  |
 
 ## Windows users
 
