@@ -68,9 +68,8 @@ physical or virtual) running one of the [supported Linux distributions].
 1. Download the repo as a zip file and extract the files to a directory
    on your hard drive --OR-- clone the repo to your hard drive
 2. Open Windows Explorer, browse to the repo files on your hard drive.
-3. In the `Vivado` directory, you will find multiple batch files (.bat).
-   Double click on the batch file that corresponds to the target design you wish to build.
-   This will generate a Vivado project for your target design and it will be located in
+3. In the `Vivado` directory, double click on the `build-vivado.bat` batch file.
+   You will be prompted to select a target design to build. You will find the project in
    the folder `Vivado/<target>`.
 4. Run Vivado and open the project that was just created.
 5. Click Generate bitstream.
@@ -80,10 +79,12 @@ physical or virtual) running one of the [supported Linux distributions].
 
 ### Build Vitis workspace in Windows
 
+Before running these steps, you must first build and export the Vivado project as described above.
+
 1. Return to Windows Explorer and browse to the Vitis directory in the repo.
-2. Double click the `build-vitis.bat` batch file. The batch file will run the
-   `tcl/build-vitis.tcl` script and build the Vitis workspace containing the hardware
-   platform and the software application for the target design that you built earlier.
+2. Double click the `build-vitis.bat` batch file. You will be prompted to select a target design.
+   A Vitis workspace with hardware platform and software application will be created for the
+   selected target design. You will find the Vitis workspace in the folder `Vitis/<target>_workspace`.
 
 ## Linux users
 
@@ -168,6 +169,7 @@ design if it has not already been done.
    cd ethernet-fmc-axi-eth/Vitis
    make workspace TARGET=<target>
    ```
+   You will find the Vitis workspace in the folder `Vitis/<target>_workspace`.
 
 ### Build PetaLinux project in Linux
 
