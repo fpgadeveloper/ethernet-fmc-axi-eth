@@ -2,7 +2,6 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:${SYSCONFIG_PATH}:"
 
 SRC_URI:append = " file://config file://system-user.dtsi"
 SRC_URI:append = " file://port-config.dtsi"
-SRC_URI:append = " file://emacps.patch"
 
 python () {
     if d.getVar("CONFIG_DISABLE"):

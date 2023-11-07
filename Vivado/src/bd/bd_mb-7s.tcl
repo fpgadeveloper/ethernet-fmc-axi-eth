@@ -83,7 +83,8 @@ apply_bd_automation -rule xilinx.com:bd_rule:microblaze -config { axi_intc {1} a
 apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {/mig_0/ui_addn_clk_0 (100 MHz)} Clk_slave {/mig_0/ui_clk (200 MHz)} Clk_xbar {Auto} Master {/microblaze_0 (Cached)} Slave {/mig_0/S_AXI} ddr_seg {Auto} intc_ip {New AXI SmartConnect} master_apm {0}}  [get_bd_intf_pins mig_0/S_AXI]
 
 # Configure MicroBlaze for Linux
-set_property -dict [list CONFIG.G_TEMPLATE_LIST {4} \
+set_property -dict [list \
+CONFIG.G_TEMPLATE_LIST {4} \
 CONFIG.G_USE_EXCEPTIONS {1} \
 CONFIG.C_USE_MSR_INSTR {1} \
 CONFIG.C_USE_PCMP_INSTR {1} \
@@ -97,12 +98,17 @@ CONFIG.C_M_AXI_D_BUS_EXCEPTION {1} \
 CONFIG.C_DIV_ZERO_EXCEPTION {1} \
 CONFIG.C_PVR {2} \
 CONFIG.C_OPCODE_0x0_ILLEGAL {1} \
+CONFIG.C_ADDR_TAG_BITS {16} \
+CONFIG.C_CACHE_BYTE_SIZE {16384} \
 CONFIG.C_ICACHE_LINE_LEN {8} \
 CONFIG.C_ICACHE_VICTIMS {8} \
 CONFIG.C_ICACHE_STREAMS {1} \
+CONFIG.C_DCACHE_ADDR_TAG {16} \
+CONFIG.C_DCACHE_BYTE_SIZE {16384} \
 CONFIG.C_DCACHE_VICTIMS {8} \
 CONFIG.C_USE_MMU {3} \
-CONFIG.C_MMU_ZONES {2}] [get_bd_cells microblaze_0]
+CONFIG.C_MMU_ZONES {2} \
+] [get_bd_cells microblaze_0]
 
 # Connect 100MHz processor system reset external reset to the reset port
 apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {reset ( FPGA Reset ) } Manual_Source {Auto}}  [get_bd_pins rst_mig_0_100M/ext_reset_in]

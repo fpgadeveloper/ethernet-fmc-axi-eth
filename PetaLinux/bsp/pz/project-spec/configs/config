@@ -269,8 +269,6 @@ CONFIG_PRE_MIRROR_URL="http://petalinux.xilinx.com/sswreleases/rel-v2022/downloa
 
 # Ethernet FMC configs
 
-CONFIG_YOCTO_MACHINE_NAME="zynq-generic"
-
 CONFIG_SUBSYSTEM_BOOTARGS_AUTO=n
 CONFIG_SUBSYSTEM_USER_CMDLINE="earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait cma=1536M"
 
@@ -279,8 +277,8 @@ CONFIG_SUBSYSTEM_ROOTFS_EXT4=y
 CONFIG_SUBSYSTEM_SDROOT_DEV="/dev/mmcblk0p2"
 CONFIG_SUBSYSTEM_RFS_FORMATS="tar.gz ext4 ext4.gz "
 
-CONFIG_SUBSYSTEM_HOSTNAME="pz_axieth_2022_1"
-CONFIG_SUBSYSTEM_PRODUCT="pz_axieth_2022_1"
+CONFIG_SUBSYSTEM_HOSTNAME="pz-axieth-2022-1"
+CONFIG_SUBSYSTEM_PRODUCT="pz-axieth-2022-1"
 
 # PZ configs
 

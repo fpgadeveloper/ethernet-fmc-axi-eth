@@ -21,9 +21,8 @@ we cannot always provide support if you have trouble updating the designs.
 3. In a text editor, open the `Vivado/scripts/xsa.tcl` file and perform the following changes:
    * Update the `version_required` variable value to the tools version number 
      that you are using.
-4. **Windows users only:** In a text editor, open the `Vivado/build-<target>.bat` file for
-   the design that you wish to update, and update the tools version number to the one you are using 
-   (eg. 2022.1).
+4. **Windows users only:** In a text editor, open the `Vivado/build-vivado.bat` file and update 
+   the tools version number to the one you are using (eg. 2022.1).
 
 After completing the above, you should now be able to use the [build instructions](build_instructions) to
 build the Vivado project. If there were no significant changes to the tools and/or IP, the build script 
@@ -39,7 +38,8 @@ The BSP files for each supported target platform are contained in the `PetaLinux
 
    * For AC701, KC705, KCU105, VCU118, ZC702, ZC706 and ZCU102 download the BSP from the 
      [Xilinx downloads] page
-   * For PicoZed, ZedBoard, and UltraZed-EV download the BSP from the [Avnet downloads] page
+   * For PicoZed and UltraZed-EV download the BSP from the [Avnet downloads] page
+   * For the ZedBoard, we use the ZC702 BSP which can be downloaded from the [Xilinx downloads] page
 
 3. Update the BSP files for the target platform in the `PetaLinux/bsp/<platform>` directory. 
    These are the specific directories to update:
@@ -74,8 +74,6 @@ This BSP modification applies to all target platforms.
 ```
 # Useful tools for Ethernet FMC
 CONFIG_ethtool=y
-CONFIG_ethtool-dev=y
-CONFIG_ethtool-dbg=y
 CONFIG_iperf3=y
 ```
 
@@ -97,39 +95,93 @@ This BSP modification applies to all target platforms.
 /include/ "port-config.dtsi"
 ```
 
-2. Append the following line after `SRC_URI += "file://system-user.dtsi"` in 
+2. Append the following line after `SRC_URI:append = " file://config file://system-user.dtsi` in 
    `project-spec/meta-user/recipes-bsp/device-tree/device-tree.bbappend`:
 
 ```
-SRC_URI += "file://port-config.dtsi"
+SRC_URI:append = " file://port-config.dtsi"
 ```
 
 ### Add kernel configs
 
 This BSP modification applies to all target platforms.
 
-1. Add the following lines to the top of file `project-spec/meta-user/recipes-kernel/linux/linux-xlnx/bsp.cfg`:
+1. Append the following lines to file `project-spec/meta-user/recipes-kernel/linux/linux-xlnx/bsp.cfg`:
 
 ```
 # Required by all designs
 CONFIG_XILINX_GMII2RGMII=y
+CONFIG_NET_VENDOR_MARVELL=y
 CONFIG_MVMDIO=y
 CONFIG_MARVELL_PHY=y
-
-# Required by BSP
+CONFIG_AMD_PHY=y
+CONFIG_XILINX_PHY=y
 ```
 
-### Kernel configs for ZynqMP designs
+### Mods for all ZynqMP designs
 
-This BSP modification must be applied to all ZynqMP designs (ie. ZCU102 and UltraZed EV) in addition to the previous one.
+These BSP modifications must be applied to all ZynqMP designs (ie. ZCU102 and UltraZed EV) in addition to 
+the previous one.
 
-1. Add the following lines to the top of file `project-spec/meta-user/recipes-kernel/linux/linux-xlnx/bsp.cfg`:
+1. Append the following lines to `project-spec/configs/config`. These options configure the design
+   to use the SD card to store the root filesystem.
+
+```
+# SD card for root filesystem
+
+CONFIG_SUBSYSTEM_BOOTARGS_AUTO=n
+CONFIG_SUBSYSTEM_USER_CMDLINE="earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait cma=1536M"
+
+CONFIG_SUBSYSTEM_ROOTFS_INITRD=n
+CONFIG_SUBSYSTEM_ROOTFS_EXT4=y
+CONFIG_SUBSYSTEM_SDROOT_DEV="/dev/mmcblk0p2"
+CONFIG_SUBSYSTEM_RFS_FORMATS="tar.gz ext4 ext4.gz "
+```
+
+2. Append the following lines to `project-spec/configs/rootfs_config`:
+
+```
+# Add extra tools for debugging Ethernet with ethtool
+
+CONFIG_ethtool-dev=y
+CONFIG_ethtool-dbg=y
+```
+
+3. Add the following lines to the top of file `project-spec/meta-user/recipes-kernel/linux/linux-xlnx/bsp.cfg`:
 
 ```
 # All zynqMP designs need these kernel configs for AXI Ethernet designs
 CONFIG_XILINX_DMA_ENGINES=y
 CONFIG_XILINX_DPDMA=y
 CONFIG_XILINX_ZYNQMP_DMA=y
+```
+
+### Mods for all Zynq-7000 designs
+
+The following modifications apply to all the Zynq-7000 based designs (PicoZed, ZC702, ZC706).
+
+1. Append the following lines to `project-spec/configs/config`. These options configure the design
+   to use the SD card to store the root filesystem.
+
+```
+# SD card for root filesystem
+
+CONFIG_SUBSYSTEM_BOOTARGS_AUTO=n
+CONFIG_SUBSYSTEM_USER_CMDLINE="earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p2 rw rootwait cma=1536M"
+
+CONFIG_SUBSYSTEM_ROOTFS_INITRD=n
+CONFIG_SUBSYSTEM_ROOTFS_EXT4=y
+CONFIG_SUBSYSTEM_SDROOT_DEV="/dev/mmcblk0p2"
+CONFIG_SUBSYSTEM_RFS_FORMATS="tar.gz ext4 ext4.gz "
+```
+
+2. Append the following lines to `project-spec/configs/rootfs_config`:
+
+```
+# Add extra tools for debugging Ethernet with ethtool
+
+CONFIG_ethtool-dev=y
+CONFIG_ethtool-dbg=y
 ```
 
 ### Mods for AC701
@@ -189,71 +241,6 @@ CONFIG_SUBSYSTEM_MACHINE_NAME="template"
 };
 ```
    
-### Mods for VC707
-
-These modifications are specific to the VC707 BSP. As Xilinx doesn't provide a BSP for the VC707, we instead use
-the BSP for the KC705 and modify it to suit the VC707.
-
-1. Replace the line `CONFIG_XILINX_MICROBLAZE0_FAMILY="kintex7"` with the following in 
-  `project-spec/configs/linux-xlnx/plnx_kernel.cfg`:
-
-```
-CONFIG_XILINX_MICROBLAZE0_FAMILY="virtex7"
-```
-  
-2. Append the following lines to `project-spec/configs/config`:
-
-```
-# Use general template
-CONFIG_SUBSYSTEM_MACHINE_NAME="template"
-
-# Larger partition for bitstream
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART0_SIZE=0xD00000
-```
-
-### Mods for VC709
-
-These modifications are specific to the VC709 BSP. As Xilinx doesn't provide a BSP for the VC709, we instead use
-the BSP for the KC705 and modify it to suit the VC709.
-
-1. Replace the line `CONFIG_XILINX_MICROBLAZE0_FAMILY="kintex7"` with the following in 
-   `project-spec/configs/linux-xlnx/plnx_kernel.cfg`:
-
-```
-CONFIG_XILINX_MICROBLAZE0_FAMILY="virtex7"
-```
-  
-2. Append the following lines to `project-spec/configs/config`:
-
-```
-# Use general template
-CONFIG_SUBSYSTEM_MACHINE_NAME="template"
-```
-  
-### Mods for VCU108
-
-These modifications are specific to the VCU108 BSP.
-
-1. Append the following lines to `project-spec/configs/config`:
-
-```
-# Use general template
-CONFIG_SUBSYSTEM_MACHINE_NAME="template"
-
-# Flash Settings - use Linear flash instead of QSPI
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_SELECT=y
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART0_NAME="fpga"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART0_SIZE=0x1B00000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART1_NAME="boot"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART1_SIZE=0x180000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART2_NAME="bootenv"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART2_SIZE=0x20000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART3_NAME="kernel"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART3_SIZE=0xC00000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART4_NAME=""
-CONFIG_SUBSYSTEM_FLASH_IP_NAME="axi_emc_0"
-```
-
 ### Mods for VCU118
 
 These modifications are specific to the VCU118 BSP.
@@ -261,24 +248,17 @@ These modifications are specific to the VCU118 BSP.
 1. Append the following lines to `project-spec/configs/config`:
 
 ```
-# Use general template
+# Modifications to VCU118 BSP
+
 # We use the template because the board dtsi expects axi_ethernet_0 to be 
 # the on-board Ethernet, and axi_iic_0 to be the I2C. We define the I2C
 # device tree for iic_main in the system-user.dtsi in this BSP.
 CONFIG_SUBSYSTEM_MACHINE_NAME="template"
 
-# Flash Settings - use Linear flash instead of QSPI
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_SELECT=y
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART0_NAME="fpga"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART0_SIZE=0x1C00000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART1_NAME="boot"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART1_SIZE=0x180000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART2_NAME="bootenv"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART2_SIZE=0x20000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART3_NAME="kernel"
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART3_SIZE=0xC00000
-CONFIG_SUBSYSTEM_FLASH_AXI_EMC_0_BANK0_PART4_NAME=""
-CONFIG_SUBSYSTEM_FLASH_IP_NAME="axi_emc_0"
+# Flash Settings - QSPI (increase fpga and kernel partition sizes)
+CONFIG_SUBSYSTEM_FLASH_AXI_QUAD_SPI_0_BANKLESS_PART0_SIZE=0x2400000
+CONFIG_SUBSYSTEM_FLASH_AXI_QUAD_SPI_0_BANKLESS_PART3_SIZE=0xE00000
+CONFIG_SUBSYSTEM_UBOOT_QSPI_FIT_IMAGE_OFFSET=0x25A0000
 ```
 
 2. Append the following lines to file `project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi`:
@@ -323,6 +303,93 @@ CONFIG_SUBSYSTEM_FLASH_IP_NAME="axi_emc_0"
   };
 };
 ```
+
+### Mods for PicoZed FMC Carrier v2
+
+These modifications are specific to the PicoZed FMC Carrier v2 BSP.
+
+1. Append the following lines to `project-spec/configs/config`:
+
+```
+# PZ configs
+
+CONFIG_YOCTO_MACHINE_NAME="zynq-generic"
+CONFIG_USER_LAYER_0=""
+CONFIG_SUBSYSTEM_PRIMARY_SD_PSU_SD_0_SELECT=n
+CONFIG_SUBSYSTEM_PRIMARY_SD_PSU_SD_1_SELECT=y
+CONFIG_SUBSYSTEM_SD_PSU_SD_0_SELECT=n
+```
+
+2. Append the following lines to file `project-spec/meta-user/recipes-kernel/linux/linux-xlnx/bsp.cfg`:
+
+```
+# Required by PZ BSP
+CONFIG_USB_ACM=y
+CONFIG_USB_F_ACM=m
+CONFIG_USB_U_SERIAL=m
+CONFIG_USB_CDC_COMPOSITE=m
+CONFIG_I2C_XILINX=y
+```
+
+### Mods for ZedBoard
+
+These modifications are specific to the ZedBoard BSP.
+
+```{note}
+Note that Avnet no longer maintains a BSP for the ZedBoard, so we are instead using the BSP for the ZC702
+and making modifications for it to work with the ZedBoard.
+```
+
+1. Append the following lines to `project-spec/configs/config`:
+
+```
+# ZedBoard configs
+
+CONFIG_YOCTO_MACHINE_NAME="zynq-generic"
+```
+
+2. Append the following lines to file `project-spec/meta-user/recipes-kernel/linux/linux-xlnx/bsp.cfg`:
+
+```
+# Required by ZedBoard BSP
+CONFIG_USB_SUSPEND=y
+CONFIG_USB_OTG=y
+CONFIG_USB_GADGET=y
+CONFIG_USB_GADGET_XUSBPS=y
+CONFIG_XILINX_ZED_USB_OTG=y
+# CONFIG_USB_ETH is not set
+# CONFIG_USB_ETH_RNDIS is not set
+CONFIG_USB_ZERO=m
+```
+
+### Mods for UltraZed-EV Carrier
+
+These modifications are specific to the UltraZed-EV BSP.
+
+1. Append the following lines to `project-spec/configs/config`.
+
+```
+# UZ-EV configs
+
+CONFIG_YOCTO_MACHINE_NAME="zynqmp-generic"
+CONFIG_USER_LAYER_0=""
+CONFIG_SUBSYSTEM_SDROOT_DEV="/dev/mmcblk1p2"
+CONFIG_SUBSYSTEM_USER_CMDLINE=" earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk1p2 rw rootwait cma=1000M"
+CONFIG_SUBSYSTEM_PRIMARY_SD_PSU_SD_0_SELECT=n
+CONFIG_SUBSYSTEM_PRIMARY_SD_PSU_SD_1_SELECT=y
+CONFIG_SUBSYSTEM_SD_PSU_SD_0_SELECT=n
+```
+
+2. Append the following lines to `project-spec/meta-user/conf/petalinuxbsp.conf`.
+
+```
+IMAGE_BOOT_FILES:zynqmp = "BOOT.BIN boot.scr Image system.dtb"
+```
+
+3. Overwrite the device tree file 
+   `project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi` with the one that is in the
+   repository.
+
 
 [Xilinx downloads]: https://www.xilinx.com/support/download.html
 [Avnet downloads]: https://avnet.me/zedsupport
