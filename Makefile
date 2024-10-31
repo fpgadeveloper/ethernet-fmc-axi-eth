@@ -12,31 +12,33 @@ TARGET ?= none
 JOBS ?= 8
 
 # valid targets (template name, both (plnx+baremetal) or baremetal_only)
+# UPDATER START
 ac701_target := microblaze both
 kc705_hpc_target := microblaze both
 kc705_lpc_target := microblaze both
 kc705_lpc_hpc_target := microblaze both
-kcu105_dual_target := microblaze both
-kcu105_hpc_target := microblaze both
-kcu105_lpc_target := microblaze both
-pz_7015_target := zynq both
-pz_7020_target := zynq both
-pz_7030_target := zynq both
-uzev_target := zynqMP both
 vc707_hpc1_target := microblaze baremetal_only
 vc707_hpc2_target := microblaze baremetal_only
 vc707_hpc2_hpc1_target := microblaze baremetal_only
 vc709_target := microblaze baremetal_only
+kcu105_hpc_target := microblaze both
+kcu105_lpc_target := microblaze both
+kcu105_dual_target := microblaze both
 vcu108_hpc0_target := microblaze baremetal_only
 vcu108_hpc1_target := microblaze baremetal_only
-vcu118_target := microblaze both
-zc702_lpc1_target := zynq baremetal_only
-zc702_lpc2_target := zynq baremetal_only
+vcu118_target := microblaze baremetal_only
+pz_7015_target := zynq both
+pz_7020_target := zynq both
+pz_7030_target := zynq both
+zc702_lpc1_target := zynq both
+zc702_lpc2_target := zynq both
 zc702_lpc2_lpc1_target := zynq baremetal_only
 zc706_lpc_target := zynq both
+zedboard_target := zynq both
+uzev_target := zynqMP both
 zcu102_hpc0_target := zynqMP both
 zcu102_hpc1_target := zynqMP both
-zedboard_target := zynq both
+# UPDATER END
 
 TARGET_LIST := $(sort $(patsubst %_target,%,$(filter %_target,$(.VARIABLES))))
 
@@ -68,8 +70,8 @@ VIT_BOOT_TARG = $(VIT_BOOT)/$(TARGET)
 # outputs
 BOOTIMAGE_DIR = $(ROOT_DIR)/bootimages
 TEMPBOOT_DIR = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)
-PETL_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_petalinux-2022-1.zip
-BARE_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_standalone-2022-1.zip
+PETL_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_petalinux-2024-1.zip
+BARE_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_standalone-2024-1.zip
 BOOTIMAGE_LOCK = $(ROOT_DIR)/.$(TARGET).lock
 
 # These macros return values from the valid target lists defined above

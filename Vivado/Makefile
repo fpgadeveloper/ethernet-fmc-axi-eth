@@ -1,4 +1,4 @@
-# Opsero Electronic Design Inc. 2023
+# Opsero Electronic Design Inc. 2024
 #
 # This Makefile can be used to build the Vivado projects.
 
@@ -15,31 +15,33 @@ TARGET ?= none
 JOBS ?= 8
 
 # valid targets
+# UPDATER START
 ac701_target := 0
 kc705_hpc_target := 0
 kc705_lpc_target := 0
 kc705_lpc_hpc_target := 0
-kcu105_dual_target := 0
-kcu105_hpc_target := 0
-kcu105_lpc_target := 0
-pz_7015_target := 0
-pz_7020_target := 0
-pz_7030_target := 0
-uzev_target := 0
 vc707_hpc1_target := 0
 vc707_hpc2_target := 0
 vc707_hpc2_hpc1_target := 0
 vc709_target := 0
+kcu105_hpc_target := 0
+kcu105_lpc_target := 0
+kcu105_dual_target := 0
 vcu108_hpc0_target := 0
 vcu108_hpc1_target := 0
 vcu118_target := 0
+pz_7015_target := 0
+pz_7020_target := 0
+pz_7030_target := 0
 zc702_lpc1_target := 0
 zc702_lpc2_target := 0
 zc702_lpc2_lpc1_target := 0
 zc706_lpc_target := 0
+zedboard_target := 0
+uzev_target := 0
 zcu102_hpc0_target := 0
 zcu102_hpc1_target := 0
-zedboard_target := 0
+# UPDATER END
 
 TARGET_LIST := $(sort $(patsubst %_target,%,$(filter %_target,$(.VARIABLES))))
 

@@ -1,4 +1,4 @@
-# Opsero Electronic Design Inc. 2023
+# Opsero Electronic Design Inc. 2024
 #
 # This Makefile can be used to build the Vitis workspace.
 
@@ -15,31 +15,33 @@ TARGET ?= none
 JOBS ?= 8
 
 # valid targets
+# UPDATER START
 ac701_target := microblaze
 kc705_hpc_target := microblaze
 kc705_lpc_target := microblaze
 kc705_lpc_hpc_target := microblaze
-kcu105_dual_target := microblaze
-kcu105_hpc_target := microblaze
-kcu105_lpc_target := microblaze
-pz_7015_target := zynq
-pz_7020_target := zynq
-pz_7030_target := zynq
-uzev_target := zynqMP
 vc707_hpc1_target := microblaze
 vc707_hpc2_target := microblaze
 vc707_hpc2_hpc1_target := microblaze
 vc709_target := microblaze
+kcu105_hpc_target := microblaze
+kcu105_lpc_target := microblaze
+kcu105_dual_target := microblaze
 vcu108_hpc0_target := microblaze
 vcu108_hpc1_target := microblaze
 vcu118_target := microblaze
+pz_7015_target := zynq
+pz_7020_target := zynq
+pz_7030_target := zynq
 zc702_lpc1_target := zynq
 zc702_lpc2_target := zynq
 zc702_lpc2_lpc1_target := zynq
 zc706_lpc_target := zynq
+zedboard_target := zynq
+uzev_target := zynqMP
 zcu102_hpc0_target := zynqMP
 zcu102_hpc1_target := zynqMP
-zedboard_target := zynq
+# UPDATER END
 
 TARGET_LIST := $(sort $(patsubst %_target,%,$(filter %_target,$(.VARIABLES))))
 

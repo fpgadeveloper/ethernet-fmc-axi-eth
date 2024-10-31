@@ -2,40 +2,35 @@
 
 ## List of supported boards
 
-### Zynq-7000 boards
+{% set unique_boards = {} %}
+{% for design in data.designs %}
+    {% if design.publish %}
+        {% if design.board not in unique_boards %}
+            {% set _ = unique_boards.update({design.board: {"group": design.group, "link": design.link, "connectors": []}}) %}
+        {% endif %}
+        {% if design.connector not in unique_boards[design.board]["connectors"] and '&' not in design.connector %}
+            {% set _ = unique_boards[design.board]["connectors"].append(design.connector) %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
 
-| Carrier board                                                    | FMC  |
-|------------------------------------------------------------------|------|
-| Zynq-7000 [ZedBoard]                                             | LPC  |
-| Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7015]      | LPC  |
-| Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7020]      | LPC  |
-| Zynq-7000 [PicoZed FMC Carrier Card V2] with [PicoZed 7030]      | LPC  |
-| Zynq-7000 [ZC702 Evaluation board]                               | LPC1, LPC2 |
-| Zynq-7000 [ZC706 Evaluation board]                               | LPC  |
+{% for group in data.groups %}
+    {% set boards_in_group = [] %}
+    {% for name, board in unique_boards.items() %}
+        {% if board.group == group.label %}
+            {% set _ = boards_in_group.append(board) %}
+        {% endif %}
+    {% endfor %}
 
-### Zynq UltraScale+ boards
+    {% if boards_in_group | length > 0 %}
+### {{ group.name }} boards
 
-| Carrier board                                                    | FMC  |
-|------------------------------------------------------------------|------|
-| Zynq UltraScale+ [UltraZed EV Carrier Card]                      | HPC  |
-| Zynq UltraScale+ [ZCU102 Evaluation board]                       | HPC0, HPC1 |
-
-### Series-7 FPGA boards
-
-| Carrier board                                                    | FMC  |
-|------------------------------------------------------------------|------|
-| Artix-7 [AC701 Evaluation board]                                 | HPC  |
-| Kintex-7 [KC705 Evaluation board]                                | LPC, HPC  |
-| Virtex-7 [VC707 Evaluation board]                                | HPC1, HPC2 |
-| Virtex-7 [VC709 Evaluation board]                                | HPC  |
-
-### UltraScale/UltraScale+ boards
-
-| Carrier board                                                    | FMC  |
-|------------------------------------------------------------------|------|
-| Kintex UltraScale [KCU105 Evaluation board]                      | LPC, HPC  |
-| Virtex UltraScale+ [VCU108 Evaluation board]                     | HPC0, HPC1 |
-| Virtex UltraScale+ [VCU118 Evaluation board]                     | HPC1 |
+| Carrier board        | Supported FMC connector(s)    |
+|---------------------|--------------|
+{% for name,board in unique_boards.items() %}{% if board.group == group.label %}| [{{ name }}]({{ board.link }}) | {% for connector in board.connectors %}{{ connector }} {% endfor %} |
+{% endif %}{% endfor %}
+{% endif %}
+{% endfor %}
 
 ## Unlisted boards
 

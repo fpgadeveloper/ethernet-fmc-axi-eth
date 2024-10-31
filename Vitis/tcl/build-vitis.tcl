@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------------------------
-# Opsero Electronic Design Inc. Copyright 2023
+# Opsero Electronic Design Inc. Copyright 2024
 # -------------------------------------------------------------------------------------
 
 # Description
@@ -36,31 +36,33 @@ set template_app "lwIP Echo Server"
 set mb_combine_bit_elf 0
 
 # Possible targets (board name in lower case for the board.h file)
+# UPDATER START
 dict set target_dict ac701 { ac701 }
 dict set target_dict kc705_hpc { kc705 }
 dict set target_dict kc705_lpc { kc705 }
 dict set target_dict kc705_lpc_hpc { kc705 }
-dict set target_dict kcu105_dual { kcu105 }
-dict set target_dict kcu105_hpc { kcu105 }
-dict set target_dict kcu105_lpc { kcu105 }
-dict set target_dict pz_7015 { pz }
-dict set target_dict pz_7020 { pz }
-dict set target_dict pz_7030 { pz }
-dict set target_dict uzev { uzev }
 dict set target_dict vc707_hpc1 { vc707 }
 dict set target_dict vc707_hpc2 { vc707 }
 dict set target_dict vc707_hpc2_hpc1 { vc707 }
 dict set target_dict vc709 { vc709 }
+dict set target_dict kcu105_hpc { kcu105 }
+dict set target_dict kcu105_lpc { kcu105 }
+dict set target_dict kcu105_dual { kcu105 }
 dict set target_dict vcu108_hpc0 { vcu108 }
 dict set target_dict vcu108_hpc1 { vcu108 }
 dict set target_dict vcu118 { vcu118 }
+dict set target_dict pz_7015 { picozed_7015_fmc2 }
+dict set target_dict pz_7020 { picozed_7020_fmc2 }
+dict set target_dict pz_7030 { picozed_7030_fmc2 }
 dict set target_dict zc702_lpc1 { zc702 }
 dict set target_dict zc702_lpc2 { zc702 }
 dict set target_dict zc702_lpc2_lpc1 { zc702 }
 dict set target_dict zc706_lpc { zc706 }
+dict set target_dict zedboard { zedboard }
+dict set target_dict uzev { ultrazed_7ev_cc }
 dict set target_dict zcu102_hpc0 { zcu102 }
 dict set target_dict zcu102_hpc1 { zcu102 }
-dict set target_dict zedboard { zedboard }
+# UPDATER END
 
 # ----------------------------------------------------------------------------------------------
 # Custom modifications functions

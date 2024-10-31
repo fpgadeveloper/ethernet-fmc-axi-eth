@@ -28,26 +28,8 @@ users are advised to use a Linux virtual machine to build the PetaLinux projects
    source <vivado-install-dir>/settings64.sh
    ```
 4. Build the Vivado and PetaLinux project for your specific target platform by running the following
-   commands and replacing `<target>` with one of the following: 
-   `ac701`,
-   `kc705_hpc`,
-   `kc705_lpc`,
-   `kc705_lpc_hpc`,
-   `kcu105_dual`,
-   `kcu105_hpc`,
-   `kcu105_lpc`,
-   `mz_7020`,
-   `pz_7015`,
-   `pz_7020`,
-   `pz_7030`,
-   `uzev`,
-   `vcu118`,
-   `zc702_lpc1`,
-   `zc702_lpc2`,
-   `zc706_lpc`,
-   `zcu102_hpc0`,
-   `zcu102_hpc1`,
-   `zedboard`.
+   commands and replacing `<target>` with one of the target labels listed in the target designs table
+   in the build instructions.
    ```
    cd PetaLinux
    make petalinux TARGET=<target>
@@ -125,7 +107,7 @@ losing data on one of your hard drives.
 ```{tip} You need to install the cable drivers before being able to boot via JTAG.
 Note that the Vitis installer does not automatically install the cable drivers, it must be done separately.
 For instructions, read section 
-[installing the cable drivers](https://docs.xilinx.com/r/2022.1-English/ug973-vivado-release-notes-install-license/Installing-Cable-Drivers) 
+[installing the cable drivers](https://docs.amd.com/r/en-US/ug973-vivado-release-notes-install-license/Installing-Cable-Drivers) 
 from the Vivado release notes.
 ```
 
@@ -397,6 +379,6 @@ does not affect the Zynq Ultrascale+ based designs. This issue does not seem to 
 echo server operation. We have not yet determined the cause of this issue
 but if you have any information, please let us know.
 
-[Ethernet FMC]: https://ethernetfmc.com
-[supported Linux distributions]: https://docs.xilinx.com/r/2022.1-English/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
+[Ethernet FMC]: https://ethernetfmc.com/docs/ethernet-fmc/overview/
+[supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
 

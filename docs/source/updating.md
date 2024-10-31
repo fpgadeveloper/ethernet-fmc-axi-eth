@@ -14,15 +14,15 @@ we cannot always provide support if you have trouble updating the designs.
      that you are using.
    * Update the year in all references to `Vivado Synthesis <year>` to the 
      tools version number that you are using. For example, if you are using tools
-     version 2022.1, then the `<year>` should be 2022.
+     version 2024.1, then the `<year>` should be 2024.
    * Update the year in all references to `Vivado Implementation <year>` to the 
      tools version number that you are using. For example, if you are using tools
-     version 2022.1, then the `<year>` should be 2022.
+     version 2024.1, then the `<year>` should be 2024.
 3. In a text editor, open the `Vivado/scripts/xsa.tcl` file and perform the following changes:
    * Update the `version_required` variable value to the tools version number 
      that you are using.
 4. **Windows users only:** In a text editor, open the `Vivado/build-vivado.bat` file and update 
-   the tools version number to the one you are using (eg. 2022.1).
+   the tools version number to the one you are using (eg. 2024.1).
 
 After completing the above, you should now be able to use the [build instructions](build_instructions) to
 build the Vivado project. If there were no significant changes to the tools and/or IP, the build script 
@@ -36,8 +36,7 @@ The BSP files for each supported target platform are contained in the `PetaLinux
 1. Download and install the PetaLinux release that you intend to use.
 2. Download and install the BSP for the target platform for the release that you intend to use.
 
-   * For AC701, KC705, KCU105, VCU118, ZC702, ZC706 and ZCU102 download the BSP from the 
-     [Xilinx downloads] page
+   * For all Xilinx evaluation boards, download the BSP from the [Xilinx downloads] page
    * For PicoZed and UltraZed-EV download the BSP from the [Avnet downloads] page
    * For the ZedBoard, we use the ZC702 BSP which can be downloaded from the [Xilinx downloads] page
 

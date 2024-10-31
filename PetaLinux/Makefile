@@ -1,4 +1,4 @@
-# Opsero Electronic Design Inc. 2023
+# Opsero Electronic Design Inc. 2024
 #
 # This Makefile can be used to build the PetaLinux projects.
 
@@ -12,24 +12,25 @@ TARGET ?= none
 JOBS ?= 8
 
 # valid targets (template name, flash size, flash interface)
+# UPDATER START
 ac701_target := microblaze 32 SPIx4 ports-0123
 kc705_hpc_target := microblaze 128 BPIx16 ports-0123
 kc705_lpc_target := microblaze 128 BPIx16 ports-0123
-kc705_lpc_hpc_target := microblaze 128 BPIx16 ports-0123
-kcu105_dual_target := microblaze 32 SPIx4 ports-01-34567
+kc705_lpc_hpc_target := microblaze 128 BPIx16 ports-01234567
 kcu105_hpc_target := microblaze 32 SPIx4 ports-0123
 kcu105_lpc_target := microblaze 32 SPIx4 ports-01-3
+kcu105_dual_target := microblaze 32 SPIx4 ports-01-34567
 pz_7015_target := zynq 0 0 ports-0123
 pz_7020_target := zynq 0 0 ports-0123
 pz_7030_target := zynq 0 0 ports-0123
-uzev_target := zynqMP 0 0 ports-0123
-vcu118_target := microblaze 128 SPIx4 ports-0123
 zc702_lpc1_target := zynq 0 0 ports-0123
 zc702_lpc2_target := zynq 0 0 ports-0123
 zc706_lpc_target := zynq 0 0 ports-0123
+zedboard_target := zynq 0 0 ports-0123
+uzev_target := zynqMP 0 0 ports-0123
 zcu102_hpc0_target := zynqMP 0 0 ports-0123
 zcu102_hpc1_target := zynqMP 0 0 ports-01--
-zedboard_target := zynq 0 0 ports-0123
+# UPDATER END
 
 TARGET_LIST := $(sort $(patsubst %_target,%,$(filter %_target,$(.VARIABLES))))
 
@@ -86,14 +87,22 @@ ifeq ($(call get_template_name,$(TARGET)), microblaze)
 	SSTATE_ARCH = microblaze
 	BUILD_PRODUCTS = $(PETL_FSBOOT_ELF) $(PETL_UBOOT_ELF) $(PETL_DTB)
 	PKG_PRODUCTS = $(PETL_BOOT_MCS)
+	PKG_CMD = petalinux-package boot --force --fpga $(VIV_BIT) --u-boot --kernel --flash-size $(call get_flash_size,$(TARGET)) --flash-intf $(call get_flash_intf,$(TARGET)) --format MCS
 else ifeq ($(call get_template_name,$(TARGET)), zynq)
 	SSTATE_ARCH = arm
 	BUILD_PRODUCTS = $(PETL_ZYNQ_FSBL_ELF) $(PETL_DTB)
 	PKG_PRODUCTS = $(PETL_BOOT_BIN)
+	PKG_CMD = petalinux-package boot --fsbl ./images/linux/zynq_fsbl.elf --fpga $(VIV_BIT) --u-boot
 else ifeq ($(call get_template_name,$(TARGET)), zynqMP)
 	SSTATE_ARCH = arch64
 	BUILD_PRODUCTS = $(PETL_BL31_ELF) $(PETL_PMUFW_ELF) $(PETL_ZYNQMP_FSBL_ELF) $(PETL_DTB)
 	PKG_PRODUCTS = $(PETL_BOOT_BIN)
+	PKG_CMD = petalinux-package boot --fsbl ./images/linux/zynqmp_fsbl.elf --fpga $(VIV_BIT) --u-boot
+else ifeq ($(call get_template_name,$(TARGET)), versal)
+	SSTATE_ARCH = arch64
+	BUILD_PRODUCTS = $(PETL_BL31_ELF) $(PETL_DTB)
+	PKG_PRODUCTS = $(PETL_BOOT_BIN)
+	PKG_CMD = petalinux-package boot --plm --psmfw --u-boot --dtb
 endif
 
 ifneq ($(SSTATE_PATH),)
@@ -146,34 +155,12 @@ petalinux: check_target
 
 petalinux_locked: package
 
-# Package rule for microblaze designs
-ifeq ($(call get_template_name,$(TARGET)), microblaze)
 package: $(PKG_PRODUCTS)
 $(PKG_PRODUCTS): $(BUILD_PRODUCTS)
 	@echo 'Packaging PetaLinux project for $(TARGET)'
-	cd $(TARGET) && petalinux-package --boot --force --fpga $(VIV_BIT) --u-boot --kernel --flash-size $(call get_flash_size,$(TARGET)) --flash-intf $(call get_flash_intf,$(TARGET))
+	cd $(TARGET) && $(PKG_CMD)
 	
-# Package rule for zynq designs
-else ifeq ($(call get_template_name,$(TARGET)), zynq)
-package: $(PKG_PRODUCTS)
-$(PKG_PRODUCTS): $(BUILD_PRODUCTS)
-	@echo 'Packaging PetaLinux project for $(TARGET)'
-	cd $(TARGET) && petalinux-package --boot --fsbl ./images/linux/zynq_fsbl.elf --fpga $(VIV_BIT) --u-boot
-	
-# Package rule for zynqMP designs
-else ifeq ($(call get_template_name,$(TARGET)), zynqMP)
-package: $(PKG_PRODUCTS)
-$(PKG_PRODUCTS): $(BUILD_PRODUCTS)
-	@echo 'Packaging PetaLinux project for $(TARGET)'
-	cd $(TARGET) && petalinux-package --boot --fsbl ./images/linux/zynqmp_fsbl.elf --fpga $(VIV_BIT) --u-boot
-	
-endif
-
-PETL_BUILD_DEPS = $(PETL_FSBOOT_ELF) $(PETL_UBOOT_ELF) $(PETL_DTB) \
-                  $(PETL_ZYNQ_FSBL_ELF) \
-                  $(PETL_BL31_ELF) $(PETL_PMUFW_ELF) $(PETL_ZYNQMP_FSBL_ELF)
-
-$(PETL_BUILD_DEPS): $(PETL_CFG_DONE)
+$(BUILD_PRODUCTS): $(PETL_CFG_DONE)
 	cd $(TARGET) && petalinux-build
 
 $(PETL_CFG_DONE): | $(PETL_COMP_DIR)
