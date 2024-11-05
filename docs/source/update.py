@@ -24,6 +24,8 @@ def load_json():
 def create_tables(data):
     # Emoji dict
     to_emoji = {True: ":white_check_mark:", False: ":x:"}
+    # License dict
+    to_edition = {True: "Enterprise", False: "Standard :free:"}
     # Determine which groups actually have designs
     used_groups = []
     for group in data['groups']:
@@ -39,7 +41,7 @@ def create_tables(data):
     for group in used_groups:
         tables.append('### {} designs'.format(group['name']))
         tables.append('')
-        tables.append('| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | License<br> required |')
+        tables.append('| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |')
         tables.append('|-----------------------|--------------------|-------------|-------------|-------|-------|-------|')
         for design in data['designs']:
             if not design['publish']:
@@ -53,7 +55,7 @@ def create_tables(data):
                 cols.append('{0}'.format(design['connector']).ljust(11))
                 cols.append('{0}'.format(to_emoji[design['baremetal']]).ljust(5))
                 cols.append('{0}'.format(to_emoji[design['petalinux']]).ljust(5))
-                cols.append('{0}'.format(design['license']).ljust(5))
+                cols.append('{0}'.format(to_edition[design['license']]).ljust(5))
                 tables.append('| ' + ' | '.join(cols) + ' |')
                 links[design['board']] = design['link']
         tables.append('')
@@ -64,6 +66,8 @@ def create_tables(data):
 
 # Update the README.md file target design tables
 def update_readme(file_path,data):
+    # Create the tables from the data
+    tables = create_tables(data)
     # Read the content of the file
     with open(file_path, 'r') as infile:
         lines = infile.readlines()
@@ -77,7 +81,6 @@ def update_readme(file_path,data):
                 # Write the start tag to the file
                 outfile.write(line)
                 # Write the tables
-                tables = create_tables(data)
                 for l in tables:
                     outfile.write("{}\n".format(l))
                 inside_updater = True

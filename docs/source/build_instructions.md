@@ -35,13 +35,19 @@ the FMC connector on which to connect the mezzanine card.
     {% if designs_in_group | length > 0 %}
 ### {{ group.name }} designs
 
-| Target board        | Target design     | Ports   | FMC Slot    | Standalone<br> Echo Server | PetaLinux | License<br> required |
+| Target board        | Target design     | Ports   | FMC Slot    | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
 |---------------------|-------------------|---------|-------------|-----|-----|-----|
-{% for design in data.designs %}{% if design.group == group.label and design.publish %}| [{{ design.board }}]({{ design.link }}) | `{{ design.label }}` | {{ design.lanes | length }}x | {{ design.connector }} | {% if design.baremetal %} ✅ {% else %} ❌ {% endif %} | {% if design.petalinux %} ✅ {% else %} ❌ {% endif %} | {{ design.license }} |
+{% for design in data.designs %}{% if design.group == group.label and design.publish %}| [{{ design.board }}]({{ design.link }}) | `{{ design.label }}` | {{ design.lanes | length }}x | {{ design.connector }} | {% if design.baremetal %} ✅ {% else %} ❌ {% endif %} | {% if design.petalinux %} ✅ {% else %} ❌ {% endif %} | {{ "Enterprise" if design.license else "Standard 🆓" }} |
 {% endif %}{% endfor %}
 {% endif %}
 {% endfor %}
 
+Notes:
+
+1. The Vivado Edition column indicates which designs are supported by the Vivado *Standard* Edition, the
+   FREE edition which can be used without a license. Vivado *Enterprise* Edition requires
+   a license however a 30-day evaluation license is available from the AMD Xilinx Licensing site.
+   
 ## Windows users
 
 Windows users will be able to build the Vivado projects and compile the standalone applications,

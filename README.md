@@ -40,43 +40,43 @@ require a license to generate a bitstream with the AMD Xilinx tools.
 <!-- updater start -->
 ### FPGA designs
 
-| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | License<br> required |
+| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
 |-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [AC701]               | `ac701`            | 4x          | HPC         | :white_check_mark: | :white_check_mark: | False |
-| [KC705]               | `kc705_hpc`        | 4x          | HPC         | :white_check_mark: | :white_check_mark: | True  |
-| [KC705]               | `kc705_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | True  |
-| [KC705]               | `kc705_lpc_hpc`    | 8x          | LPC & HPC   | :white_check_mark: | :white_check_mark: | True  |
-| [VC707]               | `vc707_hpc1`       | 4x          | HPC1        | :white_check_mark: | :x:   | True  |
-| [VC707]               | `vc707_hpc2`       | 4x          | HPC2        | :white_check_mark: | :x:   | True  |
-| [VC707]               | `vc707_hpc2_hpc1`  | 8x          | HPC2 & HPC1 | :white_check_mark: | :x:   | True  |
-| [VC709]               | `vc709`            | 4x          | HPC         | :white_check_mark: | :x:   | True  |
-| [KCU105]              | `kcu105_hpc`       | 4x          | HPC         | :white_check_mark: | :white_check_mark: | True  |
-| [KCU105]              | `kcu105_lpc`       | 3x          | LPC         | :white_check_mark: | :white_check_mark: | True  |
-| [KCU105]              | `kcu105_dual`      | 7x          | LPC & HPC   | :white_check_mark: | :white_check_mark: | True  |
-| [VCU108]              | `vcu108_hpc0`      | 4x          | HPC0        | :white_check_mark: | :x:   | True  |
-| [VCU108]              | `vcu108_hpc1`      | 4x          | HPC1        | :white_check_mark: | :x:   | True  |
-| [VCU118]              | `vcu118`           | 4x          | FMCP        | :white_check_mark: | :x:   | True  |
+| [AC701]               | `ac701`            | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [KC705]               | `kc705_hpc`        | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Enterprise |
+| [KC705]               | `kc705_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Enterprise |
+| [KC705]               | `kc705_lpc_hpc`    | 8x          | LPC & HPC   | :white_check_mark: | :white_check_mark: | Enterprise |
+| [VC707]               | `vc707_hpc1`       | 4x          | HPC1        | :white_check_mark: | :x:   | Enterprise |
+| [VC707]               | `vc707_hpc2`       | 4x          | HPC2        | :white_check_mark: | :x:   | Enterprise |
+| [VC707]               | `vc707_hpc2_hpc1`  | 8x          | HPC2 & HPC1 | :white_check_mark: | :x:   | Enterprise |
+| [VC709]               | `vc709`            | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
+| [KCU105]              | `kcu105_hpc`       | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Enterprise |
+| [KCU105]              | `kcu105_lpc`       | 3x          | LPC         | :white_check_mark: | :white_check_mark: | Enterprise |
+| [KCU105]              | `kcu105_dual`      | 7x          | LPC & HPC   | :white_check_mark: | :white_check_mark: | Enterprise |
+| [VCU108]              | `vcu108_hpc0`      | 4x          | HPC0        | :white_check_mark: | :x:   | Enterprise |
+| [VCU108]              | `vcu108_hpc1`      | 4x          | HPC1        | :white_check_mark: | :x:   | Enterprise |
+| [VCU118]              | `vcu118`           | 4x          | FMCP        | :white_check_mark: | :x:   | Enterprise |
 
 ### Zynq-7000 designs
 
-| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | License<br> required |
+| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
 |-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [PicoZed 7015]        | `pz_7015`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | False |
-| [PicoZed 7020]        | `pz_7020`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | False |
-| [PicoZed 7030]        | `pz_7030`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | False |
-| [ZC702]               | `zc702_lpc1`       | 4x          | LPC1        | :white_check_mark: | :white_check_mark: | False |
-| [ZC702]               | `zc702_lpc2`       | 4x          | LPC2        | :white_check_mark: | :white_check_mark: | False |
-| [ZC702]               | `zc702_lpc2_lpc1`  | 8x          | LPC2 & LPC1 | :white_check_mark: | :x:   | False |
-| [ZC706]               | `zc706_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | True  |
-| [ZedBoard]            | `zedboard`         | 4x          | LPC         | :white_check_mark: | :white_check_mark: | False |
+| [PicoZed 7015]        | `pz_7015`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [PicoZed 7020]        | `pz_7020`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [PicoZed 7030]        | `pz_7030`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZC702]               | `zc702_lpc1`       | 4x          | LPC1        | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZC702]               | `zc702_lpc2`       | 4x          | LPC2        | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZC702]               | `zc702_lpc2_lpc1`  | 8x          | LPC2 & LPC1 | :white_check_mark: | :x:   | Standard :free: |
+| [ZC706]               | `zc706_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Enterprise |
+| [ZedBoard]            | `zedboard`         | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
 
 ### Zynq UltraScale+ designs
 
-| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | License<br> required |
+| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
 |-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [UltraZed-EV Carrier] | `uzev`             | 4x          | HPC         | :white_check_mark: | :white_check_mark: | False |
-| [ZCU102]              | `zcu102_hpc0`      | 4x          | HPC0        | :white_check_mark: | :white_check_mark: | True  |
-| [ZCU102]              | `zcu102_hpc1`      | 2x          | HPC1        | :white_check_mark: | :white_check_mark: | True  |
+| [UltraZed-EV Carrier] | `uzev`             | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZCU102]              | `zcu102_hpc0`      | 4x          | HPC0        | :white_check_mark: | :white_check_mark: | Enterprise |
+| [ZCU102]              | `zcu102_hpc1`      | 2x          | HPC1        | :white_check_mark: | :white_check_mark: | Enterprise |
 
 [AC701]: https://www.xilinx.com/ac701
 [KC705]: https://www.xilinx.com/kc705

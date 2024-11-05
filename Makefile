@@ -1,4 +1,4 @@
-# Opsero Electronic Design Inc. 2023
+# Opsero Electronic Design Inc. 2024
 #
 # This Makefile can be used to build all projects and gather the boot images.
 
