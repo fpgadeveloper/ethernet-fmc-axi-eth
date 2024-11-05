@@ -2,13 +2,15 @@
 
 ## Description
 
-This project demonstrates the use of the Opsero [Quad Gigabit Ethernet FMC](https://ethernetfmc.com "Ethernet FMC") and it supports
+This project demonstrates the use of the Opsero [Ethernet FMC] and [Robust Ethernet FMC] and it supports
 several FPGA/MPSoC development boards. The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ![Block diagram](docs/source/images/axi-eth-block-diagram.png "AXI Ethernet block diagram")
 
 Important links:
 
+* Datasheet of the [Ethernet FMC]
+* Datasheet of the [Robust Ethernet FMC]
 * The user guide for these reference designs is hosted here: [AXI Ethernet for Ethernet FMC docs](https://axieth.ethernetfmc.com "AXI Ethernet for Ethernet FMC docs")
 * To report a bug: [Report an issue](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/issues "Report an issue").
 * For technical support: [Contact Opsero](https://opsero.com/contact-us "Contact Opsero").
@@ -34,7 +36,7 @@ In order to test this design on hardware, you will need the following:
 
 This repo contains several designs that target various supported development boards and their
 FMC connectors. The table below lists the target design name, the number of ports supported by the design and 
-the FMC connector on which to connect the Ethernet FMC Max. Some of the target designs
+the FMC connector on which to connect the mezzanine card. Some of the target designs
 require a license to generate a bitstream with the AMD Xilinx tools.
 
 <!-- updater start -->
@@ -42,17 +44,17 @@ require a license to generate a bitstream with the AMD Xilinx tools.
 
 | Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
 |-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [AC701]               | `ac701`            | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [KC705]               | `kc705_hpc`        | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Enterprise |
-| [KC705]               | `kc705_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Enterprise |
-| [KC705]               | `kc705_lpc_hpc`    | 8x          | LPC & HPC   | :white_check_mark: | :white_check_mark: | Enterprise |
+| [AC701]               | `ac701`            | 4x          | HPC         | :white_check_mark: | :x:   | Standard :free: |
+| [KC705]               | `kc705_hpc`        | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
+| [KC705]               | `kc705_lpc`        | 4x          | LPC         | :white_check_mark: | :x:   | Enterprise |
+| [KC705]               | `kc705_lpc_hpc`    | 8x          | LPC & HPC   | :white_check_mark: | :x:   | Enterprise |
 | [VC707]               | `vc707_hpc1`       | 4x          | HPC1        | :white_check_mark: | :x:   | Enterprise |
 | [VC707]               | `vc707_hpc2`       | 4x          | HPC2        | :white_check_mark: | :x:   | Enterprise |
 | [VC707]               | `vc707_hpc2_hpc1`  | 8x          | HPC2 & HPC1 | :white_check_mark: | :x:   | Enterprise |
 | [VC709]               | `vc709`            | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
-| [KCU105]              | `kcu105_hpc`       | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Enterprise |
-| [KCU105]              | `kcu105_lpc`       | 3x          | LPC         | :white_check_mark: | :white_check_mark: | Enterprise |
-| [KCU105]              | `kcu105_dual`      | 7x          | LPC & HPC   | :white_check_mark: | :white_check_mark: | Enterprise |
+| [KCU105]              | `kcu105_hpc`       | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
+| [KCU105]              | `kcu105_lpc`       | 3x          | LPC         | :white_check_mark: | :x:   | Enterprise |
+| [KCU105]              | `kcu105_dual`      | 7x          | LPC & HPC   | :white_check_mark: | :x:   | Enterprise |
 | [VCU108]              | `vcu108_hpc0`      | 4x          | HPC0        | :white_check_mark: | :x:   | Enterprise |
 | [VCU108]              | `vcu108_hpc1`      | 4x          | HPC1        | :white_check_mark: | :x:   | Enterprise |
 | [VCU118]              | `vcu118`           | 4x          | FMCP        | :white_check_mark: | :x:   | Enterprise |
@@ -95,6 +97,12 @@ require a license to generate a bitstream with the AMD Xilinx tools.
 [ZCU102]: https://www.xilinx.com/zcu102
 <!-- updater end -->
 
+Notes:
+
+1. The Vivado Edition column indicates which designs are supported by the Vivado *Standard* Edition, the
+   FREE edition which can be used without a license. Vivado *Enterprise* Edition requires
+   a license however a 30-day evaluation license is available from the AMD Xilinx Licensing site.
+
 ## Software
 
 These reference designs can be driven by either a standalone application or within a PetaLinux environment. 
@@ -124,14 +132,14 @@ To build the standalone lwIP echo server application (Vivado project and Vitis w
 
 ```
 cd ethernet-fmc-axi-eth/Vitis
-make workspace TARGET=zcu106_hpc0
+make workspace TARGET=zedboard
 ```
 
 To build the PetaLinux image (Vivado project and PetaLinux):
 
 ```
 cd ethernet-fmc-axi-eth/PetaLinux
-make petalinux TARGET=zcu106_hpc0
+make petalinux TARGET=zedboard
 ```
 
 Replace the target label in these commands with the one corresponding to the target design of your

@@ -13,13 +13,6 @@ JOBS ?= 8
 
 # valid targets (template name, flash size, flash interface)
 # UPDATER START
-ac701_target := microblaze 32 SPIx4 ports-0123
-kc705_hpc_target := microblaze 128 BPIx16 ports-0123
-kc705_lpc_target := microblaze 128 BPIx16 ports-0123
-kc705_lpc_hpc_target := microblaze 128 BPIx16 ports-01234567
-kcu105_hpc_target := microblaze 32 SPIx4 ports-0123
-kcu105_lpc_target := microblaze 32 SPIx4 ports-01-3
-kcu105_dual_target := microblaze 32 SPIx4 ports-01-34567
 pz_7015_target := zynq 0 0 ports-0123
 pz_7020_target := zynq 0 0 ports-0123
 pz_7030_target := zynq 0 0 ports-0123

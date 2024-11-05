@@ -19,5 +19,5 @@ to fail for the case when the device is Zynq and FIFO is used.
 is because the interrupt controller for ZynqMP is `psu_acpu_gic`, but this is not checked for, hence this case
 is treated as a non-Zynq case.
 
-Both issues are corrected by the sources in this repo. Location of the original TCL script for Vitis 2022.1:
-`\Xilinx\Vitis\2022.1\data\embeddedsw\XilinxProcessorIPLib\drivers\axiethernet_v5_14\data\axiethernet.tcl`
+Both issues are corrected by the sources in this repo. Location of the original TCL script for Vitis 2024.1:
+`\Xilinx\Vitis\2024.1\data\embeddedsw\XilinxProcessorIPLib\drivers\axiethernet_v5_17\data\axiethernet.tcl`

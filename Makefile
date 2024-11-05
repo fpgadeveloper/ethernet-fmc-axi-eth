@@ -13,17 +13,17 @@ JOBS ?= 8
 
 # valid targets (template name, both (plnx+baremetal) or baremetal_only)
 # UPDATER START
-ac701_target := microblaze both
-kc705_hpc_target := microblaze both
-kc705_lpc_target := microblaze both
-kc705_lpc_hpc_target := microblaze both
+ac701_target := microblaze baremetal_only
+kc705_hpc_target := microblaze baremetal_only
+kc705_lpc_target := microblaze baremetal_only
+kc705_lpc_hpc_target := microblaze baremetal_only
 vc707_hpc1_target := microblaze baremetal_only
 vc707_hpc2_target := microblaze baremetal_only
 vc707_hpc2_hpc1_target := microblaze baremetal_only
 vc709_target := microblaze baremetal_only
-kcu105_hpc_target := microblaze both
-kcu105_lpc_target := microblaze both
-kcu105_dual_target := microblaze both
+kcu105_hpc_target := microblaze baremetal_only
+kcu105_lpc_target := microblaze baremetal_only
+kcu105_dual_target := microblaze baremetal_only
 vcu108_hpc0_target := microblaze baremetal_only
 vcu108_hpc1_target := microblaze baremetal_only
 vcu118_target := microblaze baremetal_only
