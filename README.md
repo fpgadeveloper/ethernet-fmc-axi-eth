@@ -2,7 +2,7 @@
 
 ## Description
 
-This project demonstrates the use of the Opsero [Ethernet FMC] and [Robust Ethernet FMC] and it supports
+This project demonstrates the use of the Opsero [Ethernet FMC] (OP031) and [Robust Ethernet FMC] (OP041) and it supports
 several FPGA/MPSoC development boards. The design contains 4 AXI Ethernet blocks configured with DMAs.
 
 ![Block diagram](docs/source/images/axi-eth-block-diagram.png "AXI Ethernet block diagram")
