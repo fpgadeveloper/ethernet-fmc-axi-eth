@@ -358,27 +358,6 @@ PING 192.168.2.10 (192.168.2.10): 56 data bytes
 64 bytes from 192.168.2.10: seq=3 ttl=128 time=0.356 ms
 ```
 
-## Known Issues
-
-### AXI Ethernet issue on Zynq designs 2022.1
-
-There is an issue in the PetaLinux 2022.1 release that affects the **AXI Ethernet** connected ports on
-**Zynq** based designs. On these ports, it seems to be necessary to use the following procedure to bring 
-up a port. Note that the interface and IP address were chosen as examples, but this procedure applies to 
-all AXI Ethernet connected ports (eth0, eth1, eth2 and eth3) on the Zynq based designs (MicroZed, PicoZed, 
-ZedBoard, ZC702 and ZC706).
-
-```
-sudo ifconfig eth0 up
-sudo ifconfig eth0 down
-sudo ifconfig eth0 192.168.1.10 up
-```
-
-In earlier releases, it was only necessary to run the last command to bring up a port. This issue
-does not affect the Zynq Ultrascale+ based designs. This issue does not seem to affect the stand-alone
-echo server operation. We have not yet determined the cause of this issue
-but if you have any information, please let us know.
-
 [Ethernet FMC]: https://ethernetfmc.com/docs/ethernet-fmc/overview/
 [supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
 

@@ -9,8 +9,7 @@ several FPGA/MPSoC development boards. The design contains 4 AXI Ethernet blocks
 
 Important links:
 
-* Datasheet of the [Ethernet FMC]
-* Datasheet of the [Robust Ethernet FMC]
+* Datasheets of the [Ethernet FMC] and [Robust Ethernet FMC]
 * The user guide for these reference designs is hosted here: [AXI Ethernet for Ethernet FMC docs](https://axieth.ethernetfmc.com "AXI Ethernet for Ethernet FMC docs")
 * To report a bug: [Report an issue](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/issues "Report an issue").
 * For technical support: [Contact Opsero](https://opsero.com/contact-us "Contact Opsero").
