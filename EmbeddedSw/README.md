@@ -8,7 +8,7 @@ PHYs on the Ethernet FMC.
 
 A function is added to `xaxiemacif_physpeed.c` for the initialization of the Marvell 88E1510 Ethernet PHY
 
-### AXI Ethernet driver modifications (applies to versions 5.6-5.14)
+### AXI Ethernet driver modifications (applies to versions 5.6-5.17)
 
 For designs using the AXI FIFO (instead of AXI DMA), the `axiethernet.tcl` script requires correcting for the
 following issues:

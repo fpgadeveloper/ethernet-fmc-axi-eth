@@ -390,7 +390,7 @@ proc append_to_outermost_curly_brace {file_content new_content} {
 }
 
 # Function to generate boot.bif and BOOT.BIN files for a Versal device
-proc versal_boot_files {workspace_dir xsa_file vivado_path vivado_folder} {
+proc versal_boot_files {workspace_dir xsa_file vivado_path vivado_folder app_name} {
   set xsa_filename [file tail $xsa_file]
   set wrapper_name [file rootname $xsa_filename]
   set workspace_boot_path "${workspace_dir}/boot"
@@ -415,7 +415,7 @@ proc versal_boot_files {workspace_dir xsa_file vivado_path vivado_folder} {
   partition
   {
    core = a72-0
-   file = ${workspace_dir}/echo_server/Debug/echo_server.elf
+   file = ${workspace_dir}/${app_name}/Debug/${app_name}.elf
   }
  }"
   set prepend_path "${vivado_path}/${vivado_folder}.runs/impl_1/"
@@ -572,7 +572,7 @@ proc create_vitis_ws {workspace_dir target target_dict vivado_dir app_name suppo
   # For Versal designs
   } elseif {[str_contains $proc_instance "psv_cortexa72_0"]} {
     print_sysproj $sysproj_name "Creating the BOOT.BIN file and copying to the ./boot/${target} directory."
-    versal_boot_files $workspace_dir $xsa_file $vivado_path $vivado_folder
+    versal_boot_files $workspace_dir $xsa_file $vivado_path $vivado_folder $app_name
     set bootbin_file "${workspace_dir}/boot/BOOT.BIN"
     if {[file exists $bootbin_file] == 1} {
       file copy -force $bootbin_file "./boot/${target}"
