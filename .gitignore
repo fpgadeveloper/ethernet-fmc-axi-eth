@@ -1,5 +1,6 @@
 RemoteSystemsTempFiles/
 Vivado/.Xil/
+Vivado/logs/
 *.log
 *.jou
 Vitis/*_workspace/

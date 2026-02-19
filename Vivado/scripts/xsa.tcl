@@ -1,4 +1,4 @@
-# Opsero Electronic Design Inc. Copyright 2024
+# Opsero Electronic Design Inc. Copyright 2025
 #
 # This script runs synthesis, implementation and exports the hardware for a project.
 #
@@ -16,8 +16,8 @@
 #*****************************************************************************************
 
 # Check the version of Vivado used
-set version_required "2024.1"
-set ver [lindex [split $::env(XILINX_VIVADO) /] end]
+set version_required "2025.2"
+set ver [lindex [split $::env(XILINX_VIVADO) /] end-1]
 if {![string equal $ver $version_required]} {
   puts "###############################"
   puts "### Failed to build project ###"

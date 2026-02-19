@@ -1,4 +1,4 @@
-# Opsero Electronic Design Inc. 2024
+# Opsero Electronic Design Inc. 2025
 #
 # This Makefile can be used to build all projects and gather the boot images.
 
@@ -70,8 +70,8 @@ VIT_BOOT_TARG = $(VIT_BOOT)/$(TARGET)
 # outputs
 BOOTIMAGE_DIR = $(ROOT_DIR)/bootimages
 TEMPBOOT_DIR = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)
-PETL_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_petalinux-2024-1.zip
-BARE_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_standalone-2024-1.zip
+PETL_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_petalinux-2025-2.zip
+BARE_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_standalone-2025-2.zip
 BOOTIMAGE_LOCK = $(ROOT_DIR)/.$(TARGET).lock
 
 # These macros return values from the valid target lists defined above
@@ -85,7 +85,7 @@ endef
 
 # The name of the boot image of the baremetal app depends on the device
 ifeq ($(call get_template_name,$(TARGET)), microblaze)
-	VIT_BOOT_FILE = $(VIT_BOOT_TARG)/$(TARGET).bit
+	VIT_BOOT_FILE = $(VIT_BOOT_TARG)/$(BD_NAME).bit
 else ifeq ($(call get_template_name,$(TARGET)), zynq)
 	VIT_BOOT_FILE = $(VIT_BOOT_TARG)/BOOT.BIN
 else ifeq ($(call get_template_name,$(TARGET)), zynqMP)
@@ -215,7 +215,7 @@ $(BARE_ZIP): $(VIT_BOOT_FILE)
 	cd $(VIT_BOOT_TARG) && zip -r $(BARE_ZIP) .
 
 $(VIT_BOOT_FILE):
-	$(MAKE) --no-print-directory -C $(VIT_ROOT) workspace TARGET=$(TARGET) JOBS=$(JOBS)
+	$(MAKE) --no-print-directory -C $(VIT_ROOT) bootfile TARGET=$(TARGET) JOBS=$(JOBS)
 	@if [ ! -e $@ ]; then echo "Error: $@ was not created for $(TARGET)."; exit 1; fi
 
 .PHONY: clean
