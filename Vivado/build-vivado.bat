@@ -1,5 +1,5 @@
 @ECHO OFF
-SET vivado=C:\Xilinx\2025.2\Vivado\bin\vivado.bat
+SET vivado=C:\AMDDesignTools\2025.2\Vivado\bin\vivado.bat
 if exist %vivado% (
   %vivado% -mode batch -source scripts\build.tcl -notrace
 ) else (
