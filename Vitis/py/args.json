@@ -1,0 +1,23 @@
+{
+	"bd_name": "axieth",
+	"app_name": "echo_server",
+	"app_template": "lwip_echo_server",
+	"bsp_libs": [
+		{
+			"name": "lwip220",
+			"config": {
+				"lwip220_dhcp": "true",
+				"lwip220_lwip_dhcp_does_acd_check": "true",
+				"lwip220_pbuf_pool_size": "2048"
+			}
+		},
+		{
+			"name": "xiltimer",
+			"config": {
+				"XILTIMER_en_interval_timer": "true"
+			}
+		}
+	],
+	"src": {},
+	"combine_bit_elf": false
+}
