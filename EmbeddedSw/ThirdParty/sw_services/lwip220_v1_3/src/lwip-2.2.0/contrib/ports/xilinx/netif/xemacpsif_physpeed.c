@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2010 - 2022 Xilinx, Inc.
- * Copyright (C) 2022 - 2024 Advanced Micro Devices, Inc.
+ * Copyright (C) 2022 - 2025 Advanced Micro Devices, Inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -117,6 +117,7 @@
 #include "xil_smc.h"
 #endif
 
+#define PHY_BMCR				0x0000
 #define PHY_DETECT_REG  						1
 #define PHY_IDENTIFIER_1_REG					2
 #define PHY_IDENTIFIER_2_REG					3
@@ -139,12 +140,27 @@
 #define PHY_RGMIICTL	0x32
 #define PHY_STS			0x11
 #define PHY_TI_CR		0x10
+#define PHY_TI_CTRL		0x1F
 #define PHY_TI_CFG4		0x31
 
 #define PHY_REGCR_ADDR	0x001F
 #define PHY_REGCR_DATA	0x401F
 #define PHY_TI_CRVAL	0x5048
 #define PHY_TI_CFG4RESVDBIT7	0x80
+#define PHY_TI_CFG4RESVDBIT8		0x100
+#define PHY_TI_CFG4_AUTONEG_TIMER	0x60
+
+#define PHY_TI_CTRL_SW_RESTART		0x4000
+#define PHY_TI_BMCR_SW_RESET		0x8000
+
+#define PHY_TI_PHYSTS_SPEED_SELECTION	0xC000
+#define PHY_TI_PHYSTS_1000MBPS		0x8000
+#define PHY_TI_PHYSTS_100MBPS		0x4000
+#define SPEED_1000MBPS			1000
+#define SPEED_100MBPS			100
+#define SPEED_10MBPS			10
+
+#define TI_PHY_CR_SGMII_EN		0x0800
 
 /* Frequency setting */
 #define SLCR_LOCK_ADDR			(XPS_SYS_CTRL_BASEADDR + 0x4)
@@ -167,11 +183,46 @@ u32_t phymapemac1[32];
 #if defined (CONFIG_LINKSPEED_AUTODETECT)
 static u32_t get_IEEE_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr);
 #endif
-static void SetUpSLCRDivisors(UINTPTR mac_baseaddr, s32_t speed);
+static void SetUpSLCRDivisors(XEmacPs *xemacpsp __attribute__((unused)),
+                              s32_t speed __attribute__((unused)));
+
 #if defined (CONFIG_LINKSPEED1000) || defined (CONFIG_LINKSPEED100) \
 	|| defined (CONFIG_LINKSPEED10)
 static u32_t configure_IEEE_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr, u32_t speed);
 #endif
+
+static void phy_identify(XEmacPs *xemacpsp, u32_t phy_addr, u32_t emacnum)
+{
+	u16_t phy_reg;
+	u16_t phy_id;
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_DETECT_REG,
+			&phy_reg);
+	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_1_REG,
+			&phy_id);
+
+	if (((phy_reg != 0xFFFF) &&
+	     ((phy_reg & PHY_DETECT_MASK) == PHY_DETECT_MASK)) ||
+	    (phy_id == PHY_XILINX_PCS_PMA_ID1)) {
+		/* Found a valid PHY address */
+		LWIP_DEBUGF(NETIF_DEBUG, ("XEmacPs detect_phy: PHY detected at address %d.\r\n",
+					  phy_addr));
+		if (emacnum == 0) {
+			phymapemac0[phy_addr] = TRUE;
+		} else {
+			phymapemac1[phy_addr] = TRUE;
+		}
+
+		XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_1_REG,
+				&phy_reg);
+		if ((phy_reg != PHY_MARVELL_IDENTIFIER) &&
+		    (phy_reg != PHY_TI_IDENTIFIER) &&
+		    (phy_reg != PHY_REALTEK_IDENTIFIER) &&
+		    (phy_reg != PHY_ADI_IDENTIFIER)) {
+			xil_printf("WARNING: Not a Marvell or TI or Realtek or Xilinx PCS PMA Ethernet PHY or ADI Ethernet PHY. Please verify the initialization sequence\r\n");
+		}
+	}
+}
 
 static u32_t get_Xilinx_pcs_pma_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr)
 {
@@ -276,40 +327,23 @@ static u32_t get_Xilinx_pcs_pma_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr)
 
 void detect_phy(XEmacPs *xemacpsp)
 {
-	u16_t phy_reg;
-	u32_t phy_addr;
+	u32_t phy_addr = 0;
 	u32_t emacnum;
-	u16_t phy_id;
 
 	if (xemacpsp->Config.BaseAddress == XPAR_XEMACPS_0_BASEADDR)
 		emacnum = 0;
 	else
 		emacnum = 1;
-	for (phy_addr = 31; phy_addr > 0; phy_addr--) {
-		XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_DETECT_REG,
-							&phy_reg);
-		XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_1_REG,
-				&phy_id);
 
-		if (((phy_reg != 0xFFFF) &&
-			((phy_reg & PHY_DETECT_MASK) == PHY_DETECT_MASK)) ||
-			(phy_id == PHY_XILINX_PCS_PMA_ID1)) {
-			/* Found a valid PHY address */
-			LWIP_DEBUGF(NETIF_DEBUG, ("XEmacPs detect_phy: PHY detected at address %d.\r\n",
-																	phy_addr));
-			if (emacnum == 0)
-				phymapemac0[phy_addr] = TRUE;
-			else
-				phymapemac1[phy_addr] = TRUE;
+#ifdef SDT
+	phy_addr = xemacpsp->Config.PhyAddr;
+#endif
 
-			XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_1_REG,
-							&phy_reg);
-			if ((phy_reg != PHY_MARVELL_IDENTIFIER) &&
-				(phy_reg != PHY_TI_IDENTIFIER) &&
-				(phy_reg != PHY_REALTEK_IDENTIFIER) &&
-				(phy_reg != PHY_ADI_IDENTIFIER)) {
-				xil_printf("WARNING: Not a Marvell or TI or Realtek or Xilinx PCS PMA Ethernet PHY or ADI Ethernet PHY. Please verify the initialization sequence\r\n");
-			}
+	if (phy_addr != 0) {
+		phy_identify(xemacpsp, phy_addr, emacnum);
+	} else {
+		for (phy_addr = 31; phy_addr > 0; phy_addr--) {
+			phy_identify(xemacpsp, phy_addr, emacnum);
 		}
 	}
 }
@@ -319,7 +353,7 @@ u32_t pcs_setup_emacps (XEmacPs *xemacps)
 {
 	u32_t link_speed;
 
-	SetUpSLCRDivisors(xemacps->Config.BaseAddress,1000);
+	SetUpSLCRDivisors(xemacps,1000);
 	link_speed = 1000;
 	sleep(1);
 	return link_speed;
@@ -345,32 +379,32 @@ u32_t phy_setup_emacps (XEmacPs *xemacpsp, u32_t phy_addr)
 #ifdef  CONFIG_LINKSPEED_AUTODETECT
 	link_speed = get_IEEE_phy_speed(xemacpsp, phy_addr);
 	if (link_speed == 1000) {
-		SetUpSLCRDivisors(xemacpsp->Config.BaseAddress,1000);
+		SetUpSLCRDivisors(xemacpsp,1000);
 		convspeeddupsetting = XEMACPS_GMII2RGMII_SPEED1000_FD;
 	} else if (link_speed == 100) {
-		SetUpSLCRDivisors(xemacpsp->Config.BaseAddress,100);
+		SetUpSLCRDivisors(xemacpsp,100);
 		convspeeddupsetting = XEMACPS_GMII2RGMII_SPEED100_FD;
 	} else if (link_speed != XST_FAILURE){
-		SetUpSLCRDivisors(xemacpsp->Config.BaseAddress,10);
+		SetUpSLCRDivisors(xemacpsp,10);
 		convspeeddupsetting = XEMACPS_GMII2RGMII_SPEED10_FD;
 	} else {
-		xil_printf("Phy setup error \r\n");
+		xil_printf("Phy setup error : link_speed invalid\r\n");
 		return XST_FAILURE;
 	}
 #elif	defined(CONFIG_LINKSPEED1000)
-	SetUpSLCRDivisors(xemacpsp->Config.BaseAddress,1000);
+	SetUpSLCRDivisors(xemacpsp,1000);
 	link_speed = 1000;
 	configure_IEEE_phy_speed(xemacpsp, phy_addr, link_speed);
 	convspeeddupsetting = XEMACPS_GMII2RGMII_SPEED1000_FD;
 	sleep(1);
 #elif	defined(CONFIG_LINKSPEED100)
-	SetUpSLCRDivisors(xemacpsp->Config.BaseAddress,100);
+	SetUpSLCRDivisors(xemacpsp,100);
 	link_speed = 100;
 	configure_IEEE_phy_speed(xemacpsp, phy_addr, link_speed);
 	convspeeddupsetting = XEMACPS_GMII2RGMII_SPEED100_FD;
 	sleep(1);
 #elif	defined(CONFIG_LINKSPEED10)
-	SetUpSLCRDivisors(xemacpsp->Config.BaseAddress,10);
+	SetUpSLCRDivisors(xemacpsp,10);
 	link_speed = 10;
 	configure_IEEE_phy_speed(xemacpsp, phy_addr, link_speed);
 	convspeeddupsetting = XEMACPS_GMII2RGMII_SPEED10_FD;
@@ -380,6 +414,14 @@ u32_t phy_setup_emacps (XEmacPs *xemacpsp, u32_t phy_addr)
 		XEmacPs_PhyWrite(xemacpsp, convphyaddr,
 		XEMACPS_GMII2RGMII_REG_NUM, convspeeddupsetting);
 	}
+
+#ifdef SDT
+	if(xemacpsp->Config.GmiitoRgmiiConvPhyAddr != 0)
+	{
+		XEmacPs_PhyWrite(xemacpsp, xemacpsp->Config.GmiitoRgmiiConvPhyAddr,
+		XEMACPS_GMII2RGMII_REG_NUM, convspeeddupsetting);
+	}
+#endif
 
 	xil_printf("link speed for phy address %d: %d\r\n", phy_addr, link_speed);
 	return link_speed;
@@ -527,6 +569,108 @@ static u32_t get_TI_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr)
 
 	return XST_SUCCESS;
 }
+static u32_t get_TI_phy_speed_sgmii(XEmacPs *xemacpsp, u32_t phy_addr)
+{
+	u16_t control;
+	u16_t status;
+	u16_t status_speed;
+	u32_t timeout_counter = 0;
+	u32_t phyregtemp;
+	u32_t RetStatus;
+
+	xil_printf("Start TI PHY autonegotiation in SGMII Mode \r\n");
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_TI_CTRL, (u16_t *)&phyregtemp);
+	phyregtemp |= PHY_TI_CTRL_SW_RESTART;
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_TI_CTRL, phyregtemp);
+	RetStatus = XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_TI_CTRL, (u16_t *)&phyregtemp);
+	if (RetStatus != XST_SUCCESS) {
+		xil_printf("Error during sw restart\n\r");
+		return XST_FAILURE;
+	}
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_BMCR, (u16_t *)&phyregtemp);
+	phyregtemp |= PHY_TI_BMCR_SW_RESET;
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_BMCR, phyregtemp);
+
+	/* Delay */
+	sleep(1);
+
+	RetStatus = XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_BMCR, (u16_t *)&phyregtemp);
+	if (RetStatus != XST_SUCCESS) {
+		xil_printf("Error during sw reset \n\r");
+		return XST_FAILURE;
+	}
+
+	/* sgmii enable*/
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_TI_CR, PHY_TI_CRVAL | TI_PHY_CR_SGMII_EN);
+	RetStatus = XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_TI_CR, (u16_t *)&phyregtemp);
+	if (RetStatus != XST_SUCCESS) {
+		LWIP_DEBUGF(NETIF_DEBUG, ("Error writing to 0x10 \n\r"));
+		return XST_FAILURE;
+	}
+
+	/* SW workaround for unstable link when RX_CTRL is not STRAP MODE 3 or 4 */
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_REGCR, PHY_REGCR_ADDR);
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_ADDAR, PHY_TI_CFG4);
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_REGCR, PHY_REGCR_DATA);
+	RetStatus = XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_ADDAR, (u16_t *)&phyregtemp);
+	phyregtemp &= ~(PHY_TI_CFG4RESVDBIT7);
+	phyregtemp |= PHY_TI_CFG4RESVDBIT8;
+	phyregtemp &= ~(PHY_TI_CFG4_AUTONEG_TIMER);
+	phyregtemp |= PHY_TI_CFG4_AUTONEG_TIMER;
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_REGCR, PHY_REGCR_ADDR);
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_ADDAR, PHY_TI_CFG4);
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_REGCR, PHY_REGCR_DATA);
+	RetStatus = XEmacPs_PhyWrite(xemacpsp, phy_addr, PHY_ADDAR, phyregtemp);
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, IEEE_AUTONEGO_ADVERTISE_REG, &control);
+	control |= IEEE_ASYMMETRIC_PAUSE_MASK;
+	control |= IEEE_PAUSE_MASK;
+	control |= ADVERTISE_100;
+	control |= ADVERTISE_10;
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, IEEE_AUTONEGO_ADVERTISE_REG, control);
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, IEEE_1000_ADVERTISE_REG_OFFSET,
+					&control);
+	control |= ADVERTISE_1000;
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, IEEE_1000_ADVERTISE_REG_OFFSET,
+					control);
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, IEEE_CONTROL_REG_OFFSET, &control);
+	control |= IEEE_CTRL_AUTONEGOTIATE_ENABLE;
+	control |= IEEE_STAT_AUTONEGOTIATE_RESTART;
+	XEmacPs_PhyWrite(xemacpsp, phy_addr, IEEE_CONTROL_REG_OFFSET, control);
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, IEEE_CONTROL_REG_OFFSET, &control);
+	XEmacPs_PhyRead(xemacpsp, phy_addr, IEEE_STATUS_REG_OFFSET, &status);
+
+	xil_printf("Waiting for PHY to complete autonegotiation.\r\n");
+
+	while ( !(status & IEEE_STAT_AUTONEGOTIATE_COMPLETE) ) {
+		sleep(1);
+		timeout_counter++;
+
+		if (timeout_counter == 5) {
+			xil_printf("Auto negotiation error \r\n");
+			return XST_FAILURE;
+		}
+		XEmacPs_PhyRead(xemacpsp, phy_addr, IEEE_STATUS_REG_OFFSET, &status);
+	}
+	xil_printf("autonegotiation complete \r\n");
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_STS, &status_speed);
+	if ((status_speed & PHY_TI_PHYSTS_SPEED_SELECTION) == PHY_TI_PHYSTS_1000MBPS) {
+		return SPEED_1000MBPS;
+	} else if ((status_speed & PHY_TI_PHYSTS_SPEED_SELECTION) == PHY_TI_PHYSTS_100MBPS) {
+		return SPEED_100MBPS;
+	} else {
+		return SPEED_10MBPS;
+	}
+
+	return XST_SUCCESS;
+}
+
 
 static u32_t get_Marvell_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr)
 {
@@ -838,11 +982,20 @@ static u32_t get_IEEE_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr)
 {
 	u16_t phy_identity;
 	u32_t RetStatus;
+	char *PhyType;
+
+#ifdef SDT
+	PhyType = xemacpsp->Config.PhyType;
+#endif
 
 	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_1_REG,
 					&phy_identity);
 	if (phy_identity == PHY_TI_IDENTIFIER) {
-		RetStatus = get_TI_phy_speed(xemacpsp, phy_addr);
+		if (!strcmp(PhyType, "sgmii")) {
+			RetStatus = get_TI_phy_speed_sgmii(xemacpsp, phy_addr);
+		} else {
+			RetStatus = get_TI_phy_speed(xemacpsp, phy_addr);
+		}
 	} else if (phy_identity == PHY_REALTEK_IDENTIFIER) {
 		RetStatus = get_Realtek_phy_speed(xemacpsp, phy_addr);
 	} else if (phy_identity == PHY_XILINX_PCS_PMA_ID1) {
@@ -948,7 +1101,8 @@ static u32_t configure_IEEE_phy_speed(XEmacPs *xemacpsp, u32_t phy_addr, u32_t s
 }
 #endif
 
-static void SetUpSLCRDivisors(UINTPTR mac_baseaddr, s32_t speed)
+static void SetUpSLCRDivisors(XEmacPs *xemacpsp __attribute__((unused)),
+                              s32_t speed __attribute__((unused)))
 {
 #ifndef SDT
 	volatile UINTPTR slcrBaseAddress;
@@ -960,6 +1114,9 @@ static void SetUpSLCRDivisors(UINTPTR mac_baseaddr, s32_t speed)
 	u32_t CrlApbDiv0 = 0;
 	u32_t CrlApbDiv1 = 0;
 	u32_t CrlApbGemCtrl;
+
+	UINTPTR mac_baseaddr = xemacpsp->Config.BaseAddress;
+
 #if defined (__aarch64__) && (EL1_NONSECURE == 1)
 	u32_t ClkId;
 #endif
@@ -1247,7 +1404,91 @@ static void SetUpSLCRDivisors(UINTPTR mac_baseaddr, s32_t speed)
 		}
 	}
 #else
+
+#if defined(PLATFORM_ZYNQMP) && defined(XCLOCKING)
+	XClockRate SetClockRate = 0;
+	u32_t ClockId;
+
+	ClockId = xemacpsp->Config.RefClk;
+
+	if (speed == 1000)
+	{
+		Xil_ClockSetRate(ClockId, CLOCK_FREQ_1000MBPS, &SetClockRate);
+	}
+	else if (speed == 100)
+	{
+		Xil_ClockSetRate(ClockId, CLOCK_FREQ_100MBPS, &SetClockRate);
+	}
+	else if (speed == 10)
+	{
+		Xil_ClockSetRate(ClockId, CLOCK_FREQ_10MBPS, &SetClockRate);
+	}
+#else
 	xil_printf("Using default Speed from design\r\n");
 #endif
+
+#endif
 	return;
+}
+/*****************************************************************************/
+/**
+* Check if the connected PHY is an external PCS-PMA.
+*
+* This function reads the PHY identifier registers to determine whether the
+* PHY connected to the given address is an external Xilinx PCS-PMA device.
+*
+* @param xemacpsp is a pointer to the Ethernet MAC instance.
+* @param phy_addr is the address of the PHY device.
+*
+* @return
+*   - 1 if the PHY is an external PCS-PMA.
+*   - 0 if the PHY is assumed to be an internal PCS-PMA.
+*
+******************************************************************************/
+int isphy_pcspma_external(XEmacPs *xemacpsp, u32_t phy_addr) {
+	u16 phy_id;
+
+	XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_1_REG, &phy_id);
+	if (phy_id == PHY_XILINX_PCS_PMA_ID1) {
+		XEmacPs_PhyRead(xemacpsp, phy_addr, PHY_IDENTIFIER_2_REG, &phy_id);
+		if (phy_id == PHY_XILINX_PCS_PMA_ID2) {
+			return 1;// External PCS-PMA detected
+		}
+	}
+
+	return 0;// Internal PCS-PMA assumed
+}
+
+/*****************************************************************************/
+/**
+* Configure the MAC for SGMII PCS mode.
+*
+* This function configures the Ethernet MAC for operation with an SGMII
+* (Serial Gigabit Media Independent Interface) PHY. It first checks whether
+* the PHY is external using the `isphy_pcspma_external` function. If the PHY
+* is not an external PCS-PMA device, the function enables the SGMII option
+* and sets the Auto-Negotiation bit in the PCS control register.
+*
+* @param xemacpsp is a pointer to the Ethernet MAC instance.
+* @param phy_addr is the address of the PHY device.
+*
+******************************************************************************/
+void MacConfig_SgmiiPcs(XEmacPs *xemacpsp, u32_t phy_addr) {
+#ifdef SDT
+	const char *PhyType = xemacpsp->Config.PhyType;
+	if (!strcmp(PhyType, "sgmii") && !isphy_pcspma_external(xemacpsp, phy_addr)){
+
+		/* Enable SGMII option */
+		XEmacPs_SetOptions(xemacpsp, XEMACPS_SGMII_ENABLE_OPTION);
+
+		/* Read the current PCS_CONTROL register value */
+		u32 status = XEmacPs_ReadReg(xemacpsp->Config.BaseAddress, XEMACPS_PCS_CONTROL_OFFSET);
+
+		/* Set the Enable Auto-Negotiation bit (bit 12) */
+		status |= XEMACPS_PCS_CON_AUTO_NEG_MASK;
+
+		/* Write the updated value back to the PCS_CONTROL register */
+		XEmacPs_WriteReg(xemacpsp->Config.BaseAddress, XEMACPS_PCS_CONTROL_OFFSET, status);
+	}
+#endif
 }

@@ -1029,15 +1029,19 @@ proc get_checksum {value} {
 
 proc get_phytype {value} {
 	if {[string compare -nocase $value "MII"] == 0} {
-		set value 0
+		set value 2
 	} elseif {[string compare -nocase $value "GMII"] == 0} {
-		set value 1
-	} elseif {[string compare -nocase $value "RGMII"] == 0} {
 		set value 3
+	} elseif {[string compare -nocase $value "RGMII"] == 0} {
+		set value 9
 	} elseif {[string compare -nocase $value "SGMII"] == 0} {
 		set value 4
+	} elseif {[string compare -nocase $value "1000BaseX"] == 0} {
+		set value 21
+	} elseif {[string compare -nocase $value "base-r"] == 0} {
+		set value 26
 	} else {
-		set value 5
+		set value 0
 	}
 
 	return $value
@@ -1053,20 +1057,21 @@ proc get_mactype {value} {
 	return $value
 }
 
-proc is_ethsupported_target {connected_ip} {
+proc is_ethsupported_target {connected_ip1} {
    set connected_ipname ""
-   if {$connected_ip == ""} {
-      return "false"
-   }
-   set ipname [get_cells -hier $connected_ip]
-   if {$ipname != ""} {
-      set connected_ipname [get_property IP_NAME $ipname]
-   }
-   if {$connected_ipname == "axi_dma" || $connected_ipname == "axi_fifo_mm_s" || $connected_ipname == "axi_mcdma"} {
-      return "true"
-   } else {
-      return "false"
-   }
+   foreach connected_ip $connected_ip1 {
+	if {$connected_ip == ""} {
+		return "false"
+	}
+	set ipname [get_cells -hier $connected_ip]
+	if {$ipname != ""} {
+		set connected_ipname [get_property IP_NAME $ipname]
+	}
+	if {$connected_ipname == "axi_dma" || $connected_ipname == "axi_fifo_mm_s" || $connected_ipname == "axi_mcdma"} {
+		return "true"
+	}
+  }
+		return "false"
 }
 
 proc get_targetip {ip} {
