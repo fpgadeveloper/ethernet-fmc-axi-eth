@@ -18,6 +18,10 @@
 			}
 		}
 	],
-	"src": {},
+	"src": {
+		"all": "common/src"
+	},
+	"pre_platform_build_script": "py/pre_platform_build.py",
+	"pre_build_script": "py/pre_build.py",
 	"combine_bit_elf": false
 }
