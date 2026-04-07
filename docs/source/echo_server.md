@@ -87,14 +87,15 @@ from the PC, the PC should be configured with a fixed IP address on the same sub
 ## Change the target port
 
 The echo server example design currently can only target one Ethernet port at a time.
-Selection of the Ethernet port can be changed by modifying the defines contained in the
-`platform_config.h` file in the application sources. Set `PLATFORM_EMAC_BASEADDR`
-to one of the following values:
+Selection of the Ethernet port can be changed by modifying the ``ETHERNET_PORT`` define
+in the ``platform_config.h.in`` file located in the workspace application sources
+(eg. ``<target>_workspace/echo_server/src/platform_config.h.in``).
+Set ``ETHERNET_PORT`` to one of the following values:
 
-* Ethernet FMC Port 0: `XPAR_AXIETHERNET_0_BASEADDR`
-* Ethernet FMC Port 1: `XPAR_AXIETHERNET_1_BASEADDR`
-* Ethernet FMC Port 2: `XPAR_AXIETHERNET_2_BASEADDR`
-* Ethernet FMC Port 3: `XPAR_AXIETHERNET_3_BASEADDR`
+* ``0``: Ethernet FMC Port 0
+* ``1``: Ethernet FMC Port 1
+* ``2``: Ethernet FMC Port 2
+* ``3``: Ethernet FMC Port 3
 
 ## Example usage
 
