@@ -1,5 +1,6 @@
 {
   "bd_name": "axieth",
+  "prj_name": "ethernet-fmc-axi-eth",
   "groups": [
     {
       "label": "fpga",

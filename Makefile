@@ -13,6 +13,8 @@ JOBS ?= 8
 # valid targets (template name, both (plnx+baremetal) or baremetal_only)
 # UPDATER START
 BD_NAME = axieth
+PRJ_NAME = ethernet-fmc-axi-eth
+COMBINE_BIT_ELF = false
 ac701_target := microblaze baremetal_only
 kc705_hpc_target := microblaze baremetal_only
 kc705_lpc_target := microblaze baremetal_only
@@ -69,9 +71,9 @@ VIT_BOOT_TARG = $(VIT_BOOT)/$(TARGET)
 
 # outputs
 BOOTIMAGE_DIR = $(ROOT_DIR)/bootimages
-TEMPBOOT_DIR = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)
-PETL_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_petalinux-2025-2.zip
-BARE_ZIP = $(BOOTIMAGE_DIR)/$(BD_NAME)_$(TARGET)_standalone-2025-2.zip
+TEMPBOOT_DIR = $(BOOTIMAGE_DIR)/$(PRJ_NAME)_$(TARGET)
+PETL_ZIP = $(BOOTIMAGE_DIR)/$(PRJ_NAME)_$(TARGET)_petalinux-2025-2.zip
+BARE_ZIP = $(BOOTIMAGE_DIR)/$(PRJ_NAME)_$(TARGET)_standalone-2025-2.zip
 BOOTIMAGE_LOCK = $(ROOT_DIR)/.$(TARGET).lock
 
 # These macros return values from the valid target lists defined above
@@ -85,7 +87,11 @@ endef
 
 # The name of the boot image of the baremetal app depends on the device
 ifeq ($(call get_template_name,$(TARGET)), microblaze)
+  ifeq ($(COMBINE_BIT_ELF), true)
+	VIT_BOOT_FILE = $(VIT_BOOT_TARG)/$(BD_NAME)_boot.bit
+  else
 	VIT_BOOT_FILE = $(VIT_BOOT_TARG)/$(BD_NAME).bit
+  endif
 else ifeq ($(call get_template_name,$(TARGET)), zynq)
 	VIT_BOOT_FILE = $(VIT_BOOT_TARG)/BOOT.BIN
 else ifeq ($(call get_template_name,$(TARGET)), zynqMP)
@@ -143,6 +149,8 @@ bootimage: check_target
 bootimage_locked: bootimage_$(call get_both_or_baremetal_only,$(TARGET))
 
 bootimage_baremetal_only: $(BARE_ZIP)
+
+bootimage_petalinux_only: $(PETL_ZIP)
 
 bootimage_both: $(PETL_ZIP) $(BARE_ZIP)
 
