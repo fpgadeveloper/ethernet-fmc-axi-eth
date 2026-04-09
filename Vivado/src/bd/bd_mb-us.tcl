@@ -181,19 +181,19 @@ if {$dual_design} {
 
   # Create Ethernet FMC reference clock output enable and frequency select
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_0_oe
   connect_bd_net [get_bd_pins /ref_clk_0_oe/dout] [get_bd_ports ref_clk_0_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_1_oe
   connect_bd_net [get_bd_pins /ref_clk_1_oe/dout] [get_bd_ports ref_clk_1_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_0_fsel
   connect_bd_net [get_bd_pins /ref_clk_0_fsel/dout] [get_bd_ports ref_clk_0_fsel]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_1_fsel
   connect_bd_net [get_bd_pins /ref_clk_1_fsel/dout] [get_bd_ports ref_clk_1_fsel]
 
@@ -224,11 +224,11 @@ if {$dual_design} {
   connect_bd_intf_net [get_bd_intf_ports ref_clk] [get_bd_intf_pins clk_wiz_0/CLK_IN1_D]
 
   # Create Ethernet FMC reference clock output enable and frequency select
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_oe
   connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
   connect_bd_net [get_bd_pins /ref_clk_fsel/dout] [get_bd_ports ref_clk_fsel]
   
@@ -392,7 +392,7 @@ if {[string match "vcu108*" $target]} {
   connect_bd_net [get_bd_pins axi_emc_0/mem_dq_o] [get_bd_pins axi_emc_iobuf/IOBUF_IO_I]
   connect_bd_net [get_bd_pins axi_emc_0/mem_dq_t] [get_bd_pins axi_emc_iobuf/IOBUF_IO_T]
   # Create instance: axi_emc_slice, and set properties
-  set axi_emc_slice [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice axi_emc_slice ]
+  set axi_emc_slice [ create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilslice:1.0 axi_emc_slice ]
   set_property -dict [ list CONFIG.DIN_FROM {26} CONFIG.DIN_TO {1}  ] $axi_emc_slice
   # Create port connections
   connect_bd_net [get_bd_pins axi_emc_0/mem_a] [get_bd_pins axi_emc_slice/Din]

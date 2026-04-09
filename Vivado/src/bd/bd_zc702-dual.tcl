@@ -48,7 +48,7 @@ set_property -dict [list CONFIG.PCW_FPGA1_PERIPHERAL_FREQMHZ {200} CONFIG.PCW_US
 connect_bd_net [get_bd_pins processing_system7_0/FCLK_CLK0] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK]
 
 # Add the concat for the interrupts
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:1.0 xlconcat_0
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins processing_system7_0/IRQ_F2P]
 set_property -dict [list CONFIG.NUM_PORTS {16}] [get_bd_cells xlconcat_0]
 
@@ -313,21 +313,21 @@ connect_bd_intf_net [get_bd_intf_ports ref_clk_1] [get_bd_intf_pins util_ds_buf_
 
 # Create Ethernet FMC reference clock output enable and frequency select (LPC)
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_oe
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_oe
 create_bd_port -dir O -from 0 -to 0 ref_clk_0_oe
 connect_bd_net [get_bd_pins /ref_clk_0_oe/dout] [get_bd_ports ref_clk_0_oe]
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_fsel
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_fsel
 create_bd_port -dir O -from 0 -to 0 ref_clk_0_fsel
 connect_bd_net [get_bd_pins /ref_clk_0_fsel/dout] [get_bd_ports ref_clk_0_fsel]
 
 # Create Ethernet FMC reference clock output enable and frequency select (HPC)
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_oe
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_oe
 create_bd_port -dir O -from 0 -to 0 ref_clk_1_oe
 connect_bd_net [get_bd_pins /ref_clk_1_oe/dout] [get_bd_ports ref_clk_1_oe]
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_fsel
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_fsel
 create_bd_port -dir O -from 0 -to 0 ref_clk_1_fsel
 connect_bd_net [get_bd_pins /ref_clk_1_fsel/dout] [get_bd_ports ref_clk_1_fsel]
 

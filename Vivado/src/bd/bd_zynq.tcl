@@ -102,7 +102,7 @@ connect_bd_net [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst
 
 # Add the concat for the interrupts
 set num_ints [expr {4 * [llength $ports]}]
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:1.0 xlconcat_0
 set_property -dict [list CONFIG.NUM_PORTS $num_ints] [get_bd_cells xlconcat_0]
 
 # Create a second clock wizard if this is a dual design (2x Ethernet FMCs)
@@ -145,19 +145,19 @@ if {$dual_design} {
 
   # Create Ethernet FMC reference clock output enable and frequency select
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_0_oe
   connect_bd_net [get_bd_pins /ref_clk_0_oe/dout] [get_bd_ports ref_clk_0_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_1_oe
   connect_bd_net [get_bd_pins /ref_clk_1_oe/dout] [get_bd_ports ref_clk_1_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_0_fsel
   connect_bd_net [get_bd_pins /ref_clk_0_fsel/dout] [get_bd_ports ref_clk_0_fsel]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_1_fsel
   connect_bd_net [get_bd_pins /ref_clk_1_fsel/dout] [get_bd_ports ref_clk_1_fsel]
 
@@ -196,11 +196,11 @@ if {$dual_design} {
 
   # Create Ethernet FMC reference clock output enable and frequency select
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_oe
   connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
   connect_bd_net [get_bd_pins /ref_clk_fsel/dout] [get_bd_ports ref_clk_fsel]
 

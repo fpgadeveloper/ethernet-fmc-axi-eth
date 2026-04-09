@@ -195,19 +195,19 @@ if {$dual_design} {
 
   # Create Ethernet FMC reference clock output enable and frequency select
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_0_oe
   connect_bd_net [get_bd_pins /ref_clk_0_oe/dout] [get_bd_ports ref_clk_0_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_1_oe
   connect_bd_net [get_bd_pins /ref_clk_1_oe/dout] [get_bd_ports ref_clk_1_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_0_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_0_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_0_fsel
   connect_bd_net [get_bd_pins /ref_clk_0_fsel/dout] [get_bd_ports ref_clk_0_fsel]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_1_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_1_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_1_fsel
   connect_bd_net [get_bd_pins /ref_clk_1_fsel/dout] [get_bd_ports ref_clk_1_fsel]
 
@@ -239,11 +239,11 @@ if {$dual_design} {
   connect_bd_intf_net [get_bd_intf_ports ref_clk] [get_bd_intf_pins clk_wiz_0/CLK_IN1_D]
 
   # Create Ethernet FMC reference clock output enable and frequency select
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_oe
   create_bd_port -dir O -from 0 -to 0 ref_clk_oe
   connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_fsel
   create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
   connect_bd_net [get_bd_pins /ref_clk_fsel/dout] [get_bd_ports ref_clk_fsel]
   

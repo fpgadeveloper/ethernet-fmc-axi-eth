@@ -61,10 +61,10 @@ connect_bd_net [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_p
 
 # Add the concat for the interrupts
 set num_ints [expr {4 * [llength $ports]}]
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:1.0 xlconcat_0
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
 if { $num_ints > 8 } {
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_1
+  create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconcat:1.0 xlconcat_1
   connect_bd_net [get_bd_pins xlconcat_1/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1]
   set_property -dict [list CONFIG.NUM_PORTS {8}] [get_bd_cells xlconcat_0]
   set_property -dict [list CONFIG.NUM_PORTS [expr {$num_ints - 8}]] [get_bd_cells xlconcat_1]
@@ -202,11 +202,11 @@ connect_bd_intf_net [get_bd_intf_ports ref_clk] [get_bd_intf_pins clk_wiz_0/CLK_
 
 # Create Ethernet FMC reference clock output enable and frequency select
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_oe
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_oe
 create_bd_port -dir O -from 0 -to 0 ref_clk_oe
 connect_bd_net [get_bd_pins /ref_clk_oe/dout] [get_bd_ports ref_clk_oe]
 
-create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant ref_clk_fsel
+create_bd_cell -type inline_hdl -vlnv xilinx.com:inline_hdl:ilconstant:1.0 ref_clk_fsel
 create_bd_port -dir O -from 0 -to 0 ref_clk_fsel
 connect_bd_net [get_bd_pins /ref_clk_fsel/dout] [get_bd_ports ref_clk_fsel]
 
