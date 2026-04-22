@@ -10,6 +10,8 @@ Vitis/boot/
 docs/build/
 bootimages/
 PetaLinux/offline.txt
+PetaLinux/.*.lock
+**/__pycache__/
 # UPDATER START
 Vivado/ac701/
 PetaLinux/ac701/

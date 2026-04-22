@@ -36,6 +36,8 @@
 #     "microblaze": "relocate_to_local_mem",
 #     "zynq": "relocate_to_ddr"
 #   },
+#   "stack_size": "0x10000",         # optional: override default stack size in linker script
+#   "heap_size": "0x10000",          # optional: override default heap size in linker script
 #   "combine_bit_elf": true        # ignored here; used by make-boot.py later
 # }
 
@@ -433,6 +435,8 @@ def main():
 
     pre_build_script = cfg.get("pre_build_script")
     pre_platform_build_script = cfg.get("pre_platform_build_script")
+    stack_size = cfg.get("stack_size")
+    heap_size = cfg.get("heap_size")
 
     # Board name: from data.json if available, otherwise from args.json boardnames map
     target = maybe_target
@@ -612,10 +616,20 @@ def main():
         create_board_h(board_name_for_header, app_src)
 
         # Linker script modifications (if configured for this arch)
+        lscript_path = os.path.join(app_src, "lscript.ld")
         if arch in linker_mods:
-            lscript_path = os.path.join(app_src, "lscript.ld")
             info(f"Applying linker script mod: {linker_mods[arch]}")
             modify_linker_script(lscript_path, linker_mods[arch])
+
+        # Stack/heap size overrides (if configured)
+        if stack_size or heap_size:
+            ld = app.get_ld_script()
+            if stack_size:
+                ld.set_stack_size(size=stack_size)
+                info(f"Linker script: stack size set to {stack_size}")
+            if heap_size:
+                ld.set_heap_size(size=heap_size)
+                info(f"Linker script: heap size set to {heap_size}")
 
         # Run pre-build script (if configured)
         if pre_build_script:

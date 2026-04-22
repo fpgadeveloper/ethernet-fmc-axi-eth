@@ -234,3 +234,22 @@
    ceva,p1-retry-params = /bits/ 16 <0x96A4 0x3FFC>;
 };
 
+/* UZ-EV carrier wires PSU UART0 to the CP2108 USB-serial bridge.
+ * 2025.2's gen-machineconf assigns port-number=0 to uart1 by default, which
+ * would route ttyPS0 to the wrong UART. Force ttyPS0 back to uart0. */
+&uart0 {
+   port-number = <0>;
+};
+&uart1 {
+   port-number = <1>;
+};
+/ {
+   aliases {
+      serial0 = &uart0;
+      serial1 = &uart1;
+   };
+   chosen {
+      stdout-path = "serial0:115200n8";
+   };
+};
+

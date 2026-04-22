@@ -2,3 +2,12 @@
 /include/ "port-config.dtsi"
 / {
 };
+
+/* Zedboard's PS GEM0 is not used by this design (the ethernet-fmc-axi-eth
+ * test exercises the AXI Ethernet cores in the PL, not the PS GEM). 2025.01
+ * u-boot crashes (data abort) while probing gem0 because the DT generated
+ * from the XSA is missing PHY/clock info. Disabling gem0 sidesteps the crash
+ * and leaves the PL AXI ethernet untouched. */
+&gem0 {
+    status = "disabled";
+};

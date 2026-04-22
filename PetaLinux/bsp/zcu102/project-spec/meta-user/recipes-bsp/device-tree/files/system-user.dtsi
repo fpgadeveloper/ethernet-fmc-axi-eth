@@ -2,3 +2,23 @@
 /include/ "port-config.dtsi"
 / {
 };
+
+/* ZCU102's CP2108 bridge exposes both PSU_UART_0 and PSU_UART_1 on USB.
+ * 2025.2's gen-machineconf assigns port-number=0 to uart1, making ttyPS0
+ * map to uart1. Our test/logging setup is cabled to the UART_0 CP2108
+ * interface, so force ttyPS0 back to uart0. */
+&uart0 {
+   port-number = <0>;
+};
+&uart1 {
+   port-number = <1>;
+};
+/ {
+   aliases {
+      serial0 = &uart0;
+      serial1 = &uart1;
+   };
+   chosen {
+      stdout-path = "serial0:115200n8";
+   };
+};

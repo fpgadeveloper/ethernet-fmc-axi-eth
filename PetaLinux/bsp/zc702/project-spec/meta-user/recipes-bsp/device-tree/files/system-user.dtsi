@@ -2,3 +2,10 @@
 /include/ "port-config.dtsi"
 / {
 };
+
+/* 2025.01 u-boot data-aborts probing gem0 because pcw.dtsi does not populate
+ * phy-handle. The ethernet-fmc-axi-eth test uses the PL AXI Ethernet cores,
+ * not PS GEM, so disabling gem0 is fine and avoids the crash. */
+&gem0 {
+    status = "disabled";
+};
