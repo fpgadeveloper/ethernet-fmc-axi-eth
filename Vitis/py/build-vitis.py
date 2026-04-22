@@ -438,14 +438,22 @@ def main():
     stack_size = cfg.get("stack_size")
     heap_size = cfg.get("heap_size")
 
-    # Board name: from data.json if available, otherwise from args.json boardnames map
+    # Board name for board.h: prefer args.json's "boardnames" map — that's
+    # the short ID used by fmc-prod-test-common's eeprom_fmc.c (e.g. "UZEV",
+    # "ZCU102"). Only fall back to data.json's "boardname" / "board" (which
+    # is the Vivado board-store vendor name, e.g. "ultrazed_7ev_cc") when
+    # no args.json mapping exists for this target. This split lets Vivado
+    # use the long vendor name for get_board_parts while board.h gets the
+    # short ID iic_muxes[] expects.
     target = maybe_target
-    if data_json_path:
+    boardnames = cfg.get("boardnames", {})
+    if target in boardnames:
+        board_name_for_header = boardnames[target]
+    elif data_json_path:
         design = load_design_entry(data_json_path, target)
         board_name_for_header = design.get("boardname", design.get("board", target))
     else:
-        boardnames = cfg.get("boardnames", {})
-        board_name_for_header = boardnames.get(target, target)
+        board_name_for_header = target
 
     # Vivado project path (with optional postfix)
     vivado_postfix = cfg.get("vivado_postfix", "")
