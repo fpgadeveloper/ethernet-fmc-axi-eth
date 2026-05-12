@@ -20,11 +20,11 @@ and `Robust Ethernet FMC`_.
    build_instructions
    echo_server
    petalinux
-   updating
+   advanced
    troubleshooting
    revision_history
 
 
-.. _Ethernet FMC: https://ethernetfmc.com/docs/ethernet-fmc/overview/
-.. _Robust Ethernet FMC: https://ethernetfmc.com/docs/robust-ethernet-fmc/overview/
+.. _Ethernet FMC: https://docs.opsero.com/op031/datasheet/overview/
+.. _Robust Ethernet FMC: https://docs.opsero.com/op041/datasheet/overview/
 

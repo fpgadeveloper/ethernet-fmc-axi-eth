@@ -358,6 +358,6 @@ PING 192.168.2.10 (192.168.2.10): 56 data bytes
 64 bytes from 192.168.2.10: seq=3 ttl=128 time=0.356 ms
 ```
 
-[Ethernet FMC]: https://ethernetfmc.com/docs/ethernet-fmc/overview/
+[Ethernet FMC]: https://docs.opsero.com/op031/datasheet/overview/
 [supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
 

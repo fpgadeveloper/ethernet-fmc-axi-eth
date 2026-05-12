@@ -43,6 +43,6 @@ In order to test this design on hardware, you will need the following:
 
 For list of the target designs showing the number of ports supported, refer to the build instructions.
 
-[Ethernet FMC]: https://ethernetfmc.com/docs/ethernet-fmc/overview/
-[Robust Ethernet FMC]: https://ethernetfmc.com/docs/robust-ethernet-fmc/overview/
+[Ethernet FMC]: https://docs.opsero.com/op031/datasheet/overview/
+[Robust Ethernet FMC]: https://docs.opsero.com/op041/datasheet/overview/
 
