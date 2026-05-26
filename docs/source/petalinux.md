@@ -222,7 +222,8 @@ Ethernet FMC Port 1, and so on.
 * end3: GEM to Ethernet port of the dev board
 * end4: Ethernet FMC Port 0 (the port DHCP is attempted on)
 
-```{note} On the `zcu102_hpc1` target only Ethernet FMC Ports 0 and 1 are
+```{note}
+On the `zcu102_hpc1` target only Ethernet FMC Ports 0 and 1 are
 routed (the HPC1 connector has a reduced pin-out), so only the corresponding
 `end<N>` interfaces appear.
 ```
