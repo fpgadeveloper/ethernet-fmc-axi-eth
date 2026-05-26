@@ -46,7 +46,8 @@ You must have followed the build instructions before you can run the application
 
 The run configuration will first program the FPGA with the bitstream, then load and run the 
 application. You can view the UART output of the application in a console window and it should
-appear as follows:
+appear as follows (captured from a `pz_7030` boot — ZynqMP targets prepend a
+Zynq MP First Stage Boot Loader banner):
 
 ```
 -----lwIP TCP echo server ------
@@ -55,14 +56,15 @@ Start PHY autonegotiation
 Waiting for PHY to complete autonegotiation.
 autonegotiation complete 
 auto-negotiated link speed: 1000
-Board IP: 192.168.1.116
+Board IP: 192.168.2.72
 Netmask : 255.255.255.0
-Gateway : 192.168.1.1
+Gateway : 192.168.2.1
 TCP echo server started @ port 7
 ```
 
 The above output results when the target port is connected to a router with DHCP. The assigned
-board IP can vary.
+board IP can vary. If DHCP fails the echo server falls back to a static IP — see
+[IP address](#ip-address) below.
 
 ## UART settings
 

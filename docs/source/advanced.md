@@ -250,6 +250,19 @@ universal `build-vitis.py` driver. The key fields are:
 * `pre_platform_build_script` / `pre_build_script` — hooks invoked at
   the appropriate point in the workspace build.
 
+```{important}
+The AXI Ethernet IPs in the block designs are configured with **Full TX/RX
+checksum hardware offload** (`CONFIG.TXCSUM {Full} CONFIG.RXCSUM {Full}` —
+see `Vivado/src/bd/bd_*.tcl`). The lwIP BSP configuration in `args.json`
+must be left consistent with that: the stock lwIP `LWIP_*_CSUM` settings
+assume the hardware computes IP/TCP/UDP checksums. If you reconfigure the
+AXI Ethernet IPs to *Partial* or no checksum offload, you must also update
+the corresponding lwIP `bsp_libs.lwip220.config` entries — otherwise
+incoming packets will fail the checksum check in software while the
+hardware has already verified (and stripped) them, and outgoing packets
+will go out with a zero checksum.
+```
+
 ### Modifying the standalone application
 
 Edit `Vitis/common/src/*.c` directly. The next `make -C Vitis bootfile
@@ -407,10 +420,26 @@ the stock one?"* — it is what to re-apply if you ever do that.
 
 * **SD-card root filesystem** configured in `configs/config`:
   `CONFIG_SUBSYSTEM_ROOTFS_EXT4`, `CONFIG_SUBSYSTEM_SDROOT_DEV`,
-  `CONFIG_SUBSYSTEM_USER_CMDLINE` (with `cma=1536M` for the AXI DMA
-  buffers).
-* **U-Boot patch `0001-ubifs-distroboot-support.patch`** on the
-  appropriate boards.
+  `CONFIG_SUBSYSTEM_USER_CMDLINE` with a per-board `cma=` reservation
+  sized to the device's DDR:
+
+  | BSP       | `cma=` reservation |
+  |-----------|--------------------|
+  | `zedboard`| `cma=256M`         |
+  | `pz`      | `cma=512M`         |
+  | `zc702`   | `cma=512M`         |
+  | `zc706`   | `cma=512M`         |
+  | `uzev`    | `cma=1536M`        |
+  | `zcu102`  | `cma=1536M`        |
+
+  These reservations back the AXI DMA buffers used by the AXI Ethernet
+  Subsystem instances.
+* **U-Boot patch `0001-ubifs-distroboot-support.patch`** is applied on
+  the `uzev` and `zcu102` BSPs only. The patch wires up UBIFS
+  distroboot support in `include/configs/xilinx_zynqmp.h` so U-Boot can
+  load `boot.scr` from a UBI volume on QSPI (relevant when booting the
+  ZynqMP designs from QSPI instead of SD card). The patch comes from
+  the AMD/Xilinx U-Boot tree (Signed-off-by Ashok Reddy Soma).
 
 ### ZynqMP BSPs (additionally)
 

@@ -72,12 +72,16 @@ These notes provide more details on 8-port support:
 ### AC701
 
 * The AC701's on-board Ethernet port is not connected in this design.
-* This design includes a reset GPIO so that the MicroBlaze can reset itself from PetaLinux.
+* The design includes a reset GPIO so the MicroBlaze can self-reset (carried
+  over from when this target had a PetaLinux build; the current repository
+  ships only the standalone Vitis flow for AC701).
 
 ### KC705
 
 * The KC705's on-board Ethernet port is connected to AXI EthernetLite IP in these designs.
-* This design includes a reset GPIO so that the MicroBlaze can reset itself from PetaLinux.
+* The design includes a reset GPIO so the MicroBlaze can self-reset (carried
+  over from when this target had a PetaLinux build; the current repository
+  ships only the standalone Vitis flow for KC705).
 
 ### VC707 & VC709
 

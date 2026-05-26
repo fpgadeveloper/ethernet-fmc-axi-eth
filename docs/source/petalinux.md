@@ -6,7 +6,7 @@ of the repository.
 ## Requirements
 
 To build the PetaLinux projects, you will need a physical or virtual machine running one of the 
-[supported Linux distributions] as well as the Vitis Core Development Kit installed.
+[supported Linux distributions], with PetaLinux 2025.2 and Vivado 2025.2 installed.
 
 ```{attention} You cannot build the PetaLinux projects in the Windows operating system. Windows
 users are advised to use a Linux virtual machine to build the PetaLinux projects.
@@ -94,7 +94,8 @@ losing data on one of your hard drives.
    * **PicoZed:** DIP switch SW1 (on the SoM) is set to 11 (1=ON,2=ON)
    * **ZC702:** DIP switch SW16 must be set to 00110 (1=OFF,2=OFF,3=ON,4=ON,5=OFF)
    * **ZC706:** DIP switch SW11 must be set to 00110 (1=OFF,2=OFF,3=ON,4=ON,5=OFF)
-   * **UltraZed-EV:** DIP switch SW2 (on the SoM) is set to 1000 (1=ON,2=OFF,3=OFF,4=OFF)
+   * **UltraZed-EV:** DIP switch SW2 (on the SoM) is set to 1000 (1=ON,2=OFF,3=OFF,4=OFF).
+     The UZ-EV BSP routes the boot SD interface through PSU SD1, so use the carrier's SD1 slot.
    * **ZCU102:** DIP switch SW6 must be set to 1000 (1=ON,2=OFF,3=OFF,4=OFF)
    * **ZedBoard:** Jumpers MIO6-2 must be set to 01100
 3. Connect the [Ethernet FMC] to the FMC connector of the target board.
@@ -111,24 +112,19 @@ For instructions, read section
 from the Vivado release notes.
 ```
 
-```{warning} If you boot the Zynq-7000, Zynq UltraScale+ or Zynq RFSoC designs via JTAG, you must still
-first prepare the SD card. The reason is because these designs are configured to use the SD card to store
-the root filesystem. If you boot these designs via JTAG without preparing and connecting the SD card, the
-boot will hang during at a message similar to this: `Waiting for root device /dev/mmcblk0p2...`
+```{warning} When booting the Zynq-7000 or Zynq UltraScale+ PetaLinux designs via JTAG, you
+must still first prepare the SD card. These designs are configured to mount the root
+filesystem from the SD card, so booting via JTAG without an SD card prepared and inserted
+will hang at a message similar to: `Waiting for root device /dev/mmcblk0p2...`
 ```
 
 ### Setup hardware
 
 1. Prepare the SD card according to the [instructions above](#prepare-the-sd-card) and plug the SD card 
    into your target board.
-2. Ensure that the target board is configured to boot from JTAG:
-   * **AC701:** DIP switch SW1 must be set to 111 (1=ON,2=ON,3=ON)
-   * **KC705:** DIP switch SW13 must be set to xx101 (1=D/C,2=D/C,3=ON,4=OFF,5=ON)
-   * **KCU105:** DIP switch SW15 must be set to xxxx01 (1-4=D/C,5=OFF,6=ON)
-   * **VC70x:** DIP switch SW11 must be set to xx101 (1=D/C,2=D/C,3=ON,4=OFF,5=ON)
-   * **VCU108:** DIP switch SW16 must be set to xx101 (1=D/C,2=D/C,3=ON,4=OFF,5=ON)
-   * **VCU118:** DIP switch SW16 must be set to x101 (1=D/C,2=ON,3=OFF,4=ON)
-   * **MicroZed:** Jumpers JP1,JP2,JP3 (on the SoM) are in position 1-2
+2. Ensure that the target board is configured to boot from JTAG. Only the Zynq-7000
+   and Zynq UltraScale+ targets in this repository have a PetaLinux build; MicroBlaze
+   targets are baremetal-only.
    * **PicoZed:** DIP switch SW1 (on the SoM) is set to 00 (1=OFF,2=OFF)
    * **ZC702:** DIP switch SW16 must be set to 00000 (1=OFF,2=OFF,3=OFF,4=OFF,5=OFF)
    * **ZC706:** DIP switch SW11 must be set to 00000 (1=OFF,2=OFF,3=OFF,4=OFF,5=OFF)
@@ -155,8 +151,6 @@ To boot PetaLinux on hardware via JTAG, use the following commands in a Linux co
 
 An explanation of the above command is provided by the `petalinux-boot` command:
 ```none
-For microblaze, it will download the bitstream to target board, and
-then boot the kernel image on target board.
 For Zynq, it will download the bitstream and FSBL to target board,
 and then boot the u-boot and then the kernel on target
 board.
@@ -187,35 +181,28 @@ sudo screen /dev/ttyUSB0 115200
 
 ## Port configurations
 
-All designs will try to automatically configure the eth0 device on boot, so it can be
-useful to connect the eth0 device to a DHCP router before the hardware is powered-up.
-Note that on Zynq and ZynqMP designs, the eth0 device is connected to the development board's
-Ethernet port and not the Ethernet FMC.
+PetaLinux is supported only on the Zynq-7000 and Zynq UltraScale+ targets in this
+repository. All designs will try to automatically configure the dev board's GEM
+port on boot via DHCP, so it can be useful to have that port connected to a DHCP
+router before the hardware is powered-up.
 
-### AC701, KC705
+```{note}
+Interface names depend on the kernel's predictable-names policy and on the target's
+processor family:
 
-* eth0: Ethernet port of the dev board
-* eth1: Ethernet FMC Port 0
-* eth2: Ethernet FMC Port 1
-* eth3: Ethernet FMC Port 2
-* eth4: Ethernet FMC Port 3
+* **Zynq-7000** (`pz_*`, `zc70*`, `zedboard`) — the AXI Ethernet ports come up as
+  `enx<mac>` (for example `enx000a35000122`), because the kernel renames the
+  `eth<N>` interfaces using the MAC address baked into each AXI Ethernet
+  instance by the build flow.
+* **Zynq UltraScale+** (`uzev`, `zcu102_*`) — the AXI Ethernet ports come up as
+  `end0` … `endN`, plus one `end<N>` for the on-board GEM.
 
-### KCU105 HPC
+The numbering in the lists below corresponds to the order the kernel discovers
+the interfaces; the actual names you see on a given boot depend on which family
+the target belongs to.
+```
 
-* eth0: Ethernet FMC Port 0
-* eth1: Ethernet FMC Port 1
-* eth2: Ethernet FMC Port 2
-* eth3: Ethernet FMC Port 3
-
-### KCU105 LPC
-
-* eth0: Ethernet FMC Port 0
-* eth1: Ethernet FMC Port 1
-* eth2: Ethernet FMC Port 3
-
-Ethernet FMC Port 2 is unusable in this design.
-
-### PicoZed, ZC702, ZC706, ZedBoard, ZCU102, UltraZed-EV
+### PicoZed, ZC702, ZC706, ZedBoard (Zynq-7000)
 
 * eth0: GEM0 to Ethernet port of the dev board
 * eth1: Ethernet FMC Port 0
@@ -223,119 +210,112 @@ Ethernet FMC Port 2 is unusable in this design.
 * eth3: Ethernet FMC Port 2
 * eth4: Ethernet FMC Port 3
 
-### KCU105 Dual design
+The Zynq-7000 kernel renames the AXI Ethernet interfaces to `enx<mac>` —
+for example `enx000a35000122` for Ethernet FMC Port 0, `enx000a35000123` for
+Ethernet FMC Port 1, and so on.
 
-* eth0: HPC Ethernet FMC Port 0 (AXI Ethernet)
-* eth1: HPC Ethernet FMC Port 1 (AXI Ethernet)
-* eth2: HPC Ethernet FMC Port 2 (AXI Ethernet)
-* eth3: HPC Ethernet FMC Port 3 (AXI Ethernet)
-* eth4: LPC Ethernet FMC Port 0 (AXI Ethernet)
-* eth5: LPC Ethernet FMC Port 1 (AXI Ethernet)
-* eth6: LPC Ethernet FMC Port 3 (AXI Ethernet)
+### ZCU102, UltraZed-EV (Zynq UltraScale+)
 
-Ethernet FMC Port 2 on the LPC is unusable in this design.
+* end0: Ethernet FMC Port 1
+* end1: Ethernet FMC Port 2
+* end2: Ethernet FMC Port 3
+* end3: GEM to Ethernet port of the dev board
+* end4: Ethernet FMC Port 0 (the port DHCP is attempted on)
+
+```{note} On the `zcu102_hpc1` target only Ethernet FMC Ports 0 and 1 are
+routed (the HPC1 connector has a reduced pin-out), so only the corresponding
+`end<N>` interfaces appear.
+```
 
 ## Example Usage
 
+The examples below were captured on a Zynq-7000 target (`zedboard`), so the
+AXI Ethernet ports appear as `enx<mac>`. On Zynq UltraScale+ targets
+(`zcu102_*`, `uzev`) the same commands work — substitute the corresponding
+`end<N>` interface name from the [port configurations](#port-configurations)
+section.
+
 ### Enable port
 
-This example will bring up a port.
+This example brings up an AXI Ethernet port.
 
 ```
-root@axieth:~# sudo ifconfig eth1 up
-[  228.274146] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
-[  228.282753] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+root@zed-axieth-2025-2:~# ifconfig enx000a35000123 up
+[  228.274146] xilinx_axienet 41040000.ethernet enx000a35000123: Link is Up - 1Gbps/Full - flow control off
+[  228.282753] IPv6: ADDRCONF(NETDEV_CHANGE): enx000a35000123: link becomes ready
 ```
 
 ### Enable port with fixed IP address
 
-This example sets a fixed IP address to a port.
+This example sets a fixed IP address on a port.
 
 ```
-root@axieth:~# sudo ifconfig eth1 192.168.2.30 up
-[  390.080498] net eth1: Promiscuous mode disabled.
-[  390.085406] net eth1: Promiscuous mode disabled.
-[  390.091089] xilinx_axienet a0000000.ethernet eth1: Link is Down
-[  394.175238] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
-[  394.183769] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
+root@zed-axieth-2025-2:~# ifconfig enx000a35000123 192.168.3.30 up
+[  394.175238] xilinx_axienet 41040000.ethernet enx000a35000123: Link is Up - 1Gbps/Full - flow control off
+[  394.183769] IPv6: ADDRCONF(NETDEV_CHANGE): enx000a35000123: link becomes ready
 ```
 
 ### Enable port using DHCP
 
-This example enables a port and obtains an IP address for the port via DHCP. Note that the
-port must be connected to a DHCP enabled router.
+This example enables a port and obtains an IP address for the port via DHCP.
+The port must be connected to a DHCP enabled router.
 
 ```
-root@axieth:~# sudo udhcpc -i eth1
-udhcpc: started, v1.31.0
-[   68.814013] xilinx_axienet a0000000.ethernet eth1: Link is Up - 1Gbps/Full - flow control off
-[   68.822670] IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
-udhcpc: sending discover
-udhcpc: sending select for 192.168.2.23
-udhcpc: lease of 192.168.2.23 obtained, lease time 259200
+root@zed-axieth-2025-2:~# udhcpc -i enx000a35000123
+udhcpc: started, v1.36.1
+xilinx_axienet 41040000.ethernet enx000a35000123: PHY [axienet-41040000:00] driver [Marvell 88E1510] (irq=POLL)
+xilinx_axienet 41040000.ethernet enx000a35000123: configuring for phy/rgmii-rxid link mode
+udhcpc: broadcasting discover
+udhcpc: broadcasting select for 192.168.2.62, server 192.168.2.1
+udhcpc: lease of 192.168.2.62 obtained from 192.168.2.1, lease time 259200
 /etc/udhcpc.d/50default: Adding DNS 192.168.2.1
 ```
 
 ### Check port status
 
-In this example, we use the ``ifconfig`` command with no arguments to check the port status.
-The first interface (eth0) shown below is connected to the on-board Ethernet port and it has not been
-enabled, whereas the second interface (eth1) is connected to the Ethernet FMC port 0 and it has
-been enabled and configured with IP address 192.168.2.30.
+In this example, ``ifconfig`` with no arguments shows the port status. The
+first AXI Ethernet port (`enx000a35000122`, Ethernet FMC Port 0) has already
+obtained an IP address via DHCP; the remaining AXI Ethernet ports are up but
+have no link partner. Captured from a `zedboard` PetaLinux boot:
 
 ```
-root@axieth:~# ifconfig
-eth0      Link encap:Ethernet  HWaddr 00:0A:35:00:22:01
+zed-axieth-2025-2:~$ ifconfig
+enx000a35000122 Link encap:Ethernet  HWaddr 00:0A:35:00:01:22  
+          inet addr:192.168.2.62  Bcast:192.168.2.255  Mask:255.255.255.0
+          inet6 addr: fe80::20a:35ff:fe00:122/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:33 errors:0 dropped:12 overruns:0 frame:0
+          TX packets:15 errors:0 dropped:2 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:4230 (4.1 KiB)  TX bytes:1933 (1.8 KiB)
+
+enx000a35000123 Link encap:Ethernet  HWaddr 00:0A:35:00:01:23  
           UP BROADCAST MULTICAST  MTU:1500  Metric:1
           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
+          TX packets:0 errors:0 dropped:3 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
-          Interrupt:30
 
-eth1      Link encap:Ethernet  HWaddr 00:0A:35:00:01:22
-          inet addr:192.168.2.30  Bcast:192.168.2.255  Mask:255.255.255.0
-          inet6 addr: fe80::20a:35ff:fe00:122/64 Scope:Link
-          UP BROADCAST RUNNING  MTU:1500  Metric:1
-          RX packets:38 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:26 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:6033 (5.8 KiB)  TX bytes:3302 (3.2 KiB)
-
-lo        Link encap:Local Loopback
+lo        Link encap:Local Loopback  
           inet addr:127.0.0.1  Mask:255.0.0.0
           inet6 addr: ::1/128 Scope:Host
           UP LOOPBACK RUNNING  MTU:65536  Metric:1
-          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:1000
-          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+          RX packets:2 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:2 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:140 (140.0 B)  TX bytes:140 (140.0 B)
 ```
 
-We can also use ``ethtool`` to check the port status as follows.
+``ethtool`` can also be used to check port status, for example:
 
 ```
-root@axieth:~# ethtool eth1
-Settings for eth1:
+root@zed-axieth-2025-2:~# ethtool enx000a35000122
+Settings for enx000a35000122:
         Supported ports: [ TP MII FIBRE ]
         Supported link modes:   10baseT/Half 10baseT/Full
                                 100baseT/Half 100baseT/Full
                                 1000baseT/Half 1000baseT/Full
-        Supported pause frame use: Symmetric Receive-only
         Supports auto-negotiation: Yes
-        Supported FEC modes: Not reported
-        Advertised link modes:  10baseT/Half 10baseT/Full
-                                100baseT/Half 100baseT/Full
-                                1000baseT/Half 1000baseT/Full
-        Advertised pause frame use: No
-        Advertised auto-negotiation: Yes
-        Advertised FEC modes: Not reported
-        Link partner advertised link modes:  10baseT/Half 10baseT/Full
-                                             100baseT/Half 100baseT/Full
-                                             1000baseT/Full
-        Link partner advertised pause frame use: No
-        Link partner advertised auto-negotiation: Yes
-        Link partner advertised FEC modes: Not reported
         Speed: 1000Mb/s
         Duplex: Full
         Port: MII
@@ -347,16 +327,24 @@ Settings for eth1:
 
 ### Ping link partner using specific port
 
-In this example we ping the link partner at IP address 192.168.2.10 from interface eth1.
+In this example we ping the link partner at IP address 192.168.2.98 from the
+Ethernet FMC Port 0 interface:
 
 ```
-root@axieth:~# ping -I eth1 192.168.2.10
-PING 192.168.2.10 (192.168.2.10): 56 data bytes
-64 bytes from 192.168.2.10: seq=0 ttl=128 time=0.545 ms
-64 bytes from 192.168.2.10: seq=1 ttl=128 time=0.455 ms
-64 bytes from 192.168.2.10: seq=2 ttl=128 time=0.380 ms
-64 bytes from 192.168.2.10: seq=3 ttl=128 time=0.356 ms
+zed-axieth-2025-2:~$ ping 192.168.2.98
+PING 192.168.2.98 (192.168.2.98): 56 data bytes
+64 bytes from 192.168.2.98: seq=0 ttl=64 time=0.463 ms
+64 bytes from 192.168.2.98: seq=1 ttl=64 time=0.280 ms
+64 bytes from 192.168.2.98: seq=2 ttl=64 time=0.279 ms
+64 bytes from 192.168.2.98: seq=3 ttl=64 time=0.260 ms
+^C
+--- 192.168.2.98 ping statistics ---
+4 packets transmitted, 4 packets received, 0% packet loss
+round-trip min/avg/max = 0.260/0.320/0.463 ms
 ```
+
+Use `ping -I <interface>` to force ping through a specific port if the default
+route does not select it.
 
 [Ethernet FMC]: https://docs.opsero.com/op031/datasheet/overview/
 [supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
