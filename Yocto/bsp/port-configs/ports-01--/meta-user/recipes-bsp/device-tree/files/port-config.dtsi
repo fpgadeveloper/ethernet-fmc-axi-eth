@@ -1,0 +1,46 @@
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2025-2026, Opsero Electronic Design Inc.  All rights reserved.
+
+/*
+ * Ethernet FMC port config: ports 0 and 1 only (ports-01--).
+ *
+ * Used by targets whose Vivado design instantiates only the first two AXI
+ * Ethernet cores (e.g. zcu102_hpc1, which wires only HPC1 lanes 0-1). Wires the
+ * external Ethernet FMC PHYs onto axi_ethernet_0/_1; the nodes come from the
+ * SDT's pl.dtsi (generated from the XSA), this overlay adds the MAC address,
+ * PHY handle, MDIO bus and RGMII phy-mode the XSA does not carry.
+ *
+ * Selected per target by the bsp/port-configs/ports-01-- overlay layer.
+ */
+
+&axi_ethernet_0 {
+	/delete-property/ xlnx,phy-type;
+	local-mac-address = [00 0a 35 00 01 22];
+	phy-handle = <&extphy0>;
+	xlnx,has-mdio = <0x1>;
+	phy-mode = "rgmii-rxid";
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		extphy0: phy@0 {
+			device_type = "ethernet-phy";
+			reg = <0>;
+		};
+	};
+};
+
+&axi_ethernet_1 {
+	/delete-property/ xlnx,phy-type;
+	local-mac-address = [00 0a 35 00 01 23];
+	phy-handle = <&extphy1>;
+	xlnx,has-mdio = <0x1>;
+	phy-mode = "rgmii-rxid";
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		extphy1: phy@0 {
+			device_type = "ethernet-phy";
+			reg = <0>;
+		};
+	};
+};

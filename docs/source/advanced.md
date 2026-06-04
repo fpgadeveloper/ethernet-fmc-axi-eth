@@ -474,6 +474,91 @@ wires up the AXI Ethernet ports. Each contains a single
 that Yocto picks it up via the `SRC_URI:append = " file://port-config.dtsi"`
 line in `device-tree.bbappend`).
 
+## Yocto / EDF side
+
+In addition to PetaLinux, the repository can build Linux images with the AMD
+Yocto / Embedded Development Framework (EDF) flow — the announced successor to
+PetaLinux. It lives in the `Yocto/` directory and is documented end-to-end in
+[`Yocto/README.md`](https://github.com/fpgadeveloper/ethernet-fmc-axi-eth/blob/master/Yocto/README.md);
+this section summarises how it is organised and what is modified on top of stock.
+
+### Universal Makefile + scripts
+
+The `Yocto/Makefile` and the four scripts in `Yocto/scripts/`
+(`init-workspace.sh`, `configure-build.sh`, `build-image.sh`,
+`package-output.sh`) are **universal** — byte-identical across all of our
+reference repos. The only per-repo content lives between the `# UPDATER START` /
+`# UPDATER END` markers in the Makefile, which `config/update.py` generates from
+`config/data.json`: the target list, `BD_NAME`, and each target's
+`<template> [<port-config>]` (e.g. `zcu102_hpc1_target := zynqMP ports-01--`).
+Do not hand-edit a universal file in a way that makes it repo-specific; pass
+repo values in instead (for example `configure-build.sh` takes `BD_NAME` as an
+argument and builds `MACHINE = "${BD_NAME}-<target>"`).
+
+### parse-sdt: MACHINE generated from the XSA
+
+`configure-build.sh` runs `xsct`/`sdtgen` on the target's XSA to produce a System
+Device Tree, then `gen-machineconf parse-sdt` to emit a custom
+`MACHINE = axieth-<target>` plus the per-domain device trees. The PL AXI Ethernet
+cores come from the design's own SDT (`pl.dtsi`); the Vivado bitstream is
+embedded into `BOOT.BIN` and the FSBL programs the PL at boot. There is no pinned
+AMD MACHINE and no per-target flow selection.
+
+### BSP composition
+
+A Yocto BSP is a `meta-user` **layer** (distinct from PetaLinux's `project-spec`
+tree). Each target's build layers, over the EDF default config:
+
+1. A **board BSP** at `Yocto/bsp/<board>/` — `conf/local.conf.append` (hostname,
+   kernel cmdline) plus a `meta-user/` layer (kernel `bsp.cfg`,
+   `system-user.dtsi` board fixups, image bbappend). Selected by the first token
+   of the target name.
+2. A **port-config overlay layer** at `Yocto/bsp/port-configs/<ports-*>/` —
+   selected by the second field of the target's Makefile line, added to
+   `bblayers.conf` by `configure-build.sh` alongside the board layer. It supplies
+   `port-config.dtsi`, the AXI Ethernet PHY wiring (MAC, `phy-handle`, MDIO,
+   `phy-mode`) the XSA does not carry. This is what lets `zcu102_hpc0` (4 ports,
+   `ports-0123`) and `zcu102_hpc1` (2 ports, `ports-01--`) share `bsp/zcu102`
+   while wiring different port counts. A target with no port config gets no
+   overlay (no-op), so the mechanism stays universal.
+
+Both `system-user.dtsi` and `port-config.dtsi` are added to the **Linux** device
+tree via `EXTRA_DT_INCLUDE_FILES`, guarded so they only apply to the Linux-domain
+DT — the FSBL/PMU domain DTs don't define the SoC / `axi_ethernet` labels, so
+including them there makes `dtc` fail with "Label or path … not found".
+
+### Modifications on the stock EDF config
+
+* **All boards** — `bsp.cfg`: `CONFIG_XILINX_GMII2RGMII`, `CONFIG_MVMDIO`,
+  `CONFIG_MARVELL_PHY` (+ `CONFIG_AMD_PHY`, `CONFIG_XILINX_PHY` on z7); rootfs:
+  `ethtool`, `iperf3` and common utilities (via `edf-linux-disk-image.bbappend`).
+* **Zynq-7000** (`pz`, `zc702`, `zc706`, `zedboard`) — identical SoC-side
+  `system-user.dtsi`: restore `compatible = "xlnx,zynq-7000"` (the parse-sdt board
+  merge drops it → kernel clock-init panic otherwise), set `/chosen/bootargs`
+  (`console=ttyPS0,115200 … cma=256M`; the z7 boot.scr reads bootargs from the
+  DT), and disable `&gem0` (PS GEM unused; 2025.x U-Boot data-aborts on it). The
+  z7 `bsp.cfg` also adds `CONFIG_NFSD`/`CONFIG_NFSD_V4` — the arm kernel defconfig
+  omits NFSD (the aarch64 one has it), so without it the NFS server fails to start
+  at boot (non-fatal).
+* **Zynq UltraScale+** — `bsp.cfg`: `CONFIG_XILINX_DMA_ENGINES`,
+  `CONFIG_XILINX_DPDMA`, `CONFIG_XILINX_ZYNQMP_DMA`; `system-user.dtsi` pins the
+  `uart0`/`uart1` `port-number` + serial aliases (the console is on UART0). `uzev`
+  additionally carries the full UZ7EV carrier description (GTR clocks + `&psgtr`,
+  `gem3` with MAC from the board EEPROM, the I2C tree, eMMC/QSPI/SATA), ported from
+  the PetaLinux `uzev` BSP.
+
+```{note}
+**CMA reservation.** On Zynq-7000 the `cma=256M` set in the
+`system-user.dtsi` `/chosen/bootargs` takes effect (verified at boot). On Zynq
+UltraScale+ the `APPEND:append` line in `local.conf.append` does **not** currently
+reach the kernel command line, so those targets boot with the kernel-default CMA
+(256 MiB) — sufficient for the AXI Ethernet DMA buffers, but be aware the
+`local.conf.append` `cma=` value is presently a no-op on ZynqMP.
+```
+
+The MicroBlaze (pure-FPGA) targets have no Linux flow (standalone only), so they
+are not in the Yocto target set.
+
 ## Where build outputs land
 
 | Path                                | Contents                                                                       |

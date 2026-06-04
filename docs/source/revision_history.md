@@ -15,6 +15,17 @@
   the device's DDR (256M / 512M / 1536M depending on target — see
   [advanced](advanced.md#zynq-7000-and-zynqmp-bsps))
 * Added a transient-sstate-fetch troubleshooting entry
+* Added the AMD Yocto / EDF build flow (in `Yocto/`) for the Zynq-7000 and
+  Zynq UltraScale+ targets, alongside PetaLinux — see [Yocto](yocto.md). The
+  MACHINE is generated from the Vivado XSA via `gen-machineconf parse-sdt`, and
+  the AXI Ethernet PHY wiring is supplied per target by `port-config.dtsi`
+  overlay layers (`ports-0123` / `ports-01--`). The PetaLinux flow for this
+  repository will be retired after 2025.2 — Yocto / EDF is its successor
+* In the Yocto/EDF images the AXI Ethernet interfaces are `end0`–`end3` on all
+  targets (the EDF rootfs uses systemd predictable naming), unlike the PetaLinux
+  `enx<mac>` names on Zynq-7000
+* Zynq-7000 Yocto kernel: enabled `CONFIG_NFSD` (the arm defconfig omits it),
+  so the NFS server starts cleanly at boot as it does on Zynq UltraScale+
 
 ## 2024.1 Changes
 

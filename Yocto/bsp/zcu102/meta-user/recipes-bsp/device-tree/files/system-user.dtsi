@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: MIT
+// Copyright (C) 2025-2026, Opsero Electronic Design Inc.  All rights reserved.
+
+/*
+ * SoC-side board fixups for the ZCU102 (ZynqMP), layered on top of the
+ * gen-machineconf / lopper-generated cortexa53-linux.dts (which carries the PS
+ * config and the PL AXI Ethernet cores from the XSA). Scoped to the Linux
+ * domain by device-tree.bbappend. The external Ethernet PHY wiring is supplied
+ * by the bsp/port-configs overlay (port-config.dtsi): ports-0123 for
+ * zcu102_hpc0 (4 ports) and ports-01-- for zcu102_hpc1 (2 ports).
+ *
+ * UART: ZCU102's CP2108 bridge exposes both PSU_UART_0 and PSU_UART_1 on USB.
+ * 2025.2's gen-machineconf assigns port-number=0 to uart1, making ttyPS0 map to
+ * uart1. Our test/logging setup is cabled to the UART_0 CP2108 interface, so
+ * force ttyPS0 back to uart0.
+ */
+
+&uart0 {
+	port-number = <0>;
+};
+&uart1 {
+	port-number = <1>;
+};
+
+/ {
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+	};
+	chosen {
+		stdout-path = "serial0:115200n8";
+	};
+};

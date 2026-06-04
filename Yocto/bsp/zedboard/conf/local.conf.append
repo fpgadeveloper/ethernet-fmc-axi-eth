@@ -1,0 +1,16 @@
+# Copyright (C) 2025-2026, Opsero Electronic Design Inc.  All rights reserved.
+#
+# SPDX-License-Identifier: MIT
+
+# Ethernet FMC AXI Ethernet overrides for zedboard (Zynq-7000), EDF flow.
+# bsp/zedboard gets its own MACHINE/SDT from its own Vivado XSA via gen-machineconf
+# parse-sdt (PS + PL device tree derived from hardware); MACHINE is NOT pinned.
+# Console is the Zynq PS UART (ttyPS0). CMA is modest so it also fits ZedBoard's
+# 512 MB DDR; bump if a target needs larger AXI-DMA buffers.
+APPEND:append = " earlycon console=ttyPS0,115200 clk_ignore_unused root=/dev/mmcblk0p3 rw rootwait cma=256M"
+
+# Hostname (overrides amd-edf default of "amd-edf").
+hostname:pn-base-files = "zedboard-axieth-2025-2"
+
+# Reserve space in the rootfs for image-time installs.
+IMAGE_ROOTFS_EXTRA_SPACE = "524288"

@@ -8,7 +8,8 @@ of the repository.
 To build the PetaLinux projects, you will need a physical or virtual machine running one of the 
 [supported Linux distributions], with PetaLinux 2025.2 and Vivado 2025.2 installed.
 
-```{attention} You cannot build the PetaLinux projects in the Windows operating system. Windows
+```{attention}
+You cannot build the PetaLinux projects in the Windows operating system. Windows
 users are advised to use a Linux virtual machine to build the PetaLinux projects.
 ```
 
@@ -52,7 +53,8 @@ Once the build process is complete, you must prepare the SD card for booting Pet
      like `/dev/sdX`, where `X` is a letter such as a,b,c,d, etc. Note that you should replace
      the `X` in the following instructions.
      
-```{warning} Do not continue these steps until you are certain that you have found the correct
+```{warning}
+Do not continue these steps until you are certain that you have found the correct
 device name for the SD card. If you use the wrong device name in the following steps, you risk
 losing data on one of your hard drives.
 ```
@@ -105,14 +107,16 @@ losing data on one of your hard drives.
 
 ## Boot via JTAG
 
-```{tip} You need to install the cable drivers before being able to boot via JTAG.
+```{tip}
+You need to install the cable drivers before being able to boot via JTAG.
 Note that the Vitis installer does not automatically install the cable drivers, it must be done separately.
 For instructions, read section 
 [installing the cable drivers](https://docs.amd.com/r/en-US/ug973-vivado-release-notes-install-license/Installing-Cable-Drivers) 
 from the Vivado release notes.
 ```
 
-```{warning} When booting the Zynq-7000 or Zynq UltraScale+ PetaLinux designs via JTAG, you
+```{warning}
+When booting the Zynq-7000 or Zynq UltraScale+ PetaLinux designs via JTAG, you
 must still first prepare the SD card. These designs are configured to mount the root
 filesystem from the SD card, so booting via JTAG without an SD card prepared and inserted
 will hang at a message similar to: `Waiting for root device /dev/mmcblk0p2...`

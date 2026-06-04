@@ -20,6 +20,7 @@ and `Robust Ethernet FMC`_.
    build_instructions
    echo_server
    petalinux
+   yocto
    advanced
    troubleshooting
    revision_history

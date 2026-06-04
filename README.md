@@ -41,43 +41,43 @@ require a license to generate a bitstream with the AMD Xilinx tools.
 <!-- updater start -->
 ### FPGA designs
 
-| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
-|-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [AC701]               | `ac701`            | 4x          | HPC         | :white_check_mark: | :x:   | Standard :free: |
-| [KC705]               | `kc705_hpc`        | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
-| [KC705]               | `kc705_lpc`        | 4x          | LPC         | :white_check_mark: | :x:   | Enterprise |
-| [KC705]               | `kc705_lpc_hpc`    | 8x          | LPC & HPC   | :white_check_mark: | :x:   | Enterprise |
-| [VC707]               | `vc707_hpc1`       | 4x          | HPC1        | :white_check_mark: | :x:   | Enterprise |
-| [VC707]               | `vc707_hpc2`       | 4x          | HPC2        | :white_check_mark: | :x:   | Enterprise |
-| [VC707]               | `vc707_hpc2_hpc1`  | 8x          | HPC2 & HPC1 | :white_check_mark: | :x:   | Enterprise |
-| [VC709]               | `vc709`            | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
-| [KCU105]              | `kcu105_hpc`       | 4x          | HPC         | :white_check_mark: | :x:   | Enterprise |
-| [KCU105]              | `kcu105_lpc`       | 3x          | LPC         | :white_check_mark: | :x:   | Enterprise |
-| [KCU105]              | `kcu105_dual`      | 7x          | LPC & HPC   | :white_check_mark: | :x:   | Enterprise |
-| [VCU108]              | `vcu108_hpc0`      | 4x          | HPC0        | :white_check_mark: | :x:   | Enterprise |
-| [VCU108]              | `vcu108_hpc1`      | 4x          | HPC1        | :white_check_mark: | :x:   | Enterprise |
-| [VCU118]              | `vcu118`           | 4x          | FMCP        | :white_check_mark: | :x:   | Enterprise |
+| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Yocto | Vivado<br> Edition |
+|-----------------------|--------------------|-------------|-------------|-------|-------|-------|-------|
+| [AC701]               | `ac701`            | 4x          | HPC         | :white_check_mark: | :x:   | :x:   | Standard :free: |
+| [KC705]               | `kc705_hpc`        | 4x          | HPC         | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [KC705]               | `kc705_lpc`        | 4x          | LPC         | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [KC705]               | `kc705_lpc_hpc`    | 8x          | LPC & HPC   | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VC707]               | `vc707_hpc1`       | 4x          | HPC1        | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VC707]               | `vc707_hpc2`       | 4x          | HPC2        | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VC707]               | `vc707_hpc2_hpc1`  | 8x          | HPC2 & HPC1 | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VC709]               | `vc709`            | 4x          | HPC         | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [KCU105]              | `kcu105_hpc`       | 4x          | HPC         | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [KCU105]              | `kcu105_lpc`       | 3x          | LPC         | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [KCU105]              | `kcu105_dual`      | 7x          | LPC & HPC   | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VCU108]              | `vcu108_hpc0`      | 4x          | HPC0        | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VCU108]              | `vcu108_hpc1`      | 4x          | HPC1        | :white_check_mark: | :x:   | :x:   | Enterprise |
+| [VCU118]              | `vcu118`           | 4x          | FMCP        | :white_check_mark: | :x:   | :x:   | Enterprise |
 
 ### Zynq-7000 designs
 
-| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
-|-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [PicoZed 7015]        | `pz_7015`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [PicoZed 7020]        | `pz_7020`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [PicoZed 7030]        | `pz_7030`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [ZC702]               | `zc702_lpc1`       | 4x          | LPC1        | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [ZC702]               | `zc702_lpc2`       | 4x          | LPC2        | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [ZC702]               | `zc702_lpc2_lpc1`  | 8x          | LPC2 & LPC1 | :white_check_mark: | :x:   | Standard :free: |
-| [ZC706]               | `zc706_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Enterprise |
-| [ZedBoard]            | `zedboard`         | 4x          | LPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
+| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Yocto | Vivado<br> Edition |
+|-----------------------|--------------------|-------------|-------------|-------|-------|-------|-------|
+| [PicoZed 7015]        | `pz_7015`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [PicoZed 7020]        | `pz_7020`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [PicoZed 7030]        | `pz_7030`          | 4x          | LPC         | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZC702]               | `zc702_lpc1`       | 4x          | LPC1        | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZC702]               | `zc702_lpc2`       | 4x          | LPC2        | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZC702]               | `zc702_lpc2_lpc1`  | 8x          | LPC2 & LPC1 | :white_check_mark: | :x:   | :x:   | Standard :free: |
+| [ZC706]               | `zc706_lpc`        | 4x          | LPC         | :white_check_mark: | :white_check_mark: | :white_check_mark: | Enterprise |
+| [ZedBoard]            | `zedboard`         | 4x          | LPC         | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
 
 ### Zynq UltraScale+ designs
 
-| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |
-|-----------------------|--------------------|-------------|-------------|-------|-------|-------|
-| [UltraZed-EV Carrier] | `uzev`             | 4x          | HPC         | :white_check_mark: | :white_check_mark: | Standard :free: |
-| [ZCU102]              | `zcu102_hpc0`      | 4x          | HPC0        | :white_check_mark: | :white_check_mark: | Enterprise |
-| [ZCU102]              | `zcu102_hpc1`      | 2x          | HPC1        | :white_check_mark: | :white_check_mark: | Enterprise |
+| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Yocto | Vivado<br> Edition |
+|-----------------------|--------------------|-------------|-------------|-------|-------|-------|-------|
+| [UltraZed-EV Carrier] | `uzev`             | 4x          | HPC         | :white_check_mark: | :white_check_mark: | :white_check_mark: | Standard :free: |
+| [ZCU102]              | `zcu102_hpc0`      | 4x          | HPC0        | :white_check_mark: | :white_check_mark: | :white_check_mark: | Enterprise |
+| [ZCU102]              | `zcu102_hpc1`      | 2x          | HPC1        | :white_check_mark: | :white_check_mark: | :white_check_mark: | Enterprise |
 
 [AC701]: https://www.xilinx.com/ac701
 [KC705]: https://www.xilinx.com/kc705
@@ -104,14 +104,35 @@ Notes:
 
 ## Software
 
-These reference designs can be driven by either a standalone application or within a PetaLinux environment. 
-The repository includes all necessary scripts and code to build both environments. The table 
-below outlines the corresponding applications available in each environment:
+These reference designs can be driven by a **standalone** (bare-metal) application or from
+within an embedded **Linux** environment. The repository includes all the scripts and code
+needed to build either one.
 
-| Environment      | Available Applications  |
-|------------------|-------------------------|
-| Standalone       | lwIP Echo Server |
-| PetaLinux        | Built-in Linux commands<br>Additional tools: ethtool, phytool, iperf3 |
+For Linux, two build flows are provided, both based on AMD's 2025.2 tools:
+
+* **PetaLinux** — AMD's long-standing embedded Linux build tool (see the `PetaLinux/`
+  directory).
+* **Yocto / EDF** — AMD's Embedded Development Framework, the announced successor to
+  PetaLinux, built with the `gen-machineconf parse-sdt` flow (see the `Yocto/` directory).
+
+> [!IMPORTANT]
+> **The PetaLinux flow is being retired for this repository.** Version 2025.2 is the
+> last tool release for which we will support PetaLinux; from the next tool version
+> onward, Linux images will be built with the Yocto / EDF flow only. New work should
+> use the Yocto flow.
+
+For 2025.2, both flows produce an equivalent Linux image with the same applications, so you
+can pick whichever fits your workflow. The [target design tables](#target-designs) show which
+boards are supported by each flow.
+
+| Environment | Build flow          | Available applications |
+|-------------|---------------------|------------------------|
+| Standalone  | Vitis               | lwIP echo server |
+| Linux       | PetaLinux  /  Yocto | Built-in Linux commands<br>Additional tools: ethtool, phytool, iperf3 |
+
+The standalone application runs the lwIP echo server on the target, exercising the AXI
+Ethernet ports. Under Linux, the same ports come up as network interfaces that you can bring
+up, assign IP addresses, and test with the bundled tools.
 
 ## Build instructions
 
@@ -141,8 +162,21 @@ cd ethernet-fmc-axi-eth/PetaLinux
 make petalinux TARGET=zedboard
 ```
 
+To build the Yocto / EDF image instead (source Vivado **and** Vitis — the flow uses `xsct`/`sdtgen`
+to generate a System Device Tree from the XSA — plus [Google's repo tool](https://gerrit.googlesource.com/git-repo/)):
+
+```
+source <path-to-xilinx-tools>/2025.2/Vivado/settings64.sh
+source <path-to-xilinx-tools>/2025.2/Vitis/settings64.sh
+cd ethernet-fmc-axi-eth/Yocto
+make yocto TARGET=zedboard
+```
+
 Replace the target label in these commands with the one corresponding to the target design of your
-choice from the tables above.
+choice from the tables above. See the [documentation](https://axieth.ethernetfmc.com/en/latest/)
+([PetaLinux](https://axieth.ethernetfmc.com/en/latest/petalinux.html) /
+[Yocto](https://axieth.ethernetfmc.com/en/latest/yocto.html)) for the full build and
+SD-card flashing walkthrough.
 
 ## Troubleshooting
 

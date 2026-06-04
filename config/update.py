@@ -41,8 +41,8 @@ def create_tables(data):
     for group in used_groups:
         tables.append('### {} designs'.format(group['name']))
         tables.append('')
-        tables.append('| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition |')
-        tables.append('|-----------------------|--------------------|-------------|-------------|-------|-------|-------|')
+        tables.append('| Target board          | Target design      | Ports       | FMC Slot(s) | Standalone<br> Echo Server | PetaLinux | Yocto | Vivado<br> Edition |')
+        tables.append('|-----------------------|--------------------|-------------|-------------|-------|-------|-------|-------|')
         for design in data['designs']:
             if not design['publish']:
                 continue
@@ -55,6 +55,7 @@ def create_tables(data):
                 cols.append('{0}'.format(design['connector']).ljust(11))
                 cols.append('{0}'.format(to_emoji[design['baremetal']]).ljust(5))
                 cols.append('{0}'.format(to_emoji[design['petalinux']]).ljust(5))
+                cols.append('{0}'.format(to_emoji[design.get('yocto', False)]).ljust(5))
                 cols.append('{0}'.format(to_edition[design['license']]).ljust(5))
                 tables.append('| ' + ' | '.join(cols) + ' |')
                 links[design['board']] = design['link']
@@ -167,6 +168,28 @@ def get_petalinux_targets(data):
         targets.append(target)
     return(targets)
 
+def get_yocto_targets(data):
+    templates = {'fpga': 'microblaze', 'z7': 'zynq', 'zu': 'zynqMP', 'versal': 'versal'}
+    targets = []
+    # BD_NAME lives inside the UPDATER block so the Yocto/Makefile body stays
+    # identical across repos (configure-build.sh reads it via a Makefile arg).
+    targets.append('BD_NAME = {}'.format(data['bd_name']))
+    for design in data['designs']:
+        if not design.get('yocto'):
+            continue
+        template = templates[design['group']]
+        # Per-target Ethernet port config (e.g. ports-0123 / ports-01--),
+        # derived from lanes exactly like get_petalinux_targets. The Yocto
+        # Makefile uses this as word 2 to select an optional port-config
+        # overlay layer; repos with no port config simply omit it.
+        lanecfg = 'ports-'
+        length = 8 if len(design['lanes']) > 4 else 4
+        for lane in range(length):
+            lanecfg += str(lane) if lane in design['lanes'] else '-'
+        target = '{}_target := {} {}'.format(design['label'],template,lanecfg)
+        targets.append(target)
+    return(targets)
+
 def get_vitis_targets(data, args):
     templates = {'fpga': 'microblaze', 'z7': 'zynq', 'zu': 'zynqMP', 'versal': 'versal'}
     targets = []
@@ -261,6 +284,11 @@ update_file(vitis_makefile,vitis_targets)
 petalinux_makefile = '../PetaLinux/Makefile'
 petalinux_targets = get_petalinux_targets(data)
 update_file(petalinux_makefile,petalinux_targets)
+
+# Update the Yocto makefile
+yocto_makefile = '../Yocto/Makefile'
+yocto_targets = get_yocto_targets(data)
+update_file(yocto_makefile,yocto_targets)
 
 # Update the gitignore
 gitignore = '../.gitignore'

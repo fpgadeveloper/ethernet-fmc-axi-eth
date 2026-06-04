@@ -53,7 +53,8 @@ Notes:
 Windows users will be able to build the Vivado projects and compile the standalone applications,
 however Linux is required to build the PetaLinux projects. 
 
-```{tip} If you wish to build the PetaLinux projects,
+```{tip}
+If you wish to build the PetaLinux projects,
 we recommend that you build the entire project (including the Vivado project) on a machine (either 
 physical or virtual) running one of the [supported Linux distributions].
 ```
@@ -86,7 +87,20 @@ Before running these steps, you must first build and export the Vivado project a
 These projects can be built using a machine (either physical or virtual) with one of the 
 [supported Linux distributions].
 
-```{tip} The build steps can be completed in the order shown below, or
+An embedded Linux image can be built with either of two flows: **PetaLinux** or the
+**Yocto / EDF** flow (AMD's Embedded Development Framework, the announced successor to
+PetaLinux). Both are driven by a single `make` command and produce an equivalent image — see
+[build PetaLinux](#build-petalinux-project-in-linux) or
+[build Yocto](#build-yocto-project-in-linux) below.
+
+```{attention}
+The PetaLinux flow for this repository is being retired. Version 2025.2 is
+the last tool release for which we will support PetaLinux; from the next tool version onward,
+Linux images will be built with the Yocto / EDF flow only. New work should use the Yocto flow.
+```
+
+```{tip}
+The build steps can be completed in the order shown below, or
 you can go directly to the [build PetaLinux](#build-petalinux-project-in-linux) instructions below
 to build the Vivado and PetaLinux projects with a single command.
 ```
@@ -200,6 +214,46 @@ follow these instructions.
    FORWARD SLASH.
 
 Now when you use `make` to build the PetaLinux projects, they will be configured for offline build.
+
+### Build Yocto project in Linux
+
+These steps build a Linux image using the AMD Yocto / EDF flow — the announced successor to
+PetaLinux (see [Yocto](yocto.md) for the full walkthrough and SD-card flashing). The Yocto flow is
+supported for the same Zynq-7000 and Zynq UltraScale+ targets as PetaLinux. You are not required to
+have built the Vivado design beforehand; the Makefile triggers the Vivado build for the
+corresponding design if it has not already been done.
+
+```{attention}
+The Yocto flow requires Vitis to be sourced (it uses `xsct`/`sdtgen` to generate a
+System Device Tree from the XSA), and [Google's repo tool](https://gerrit.googlesource.com/git-repo/)
+on your `PATH`. It cannot be built on Windows.
+```
+
+1. Launch the setup scripts for Vivado and Vitis:
+   ```
+   source <path-to-xilinx-tools>/2025.2/Vivado/settings64.sh
+   source <path-to-xilinx-tools>/2025.2/Vitis/settings64.sh
+   ```
+2. Build the Yocto image for your specific target platform by running the following command,
+   replacing `<target>` with a valid value from below:
+   ```
+   cd Yocto
+   make yocto TARGET=<target>
+   ```
+   Valid target labels for Yocto projects are:
+   {% for design in data.designs if design.yocto and design.publish %} `{{ design.label }}`{{ ", " if not loop.last else "." }} {% endfor %}
+   The first build of a target downloads several GB of sources (`repo sync`) and runs bitbake from
+   scratch, so it takes a while; subsequent builds are incremental. The output products are
+   gathered into `Yocto/<target>/images/linux/`.
+
+### Yocto offline build
+
+The Yocto flow uses the same sstate-cache artefacts as PetaLinux (aarch64 for Zynq UltraScale+,
+arm for Zynq-7000, microblaze for the ZynqMP PMU-firmware multiconfig, plus Downloads). Extract
+them to a single location as described under [PetaLinux offline build](#petalinux-offline-build),
+then create a one-line `offline.txt` (no trailing slash) in the **`Yocto`** directory pointing at
+that location. `configure-build.sh` auto-detects which architecture subdirectories are present and
+wires up the corresponding sstate mirrors.
 
 [supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
 
