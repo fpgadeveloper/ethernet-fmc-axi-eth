@@ -42,6 +42,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "32",
       "flashintf": "SPIx4"
     },
@@ -67,6 +68,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "128",
       "flashintf": "BPIx16"
     },
@@ -92,6 +94,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "128",
       "flashintf": "BPIx16"
     },
@@ -122,6 +125,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "128",
       "flashintf": "BPIx16"
     },
@@ -147,6 +151,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -172,6 +177,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -202,6 +208,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -227,6 +234,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -252,6 +260,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "32",
       "flashintf": "SPIx4"
     },
@@ -276,6 +285,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "32",
       "flashintf": "SPIx4"
     },
@@ -305,6 +315,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "32",
       "flashintf": "SPIx4"
     },
@@ -330,6 +341,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "128",
       "flashintf": "SPIx4"
     },
@@ -355,6 +367,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "128",
       "flashintf": "SPIx4"
     },
@@ -380,6 +393,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "128",
       "flashintf": "SPIx4"
     },
@@ -406,6 +420,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -432,6 +447,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -458,6 +474,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -484,6 +501,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -510,6 +528,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -540,6 +559,7 @@
       "petalinux": false,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -566,6 +586,7 @@
       "yocto": true,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -592,6 +613,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -618,6 +640,7 @@
       "yocto": true,
       "baremetal": true,
       "license": false,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -644,6 +667,7 @@
       "yocto": true,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     },
@@ -668,6 +692,7 @@
       "yocto": true,
       "baremetal": true,
       "license": true,
+      "ip_license": true,
       "flashsize": "0",
       "flashintf": "0"
     }

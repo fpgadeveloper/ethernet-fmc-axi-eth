@@ -1,0 +1,3 @@
+build.sh text eol=lf
+build.py text eol=lf
+build.bat text eol=crlf

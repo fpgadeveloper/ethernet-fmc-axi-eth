@@ -15,4 +15,4 @@
 # domain DTS, same as the board system-user.dtsi.
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-EXTRA_DT_INCLUDE_FILES:append = "${@' port-config.dtsi' if 'linux' in (d.getVar('CONFIG_DTFILE') or '') else ''}"
+EXTRA_DT_INCLUDE_FILES:append = "${@' port-config.dtsi' if 'linux' in os.path.basename(d.getVar('CONFIG_DTFILE') or '') else ''}"
