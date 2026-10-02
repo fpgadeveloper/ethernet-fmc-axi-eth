@@ -24,12 +24,16 @@ it.
 │   ├── data.json
 │   └── update.py
 ├── docs/                      <- This documentation (Sphinx + Read the Docs)
-├── EmbeddedSw/                <- Vendored AMD BSP libraries used by the Vitis build
+│   └── source/images/gen_*.py <- Generators of the block diagrams (matplotlib)
+├── EmbeddedSw/                <- Patched lwIP / AXI Ethernet driver sources used by the Vitis build
 ├── PetaLinux/
 │   └── bsp/                   <- Per-board and per-port-config BSP fragments
 │       ├── pz/, zc702/, …     <-   board-specific overlays
 │       └── ports-0123/, ports-01--/   <- port-config overlays
-└── Vivado/
+├── Yocto/
+│   ├── scripts/               <- The four Yocto / EDF flow scripts (+ hostfix.sh)
+│   └── bsp/                   <- Per-board meta-user layers + port-configs/ overlays
+├── Vivado/
 │   ├── scripts/
 │   │   ├── build.tcl          <- Project creation + block design assembly
 │   │   └── xsa.tcl            <- Synthesis, implementation, XSA export
@@ -47,15 +51,13 @@ it.
     │   ├── args.json          <- Repo-specific Vitis flow configuration
     │   ├── build-vitis.py     <- Universal Vitis Python build driver
     │   ├── make-boot.py       <- BOOT.BIN / .mcs packaging
-    │   ├── pre_build.py       <- Per-build hook (e.g. constants generation)
-    │   └── pre_platform_build.py
-    ├── common/
-    │   └── src/               <- Standalone application source (echo_server)
+    │   ├── pre_build.py       <- Hook: Ethernet FMC port selection (ETHERNET_PORT)
+    │   └── pre_platform_build.py  <- Hook: lwIP tick timer assignment
     └── <target>_workspace/    <- Per-target Vitis workspace (generated)
 ```
 
 Per-target build outputs are written to `Vivado/<target>/`,
-`Vitis/<target>_workspace/`, and `PetaLinux/<target>/`; packaged
+`Vitis/<target>_workspace/`, `PetaLinux/<target>/` and `Yocto/<target>/`; packaged
 boot-image zips are written to `bootimages/`. None of these are
 committed.
 
@@ -223,9 +225,11 @@ each target's XDC — there is no shared XDC.
 ## Vitis side
 
 The standalone (baremetal) build runs the lwIP echo-server example on
-the target, exercising the AXI Ethernet ports. The application source
-is shared across all targets; per-target specialisation is handled by
-the build driver, not by per-target source.
+the target, exercising the AXI Ethernet ports. The application is
+generated from the Vitis `lwip_echo_server` template for every target;
+the repository carries no application source of its own. Its
+specialisation comes from the patched libraries in `EmbeddedSw/` and the
+two hook scripts in `Vitis/py/`.
 
 ### Layout
 
@@ -237,9 +241,7 @@ Vitis/
 │   ├── make-boot.py          <- BOOT.BIN / .mcs packaging
 │   ├── pre_build.py          <- Hook run before each app build
 │   └── pre_platform_build.py <- Hook run before each platform build
-├── common/
-│   └── src/                  <- Application source (echo_server)
-├── boot/<target>/            <- Per-target packaged boot files (BOOT.BIN / .mcs)
+├── boot/<target>/            <- Per-target packaged boot files (BOOT.BIN, or .bit + .elf)
 └── <target>_workspace/       <- Generated Vitis workspace per target
 ```
 
@@ -255,8 +257,10 @@ universal `build-vitis.py` driver. The key fields are:
 * `bsp_libs` — BSP libraries to add and configure (here: `lwip220` with
   DHCP + ACD check + an enlarged pbuf pool, and `xiltimer` with the
   interval timer enabled).
-* `src` — application source mapping. `"all": "common/src"` means
-  every target uses the same source directory.
+* `src` — application source mapping. `"all": "common/src"` would
+  copy that directory over the template sources of every target; the
+  directory does not exist in this repository, so the template sources
+  are used unchanged (the build prints a note and skips the copy).
 * `pre_platform_build_script` / `pre_build_script` — hooks invoked at
   the appropriate point in the workspace build.
 
@@ -275,10 +279,17 @@ will go out with a zero checksum.
 
 ### Modifying the standalone application
 
-Edit `Vitis/common/src/*.c` directly. The next `./build.sh standalone
---target <t>` rebuilds the application against the existing platform; if
-you've changed the hardware (XSA) you'll need a fresh workspace
-(`./build.sh clean --target <t> --stage standalone` first).
+For a quick change, edit the sources in
+`Vitis/<target>_workspace/echo_server/src/` and rebuild in the Vitis GUI;
+`./build.sh standalone --target <t>` then re-packages the boot file. The
+build runner does not recompile an existing workspace, and a new
+workspace is generated from the template again, so to make a change
+permanent put your modified sources in `Vitis/common/src/` (they are
+copied over the template sources of every target when a workspace is
+created) and recreate the workspace with
+`./build.sh clean --target <t> --stage standalone` followed by
+`./build.sh standalone --target <t>`. A fresh workspace is also needed
+after the hardware (XSA) changed.
 
 ### Modifying BSP libraries or build hooks
 
@@ -426,6 +437,16 @@ the stock one?"* — it is what to re-apply if you ever do that.
   GMII-to-RGMII shim and the on-board PHYs used by the AXI Ethernet
   ports.
 
+### Zynq-7000 BSPs (`pz`, `zc702`, `zc706`, `zedboard`)
+
+* **Board Ethernet port (GEM0)** in `system-user.dtsi`: GEM0 is enabled
+  with `phy-mode = "rgmii-id"` and its PHY described on its MDIO bus
+  (address 0 on ZedBoard and PicoZed, address 7 on ZC702 and ZC706).
+  The device tree generated from the XSA enables GEM0 but describes no
+  PHY, which makes U-Boot 2025.01 crash (data abort) while probing it.
+  The ZedBoard BSP also gives GEM0 a fixed MAC address
+  (`local-mac-address`); on the other boards U-Boot assigns one.
+
 ### Zynq-7000 and ZynqMP BSPs
 
 * **SD-card root filesystem** configured in `configs/config`:
@@ -547,29 +568,54 @@ including them there makes `dtc` fail with "Label or path … not found".
 
 * **All boards** — `bsp.cfg`: `CONFIG_XILINX_GMII2RGMII`, `CONFIG_MVMDIO`,
   `CONFIG_MARVELL_PHY` (+ `CONFIG_AMD_PHY`, `CONFIG_XILINX_PHY` on z7); rootfs:
-  `ethtool`, `iperf3` and common utilities (via `edf-linux-disk-image.bbappend`).
-* **Zynq-7000** (`pz`, `zc702`, `zc706`, `zedboard`) — identical SoC-side
-  `system-user.dtsi`: restore `compatible = "xlnx,zynq-7000"` (the parse-sdt board
-  merge drops it → kernel clock-init panic otherwise), set `/chosen/bootargs`
-  (`console=ttyPS0,115200 … cma=256M`; the z7 boot.scr reads bootargs from the
-  DT), and disable `&gem0` (PS GEM unused; 2025.x U-Boot data-aborts on it). The
-  z7 `bsp.cfg` also adds `CONFIG_NFSD`/`CONFIG_NFSD_V4` — the arm kernel defconfig
-  omits NFSD (the aarch64 one has it), so without it the NFS server fails to start
-  at boot (non-fatal).
+  `ethtool`, `phytool`, `iperf3` and common utilities (via
+  `edf-linux-disk-image.bbappend`; the z7 BSPs also add `bridge-utils`, which the
+  EDF base image only includes on Zynq UltraScale+).
+* **All boards — kernel command line and hostname** (`conf/local.conf.append` +
+  `meta-user/recipes-bsp/u-boot/u-boot-edf-scr_%.bbappend`). In the EDF SD-card
+  boot flow the kernel command line is built only by `boot.scr`: it takes the device
+  tree's `/chosen/bootargs` (on ZynqMP `sdtgen` emits `earlycon console=ttyPS0,115200
+  clk_ignore_unused init_fatal_sh=1`; on Zynq-7000 it emits none) and appends
+  `root=/dev/mmcblk<N>p3 ro rootwait uio_pdrv_genirq.of_id=generic-uio`. The
+  `APPEND` variable is not read by this flow. Each board therefore sets
+  `BSP_EXTRA_BOOTARGS` (`cma=1536M` on ZynqMP; `earlycon console=ttyPS0,115200
+  clk_ignore_unused cma=<size>` on Zynq-7000), and the bbappend appends it to the
+  script's `setenv bootargs` line; changing the variable rebuilds `boot.scr`. The
+  hostname `<board>-axieth-2025-2` is set with `hostname:pn-base-files:forcevariable`,
+  because the EDF distribution configuration would otherwise override it with
+  `amd-edf`.
+* **Zynq-7000** (`pz`, `zc702`, `zc706`, `zedboard`) — SoC-side `system-user.dtsi`:
+  restore `compatible = "xlnx,zynq-7000"` (the parse-sdt board merge drops it →
+  kernel clock-init panic otherwise), and describe the board Ethernet port's PHY on
+  GEM0 (`rgmii-id`, MDIO address 0 on ZedBoard and PicoZed, 7 on ZC702 and ZC706;
+  fixed MAC address on ZedBoard). GEM0 is enabled by the generated device tree but
+  has no PHY description, and U-Boot 2025.01 data-aborts while probing it; this
+  `system-user.dtsi` is also U-Boot's control device tree, so U-Boot sees the same
+  description. The z7 `bsp.cfg` also adds `CONFIG_NFSD`/`CONFIG_NFSD_V4` — the arm
+  kernel defconfig omits NFSD (the aarch64 one has it), so without it the NFS server
+  fails to start at boot (non-fatal).
 * **Zynq UltraScale+** — `bsp.cfg`: `CONFIG_XILINX_DMA_ENGINES`,
   `CONFIG_XILINX_DPDMA`, `CONFIG_XILINX_ZYNQMP_DMA`; `system-user.dtsi` pins the
-  `uart0`/`uart1` `port-number` + serial aliases (the console is on UART0). `uzev`
-  additionally carries the full UZ7EV carrier description (GTR clocks + `&psgtr`,
-  `gem3` with MAC from the board EEPROM, the I2C tree, eMMC/QSPI/SATA), ported from
-  the PetaLinux `uzev` BSP.
+  `uart0`/`uart1` `port-number` + serial aliases (the console is on UART0). `zcu102`
+  describes the board port's TI DP83867 PHY on GEM3 with its RGMII delay properties
+  (the SDT flow omits it, so Linux would bind the Generic PHY driver and the link
+  would come up but pass no traffic) at both MDIO addresses used by the ZCU102
+  revisions, and gives GEM3 a fixed MAC address. `uzev` additionally carries the
+  full UZ7EV carrier description (GTR clocks + `&psgtr`, `gem3` with MAC from the
+  board EEPROM, the I2C tree, eMMC/QSPI/SATA), ported from the PetaLinux `uzev` BSP.
 
 ```{note}
-**CMA reservation.** On Zynq-7000 the `cma=256M` set in the
-`system-user.dtsi` `/chosen/bootargs` takes effect (verified at boot). On Zynq
-UltraScale+ the `APPEND:append` line in `local.conf.append` does **not** currently
-reach the kernel command line, so those targets boot with the kernel-default CMA
-(256 MiB) — sufficient for the AXI Ethernet DMA buffers, but be aware the
-`local.conf.append` `cma=` value is presently a no-op on ZynqMP.
+**Port-config selection.** The Yocto build applies the port-config overlay named by
+the `portcfg` attribute of the target in `config/data.json` (`ports-0123` or
+`ports-01--`). A target without it gets no overlay, and its AXI Ethernet ports then
+fail to probe ("phy-handle required").
+```
+
+```{note}
+**Host `tar` workaround.** `Yocto/scripts/hostfix.sh` (sourced by
+`configure-build.sh` and `build-image.sh`) works around host `tar` versions that
+BitBake's fake-root tool (pseudo) cannot handle, which otherwise make packaging
+tasks fail. It does nothing on hosts that do not need it.
 ```
 
 The MicroBlaze (pure-FPGA) targets have no Linux flow (standalone only), so they
@@ -583,10 +629,12 @@ are not in the Yocto target set.
 | `Vivado/<target>/<target>.runs/impl_1/<bd_name>_wrapper.bit` | Bitstream.                                              |
 | `Vivado/logs/`                      | Per-target Vivado build logs (xpr + xsa).                                       |
 | `Vitis/<target>_workspace/`         | Per-target Vitis workspace (platform + application + BSP).                      |
-| `Vitis/boot/<target>/`              | Packaged Vitis boot files (`BOOT.BIN` for Zynq/ZynqMP, `.mcs` for MicroBlaze).  |
-| `PetaLinux/<target>/`               | PetaLinux project. All Yocto build state lives here.                            |
+| `Vitis/boot/<target>/`              | Packaged Vitis boot files (`BOOT.BIN` for Zynq/ZynqMP, bitstream + `echo_server.elf` for MicroBlaze).  |
+| `PetaLinux/<target>/`               | PetaLinux project. All PetaLinux build state lives here.                        |
 | `PetaLinux/<target>/images/linux/`  | `BOOT.BIN`, `image.ub`, `boot.scr`, `rootfs.tar.gz`, etc.                       |
 | `PetaLinux/<target>/build/build.log`| PetaLinux build log.                                                            |
-| `bootimages/`                       | Per-target zipped boot files (`<prj>_<target>_petalinux-<ver>.zip` and `<prj>_<target>_standalone-<ver>.zip`). |
+| `Yocto/<target>/`                   | Yocto / EDF workspace (sources, build directory, sstate).                       |
+| `Yocto/<target>/images/linux/`      | `BOOT.BIN`, `boot.scr`, kernel, `system.dtb`, `rootfs.wic.xz` + `.bmap`, `rootfs.tar.gz`. |
+| `bootimages/`                       | Per-target zipped boot files (`<prj>_<target>_standalone-<ver>.zip`, `<prj>_<target>_petalinux-<ver>.zip`, `<prj>_<target>_yocto-<ver>.zip`). |
 
 None of these directories are committed to the repository.

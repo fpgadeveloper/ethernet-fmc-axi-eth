@@ -3,11 +3,24 @@
 / {
 };
 
-/* Zedboard's PS GEM0 is not used by this design (the ethernet-fmc-axi-eth
- * test exercises the AXI Ethernet cores in the PL, not the PS GEM). 2025.01
- * u-boot crashes (data abort) while probing gem0 because the DT generated
- * from the XSA is missing PHY/clock info. Disabling gem0 sidesteps the crash
- * and leaves the PL AXI ethernet untouched. */
+/* gem0 = the board Ethernet port (RJ45), kept enabled so the image is
+ * reachable over the board port; the FMC ports are the PL AXI Ethernet cores.
+ * The generated DT describes no PHY for gem0 (no phy-handle), which makes
+ * 2025.01 u-boot data-abort while probing it, so the PHY is described here
+ * (MDIO address 0, rgmii-id). This dtb is also u-boot's control DT (BOOT.BIN
+ * loads it at 0x100000). Fixed MAC assigned to this board. */
 &gem0 {
-    status = "disabled";
+    status = "okay";
+    phy-mode = "rgmii-id";
+    phy-handle = <&gem0_phy>;
+    local-mac-address = [00 0a 35 06 21 20];
+    xlnx,has-mdio = <0x1>;
+    mdio {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        gem0_phy: phy@0 {
+            device_type = "ethernet-phy";
+            reg = <0>;
+        };
+    };
 };

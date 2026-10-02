@@ -26,7 +26,8 @@ In order to test this design on hardware, you will need the following:
 
 * Vivado 2025.2
 * Vitis 2025.2
-* PetaLinux Tools 2025.2
+* For embedded Linux: PetaLinux Tools 2025.2, or the Yocto / EDF flow (Vitis 2025.2 and
+  [Google's repo tool](https://gerrit.googlesource.com/git-repo/) on a Linux machine)
 * [Ethernet FMC] or [Robust Ethernet FMC]
 * One of the target platforms listed below
 * [Xilinx Soft TEMAC license](https://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/ "Xilinx Soft TEMAC license")
@@ -128,11 +129,18 @@ boards are supported by each flow.
 | Environment | Build flow          | Available applications |
 |-------------|---------------------|------------------------|
 | Standalone  | Vitis               | lwIP echo server |
-| Linux       | PetaLinux  /  Yocto | Built-in Linux commands<br>Additional tools: ethtool, phytool, iperf3 |
+| Linux       | PetaLinux  /  Yocto | Built-in Linux commands<br>Additional tools: ethtool, phytool, iperf3, bridge-utils |
 
 The standalone application runs the lwIP echo server on the target, exercising the AXI
 Ethernet ports. Under Linux, the same ports come up as network interfaces that you can bring
-up, assign IP addresses, and test with the bundled tools.
+up, assign IP addresses, and test with the bundled tools. On the Zynq-7000 and Zynq
+UltraScale+ boards the board's own Ethernet port is enabled too, so you can log in over SSH
+while the Ethernet FMC ports are under test.
+
+How to boot the images, identify the interfaces and test the ports (DHCP or static IP,
+`ethtool`, `phytool`, `iperf3`, and the throughput to expect) is described in the
+[documentation](https://axieth.ethernetfmc.com "AXI Ethernet for Ethernet FMC docs"): see the
+*Stand-alone lwIP Echo Server*, *PetaLinux* and *Yocto* pages.
 
 ## Build instructions
 

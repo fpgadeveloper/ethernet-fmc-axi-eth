@@ -38,9 +38,9 @@ the FMC connector on which to connect the mezzanine card.
     {% if designs_in_group | length > 0 %}
 ### {{ group.name }} designs
 
-| Target board        | Target design     | Ports   | FMC Slot    | Standalone<br> Echo Server | PetaLinux | Vivado<br> Edition | IP<br>License |
-|---------------------|-------------------|---------|-------------|-----|-----|-----|-----|
-{% for design in data.designs %}{% if design.group == group.label and design.publish %}| [{{ design.board }}]({{ design.link }}) | `{{ design.label }}` | {{ design.lanes | length }}x | {{ design.connector }} | {% if design.baremetal %} ✅ {% else %} ❌ {% endif %} | {% if design.petalinux %} ✅ {% else %} ❌ {% endif %} | {{ "Enterprise" if design.license else "Standard 🆓" }} | {{ "Required" if design.ip_license else "-" }} |
+| Target board        | Target design     | Ports   | FMC Slot    | Standalone<br> Echo Server | PetaLinux | Yocto | Vivado<br> Edition | IP<br>License |
+|---------------------|-------------------|---------|-------------|-----|-----|-----|-----|-----|
+{% for design in data.designs %}{% if design.group == group.label and design.publish %}| [{{ design.board }}]({{ design.link }}) | `{{ design.label }}` | {{ design.lanes | length }}x | {{ design.connector }} | {% if design.baremetal %} ✅ {% else %} ❌ {% endif %} | {% if design.petalinux %} ✅ {% else %} ❌ {% endif %} | {% if design.yocto %} ✅ {% else %} ❌ {% endif %} | {{ "Enterprise" if design.license else "Standard 🆓" }} | {{ "Required" if design.ip_license else "-" }} |
 {% endif %}{% endfor %}
 {% endif %}
 {% endfor %}
@@ -238,5 +238,30 @@ gathers the boot images into `bootimages/*.zip`:
 
 On Windows, `all` builds everything that the host can build and reports the
 Linux-only stages as `BLOCKED` rather than failing.
+
+### Output products
+
+`./build.sh all` (or `./build.sh package --target <target>` after building the
+stages individually) gathers the boot files of each target into one zip per
+flow in the `bootimages/` directory:
+
+| Zip file | Contents | How to use it |
+|----------|----------|---------------|
+| `ethernet-fmc-axi-eth_<target>_standalone-2025-2.zip` | Zynq / Zynq UltraScale+: `BOOT.BIN` (and the `.bif` it was made from). MicroBlaze: `axieth.bit` and `echo_server.elf` | [Stand-alone lwIP Echo Server](echo_server) |
+| `ethernet-fmc-axi-eth_<target>_petalinux-2025-2.zip` | `boot/` (`BOOT.BIN`, `boot.scr`, `image.ub`) and `root/rootfs.tar.gz` | [PetaLinux](petalinux) |
+| `ethernet-fmc-axi-eth_<target>_yocto-2025-2.zip` | `rootfs.wic.xz`, `rootfs.wic.bmap`, `BOOT.BIN` and a `readme.txt` | [Yocto](yocto) |
+
+The `package` stage rewrites a zip whenever the files it gathers are newer than
+the zip, so a rebuilt image is never shipped in a stale zip.
+
+### Freeing disk space
+
+A Yocto workspace takes several tens of GB per target. Once a target has built,
+`./build.sh clean --target <target> --keep-boot` deletes the intermediate files
+that can be rebuilt (the Vivado project except the XSA and bitstream, the Vitis
+workspace, the PetaLinux `build/` and `components/` directories, the Yocto
+workspace except `images/`) and keeps every deliverable, so that `status` still
+reports the target as built. `./build.sh clean --target <target>` without
+`--keep-boot` deletes everything the build produced for that target.
 
 [supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment

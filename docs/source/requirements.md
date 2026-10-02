@@ -4,7 +4,9 @@ In order to test this design on hardware, you will need the following:
 
 * Vivado 2025.2
 * Vitis 2025.2
-* PetaLinux Tools 2025.2
+* For embedded Linux (Zynq-7000 and Zynq UltraScale+ targets), a Linux build machine with either
+  PetaLinux Tools 2025.2 or the tools of the Yocto / EDF flow (Vitis 2025.2 and Google's `repo` tool,
+  see [Yocto](yocto.md#requirements))
 * [Ethernet FMC] or [Robust Ethernet FMC]
 * [Xilinx Soft TEMAC license](https://ethernetfmc.com/getting-a-license-for-the-xilinx-tri-mode-ethernet-mac/)
 * One of the supported carrier boards listed below

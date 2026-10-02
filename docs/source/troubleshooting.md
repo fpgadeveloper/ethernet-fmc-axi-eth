@@ -39,18 +39,81 @@ packages in the local sstate cache (populated by the first run) and
 completes cleanly, producing `BOOT.BIN`. The reference design itself is
 fine; this is a transient issue with the public mirror.
 
+## Linux port issues
+
+These apply to both the PetaLinux and the Yocto images.
+
 ### Ports not working
 
-Check the following if you are unable to get ports working in PetaLinux.
+Check the following if you are unable to get ports working in Linux.
 
 1. **Check the interface-to-port assignment for your design**   
-   The assignment of interfaces (eg. eth0, eth1, eth2, etc) to ports (eg. Ethernet FMC port 0, 1, 2 and 3) is specific to the design that
-   you are using. The interface to port assignment is documented [here](https://axieth.ethernetfmc.com/en/latest/petalinux.html#port-configurations).
+   The interface names (`end0`, `end1`, … or `enx<mac>`) do not follow the Ethernet FMC port
+   numbers. Identify each interface by its MAC address or controller address as described in
+   [Identify the interfaces](yocto.md#identify-the-interfaces).
 
-2. **Each port must be assigned to a different subnet**   
-   If you assign interface eth0 to IP address 192.168.1.10, then you must use a different subnet for the IP address of eth1, eth2 and eth3.
-   Multiple ports that are managed under Linux must be assigned to different subnets, or they will not work.
-   An example address assignment would be eth0=192.168.1.10, eth1=192.168.2.10, eth2=192.168.3.10, eth3=192.168.4.10.
+2. **Use separate subnets, or bind the test to the interface**   
+   If several ports are on the same subnet, Linux may send the traffic of one port out of another
+   one, and a test of "port 2" may really be exercising port 0. Assign each port under test its own
+   subnet (for example 192.168.1.10, 192.168.2.10, 192.168.3.10 and 192.168.4.10), or force the
+   interface in each test with `ping -I <iface>` and `iperf3 --bind-dev <iface>`.
+
+### Interface does not appear, or "phy-handle required" in the kernel log
+
+The Ethernet FMC PHYs are not part of the Vivado design, so the Linux device tree gets them from the
+`port-config.dtsi` overlay of the BSP. If a target's entry in `config/data.json` has no `portcfg`
+attribute, the Yocto build does not apply the overlay and the AXI Ethernet driver fails to probe
+with a message about a missing `phy-handle`. Every Yocto target of this repository has the
+attribute; if you add a target, give it one (`ports-0123` for four ports).
+
+### Link is up but no packets pass
+
+If `ethtool` reports a 1 Gbit/s link but pings get no answer and the receive counters stay at zero
+(or count only errors), the RGMII clock-to-data timing is wrong. The usual causes are:
+
+* **The PHY is not described correctly in the device tree.** Without the correct description Linux
+  binds the "Generic PHY" driver instead of the PHY's own driver, and the PHY's internal RGMII delays
+  are never programmed. Check `dmesg | grep "PHY \["`: the Ethernet FMC ports must show the
+  `Marvell 88E1510` driver, and the ZCU102's board port the `TI DP83867` driver. The images of this
+  repository describe both; keep those descriptions if you replace the device tree.
+* **The `phy-mode` does not match the design.** The Ethernet FMC ports use `rgmii-rxid` (the FPGA
+  shifts the transmit clock by 90 degrees, the PHY delays the receive clock); the board ports of the
+  Zynq boards use `rgmii-id` (the PHY adds both delays).
+* **A custom design changed the RGMII timing** (IDELAY values or constraints). Check the timing
+  report of the Vivado build.
+
+### No link at all
+
+* Check the cable and the link partner (a gigabit port, auto-negotiation enabled).
+* Check that the Ethernet FMC is fully seated and that the FMC connector you use is the one of your
+  target design.
+* Check that the carrier supplies the I/O voltage (VADJ) of your card variant: the 1.8 V cards
+  (OP031-1V8, OP041-1V8) need VADJ = 1.8 V, the 2.5 V cards need 2.5 V. Several carriers (VC707,
+  VC709, KCU105, ZCU102) only support the 1.8 V cards, see
+  [Supported carriers](supported_carriers.md#board-specific-notes).
+* Read the PHY status with `sudo phytool print <iface>/0` — it shows whether the PHY sees a link
+  partner.
+
+### U-Boot crashes (data abort) on a Zynq-7000 board
+
+U-Boot 2025.01 crashes while probing the board's GEM0 if the device tree enables GEM0 without
+describing its PHY. The BSPs of this repository describe the PHY in `system-user.dtsi` (MDIO
+address 0 on ZedBoard and PicoZed, 7 on ZC702 and ZC706). If you port the design to another
+Zynq-7000 board, describe its GEM0 PHY the same way, or disable GEM0.
+
+### Lower throughput than expected on Zynq-7000
+
+On the Cortex-A9 based boards the processor limits the throughput of a single port (we measured
+about 630–780 Mbit/s on the ZedBoard) (see [What to expect](yocto.md#what-to-expect)). In the receive direction you may
+see TCP retransmissions in the iperf3 output and RX FIFO overruns (`rx_missed_errors` in
+`ip -s link`, or the overrun counters of `ethtool -S`). These mean the CPU did not empty the
+receive ring fast enough; they are not link errors.
+
+### Duplicate MAC addresses
+
+All boards running these images use the same fixed MAC addresses on the Ethernet FMC ports (and on
+the ZedBoard and ZCU102 board port). With more than one board on the same network, change them as
+described in [MAC addresses used by Linux](description.md#mac-addresses-used-by-linux).
 
 ### Dropped pings/packets
 

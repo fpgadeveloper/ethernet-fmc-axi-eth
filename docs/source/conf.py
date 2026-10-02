@@ -30,6 +30,10 @@ extensions = [
   'myst_parser',
 ]
 
+# Generate anchors for headings (h1-h4) so that links such as
+# `petalinux.md#boot-petalinux` and `#port-configurations` resolve.
+myst_heading_anchors = 4
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -51,7 +55,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = []
 
 import os
 import json
@@ -60,7 +64,8 @@ from jinja2 import Environment, FileSystemLoader
 
 # Load the JSON data
 def load_json():
-    with open('../../config/data.json') as f:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                           '..', '..', 'config', 'data.json')) as f:
         return json.load(f)
 
 # Add the data as a context variable for Jinja2 templates

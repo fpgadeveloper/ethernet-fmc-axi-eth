@@ -33,6 +33,25 @@ the full description of the runner.
 This will also launch the build process for the corresponding Vivado project if that project
 has not already been built and its hardware exported.
 
+The output products are written to `PetaLinux/<target>/images/linux/` (`BOOT.BIN`, `boot.scr`,
+`image.ub`, `rootfs.tar.gz` and more). `./build.sh all` or `./build.sh package --target <target>`
+also gathers the files you need for the SD card into
+`bootimages/ethernet-fmc-axi-eth_<target>_petalinux-2025-2.zip`: the contents of its `boot/`
+directory go on the boot partition, and `root/rootfs.tar.gz` is extracted to the root partition.
+
+## What is in the image
+
+| | |
+|---|---|
+| Kernel / U-Boot | Linux 6.12 and U-Boot 2025.01 from the AMD/Xilinx tree, sysvinit, BusyBox |
+| Hostname | `zcu102-axieth-2025-2`, `uzev-axieth-2025-2`, `zed-axieth-2025-2`, `pz-axieth-2025-2`, `zc702-axieth-2025-2`, `zc706-axieth-2025-2` |
+| Login | user `petalinux`, no initial password: you must choose a password at the first login. Use `sudo` for root commands |
+| Network | every `en*` interface is brought up at boot and configured by DHCP (`/etc/network/interfaces`); SSH server enabled |
+| Test tools | `ethtool`, `phytool`, `iperf3`, `bridge-utils` (`brctl`), `nfs-utils`, `pciutils`, `can-utils`, `mtd-utils` |
+| Ethernet FMC MACs | `00:0a:35:00:01:22` (port 0) to `00:0a:35:00:01:25` (port 3) — see [MAC addresses](description.md#mac-addresses-used-by-linux) |
+| Board Ethernet port | PS GEM0 (Zynq-7000) or GEM3 (Zynq UltraScale+) |
+| Kernel command line | `CONFIG_SUBSYSTEM_USER_CMDLINE` in `PetaLinux/bsp/<board>/project-spec/configs/config`: console on `ttyPS0` at 115200 baud, root file system on the SD card's second partition, and a CMA reservation of 256 MB (ZedBoard), 512 MB (PicoZed, ZC702, ZC706) or 1536 MB (ZCU102, UltraZed-EV) |
+
 ## Boot from SD card
 
 ### Prepare the SD card
@@ -98,6 +117,13 @@ losing data on one of your hard drives.
 4. Connect the USB-UART to your PC and then open a UART terminal set to 115200 baud and the 
    comport that corresponds to your target board.
 5. Connect and power your hardware.
+6. When the login prompt appears, log in as `petalinux` and choose a password when asked:
+   ```
+   zed-axieth-2025-2 login: petalinux
+   You are required to change your password immediately (administrator enforced).
+   New password:
+   Retype new password:
+   ```
 
 ## Boot via JTAG
 
@@ -180,50 +206,35 @@ sudo screen /dev/ttyUSB0 115200
 ## Port configurations
 
 PetaLinux is supported only on the Zynq-7000 and Zynq UltraScale+ targets in this
-repository. All designs will try to automatically configure the dev board's GEM
-port on boot via DHCP, so it can be useful to have that port connected to a DHCP
-router before the hardware is powered-up.
+repository. At boot, every Ethernet interface is brought up and configured by DHCP, so it is
+useful to connect the ports (and the board's own Ethernet port) to a network with a DHCP
+server before the hardware is powered up.
 
-```{note}
-Interface names depend on the kernel's predictable-names policy and on the target's
-processor family:
+The interfaces are named by the kernel's predictable-names policy:
 
-* **Zynq-7000** (`pz_*`, `zc70*`, `zedboard`) — the AXI Ethernet ports come up as
-  `enx<mac>` (for example `enx000a35000122`), because the kernel renames the
-  `eth<N>` interfaces using the MAC address baked into each AXI Ethernet
-  instance by the build flow.
-* **Zynq UltraScale+** (`uzev`, `zcu102_*`) — the AXI Ethernet ports come up as
-  `end0` … `endN`, plus one `end<N>` for the on-board GEM.
+* **Zynq-7000** (`pz_*`, `zc70*`, `zedboard`) — the interfaces come up as `enx<mac>`, for example
+  `enx000a35000122` for Ethernet FMC port 0, `enx000a35000123` for port 1, and so on. The board's
+  Ethernet port (GEM0) is named after its own MAC address (on the ZedBoard, whose BSP gives it the
+  fixed address `00:0a:35:06:21:20`, that is `enx000a35062120`).
+* **Zynq UltraScale+** (`uzev`, `zcu102_*`) — the interfaces come up as `end0` … `end4`. The
+  number does not follow the Ethernet FMC port number.
 
-The numbering in the lists below corresponds to the order the kernel discovers
-the interfaces; the actual names you see on a given boot depend on which family
-the target belongs to.
+On either family, identify the interfaces by MAC address or by controller base address:
+
+```
+for n in /sys/class/net/e*; do
+  echo "$(basename $n)  $(basename $(readlink -f $n/device))  $(cat $n/address)"
+done
 ```
 
-### PicoZed, ZC702, ZC706, ZedBoard (Zynq-7000)
-
-* eth0: GEM0 to Ethernet port of the dev board
-* eth1: Ethernet FMC Port 0
-* eth2: Ethernet FMC Port 1
-* eth3: Ethernet FMC Port 2
-* eth4: Ethernet FMC Port 3
-
-The Zynq-7000 kernel renames the AXI Ethernet interfaces to `enx<mac>` —
-for example `enx000a35000122` for Ethernet FMC Port 0, `enx000a35000123` for
-Ethernet FMC Port 1, and so on.
-
-### ZCU102, UltraZed-EV (Zynq UltraScale+)
-
-* end0: Ethernet FMC Port 1
-* end1: Ethernet FMC Port 2
-* end2: Ethernet FMC Port 3
-* end3: GEM to Ethernet port of the dev board
-* end4: Ethernet FMC Port 0 (the port DHCP is attempted on)
+and map them to the Ethernet FMC ports with the table in
+[Identify the interfaces](yocto.md#identify-the-interfaces) (the controller addresses and MAC
+addresses are the same in the PetaLinux and Yocto images).
 
 ```{note}
 On the `zcu102_hpc1` target only Ethernet FMC Ports 0 and 1 are
 routed (the HPC1 connector has a reduced pin-out), so only the corresponding
-`end<N>` interfaces appear.
+interfaces appear.
 ```
 
 ## Example Usage
@@ -344,6 +355,22 @@ round-trip min/avg/max = 0.260/0.320/0.463 ms
 
 Use `ping -I <interface>` to force ping through a specific port if the default
 route does not select it.
+
+### Throughput test with iperf3
+
+The throughput test is the same as in the Yocto image: start `iperf3 -s` on the PC, then on the
+board run
+
+```
+iperf3 -c <pc-ip> --bind-dev <interface> -t 10
+iperf3 -c <pc-ip> --bind-dev <interface> -t 10 -R
+```
+
+for the transmit and receive directions of each port. See
+[Measure the throughput with iperf3](yocto.md#measure-the-throughput-with-iperf3) and
+[What to expect](yocto.md#what-to-expect) for the commands in detail and the throughput to expect
+from each board family, and [Check the link and the PHY](yocto.md#check-the-link-and-the-phy) for
+`ethtool` and `phytool`.
 
 [Ethernet FMC]: https://docs.opsero.com/op031/datasheet/overview/
 [supported Linux distributions]: https://docs.amd.com/r/en-US/ug1144-petalinux-tools-reference-guide/Setting-Up-Your-Environment
